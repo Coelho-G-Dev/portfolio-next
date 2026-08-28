@@ -31,16 +31,16 @@ export default function About() {
 
           <div className="grid grid-cols-2 gap-8 pt-6 border-t border-navy/20">
             <div>
-              <p className="font-mono text-[11px] tracking-widest uppercase mb-2">Na bancada</p>
-              <p className="text-sm leading-relaxed">
+              <p className="font-mono text-sm tracking-widest uppercase mb-2">Na bancada</p>
+              <p className="text-base leading-relaxed">
                 Node.js, TypeScript, PostgreSQL, MongoDB, Java/Spring Boot, Docker.
               </p>
             </div>
             <div>
-              <p className="font-mono text-[11px] tracking-widest uppercase mb-2">Fora da tela</p>
-              <p className="text-sm leading-relaxed">
-                Sou praticante de Powerlifting e xadrez, aprendendo sobre  progressão disciplinada e a pensar
-                várias jogadas à frente.
+              <p className="font-mono text-sm tracking-widest uppercase mb-2">Fora da tela</p>
+              <p className="text-base leading-relaxed">
+                Sou praticante de Powerlifting e xadrez, aprendendo sobre progressão disciplinada
+                e a pensar várias jogadas à frente.
               </p>
             </div>
           </div>

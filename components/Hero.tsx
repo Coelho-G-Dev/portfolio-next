@@ -17,7 +17,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 font-mono text-xs tracking-widest uppercase text-cream/70 mb-8">
+      <div className="flex items-center gap-2 font-mono text-base tracking-widest uppercase text-cream/70 mb-8">
         <span className="w-1.5 h-1.5 rounded-full bg-lime" />
         São Luís · Brasil — Backend, APIs e Sistemas
       </div>
@@ -33,7 +33,7 @@ export default function Hero() {
           <span className="block w-16 h-px bg-cream/40" />
           <span className="font-mono text-xs tracking-widest">01 / 05</span>
         </div>
-        <p className="max-w-sm text-cream/80 text-sm leading-relaxed">
+        <p className="max-w-sm text-cream/80 text-lg leading-relaxed">
           Sou Gabriel, desenvolvedor back-end Graduando em Ciências e Tecnologia (UFMA). Construo
           APIs e sistemas que resolvem o problema antes de aparecer na tela.
         </p>

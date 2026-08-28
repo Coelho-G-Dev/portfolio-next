@@ -38,7 +38,7 @@ export default function Contact() {
         </div>
 
         <div>
-          <p className="text-sm leading-relaxed max-w-sm mb-8">
+          <p className="text-lg leading-relaxed max-w-sm mb-8">
             Me conta o que você está tentando construir. Eu respondo com atenção, mesmo que a
             resposta seja um &ldquo;ainda não&rdquo;.
           </p>
@@ -62,7 +62,7 @@ export default function Contact() {
             </button>
           </div>
 
-          <p className="flex items-center gap-1.5 font-mono text-[11px] tracking-widest uppercase opacity-70 mt-8">
+          <p className="flex items-center gap-1.5 font-mono text-sm tracking-widest uppercase opacity-70 mt-8">
             <MapPin size={12} /> São Luís, Brasil · UTC-3
           </p>
         </div>

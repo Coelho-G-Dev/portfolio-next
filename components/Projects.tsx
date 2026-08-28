@@ -84,14 +84,14 @@ export default function Projects() {
                   {project.title}
                   <span className="absolute left-0 -bottom-1 h-[3px] w-full bg-current origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out" />
                 </h3>
-                <p className="font-mono text-[11px] tracking-widest uppercase opacity-60 mt-1">
+                <p className="font-mono text-sm tracking-widest uppercase opacity-60 mt-1">
                   {project.type} · {project.year}
                 </p>
                 <div className="flex flex-wrap gap-2 mt-3">
                   {project.tags.map((t) => (
                     <span
                       key={t}
-                      className="font-mono text-[10px] tracking-wide uppercase border border-navy/30 rounded-full px-2.5 py-1"
+                      className="font-mono text-sm tracking-wide uppercase border border-navy/30 rounded-full px-3 py-1.5"
                     >
                       {t}
                     </span>

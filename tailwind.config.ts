@@ -8,7 +8,7 @@ const config: Config = {
         navy: "#12222D",
         cream: "#F2EADC",
         lime: "#EAF35B",
-        orange: "#FF6649",
+        orange: "#E97C67",
         blue: "#496AE8",
         lavender: "#B997FF",
       },
