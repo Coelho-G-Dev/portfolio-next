@@ -21,9 +21,8 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains",
 });
 
-// TODO: trocar pelo domínio final quando publicar (Vercel/domínio próprio)
 export const metadata: Metadata = {
-  metadataBase: new URL("https://gabrielcoelho.dev"),
+  metadataBase: new URL("https://portfolio-next-flax-seven.vercel.app"),
   title: "Gabriel Coelho — Desenvolvedor Back-End",
   description:
     "Gabriel Coelho, desenvolvedor back-end. APIs robustas e seguras com Node.js, Express, MongoDB e Java com Spring Boot.",
@@ -50,7 +49,7 @@ const personJsonLd = {
   "@type": "Person",
   name: "Gabriel Coelho",
   jobTitle: "Desenvolvedor Back-End",
-  url: "https://gabrielcoelho.dev",
+  url: "https://portfolio-next-flax-seven.vercel.app",
   address: { "@type": "PostalAddress", addressLocality: "São Luís", addressRegion: "MA", addressCountry: "BR" },
   sameAs: [
     "https://github.com/Coelho-G-Dev",

@@ -39,7 +39,7 @@ export default function About() {
             <div>
               <p className="font-mono text-[11px] tracking-widest uppercase mb-2">Fora da tela</p>
               <p className="text-sm leading-relaxed">
-                Powerlifting e xadrez — um me ensina progressão disciplinada, o outro, pensar
+                Sou praticante de Powerlifting e xadrez, aprendendo sobre  progressão disciplinada e a pensar
                 várias jogadas à frente.
               </p>
             </div>
