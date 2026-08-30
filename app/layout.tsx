@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, Fraunces, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const archivo = Archivo({
@@ -23,11 +25,12 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://portfolio-next-flax-seven.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: "Gabriel Coelho — Desenvolvedor Back-End",
   description:
     "Gabriel Coelho, desenvolvedor back-end. APIs robustas e seguras com Node.js, Express, MongoDB e Java com Spring Boot.",
   robots: { index: true, follow: true },
+  alternates: { canonical: "/" },
   openGraph: {
     title: "Gabriel Coelho — Desenvolvedor Back-End",
     description: "Sistemas que sobrevivem à primeira versão.",
@@ -42,6 +45,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
   themeColor: "#12222D",
 };
 
@@ -50,7 +55,7 @@ const personJsonLd = {
   "@type": "Person",
   name: "Gabriel Coelho",
   jobTitle: "Desenvolvedor Back-End",
-  url: "https://portfolio-next-flax-seven.vercel.app",
+  url: SITE_URL,
   address: { "@type": "PostalAddress", addressLocality: "São Luís", addressRegion: "MA", addressCountry: "BR" },
   sameAs: [
     "https://github.com/Coelho-G-Dev",
@@ -68,6 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         {children}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

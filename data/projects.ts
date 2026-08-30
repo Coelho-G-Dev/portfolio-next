@@ -1,3 +1,5 @@
+export type TileColor = "lime" | "blue" | "orange" | "lavender";
+
 export type Project = {
   id: number;
   title: string;
@@ -7,7 +9,7 @@ export type Project = {
   description: string;
   tags: string[];
   githubLink: string;
-  shapeColors: [string, string];
+  shapeColors: [TileColor, TileColor];
 };
 
 export const projects: Project[] = [

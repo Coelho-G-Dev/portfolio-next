@@ -1,18 +1,18 @@
 "use client";
 import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
-import { projects } from "@/data/projects";
+import { projects, type TileColor } from "@/data/projects";
 import { useReveal } from "@/lib/useReveal";
 import SectionCut from "@/components/SectionCut";
 
-const shapeClass: Record<string, string> = {
+const shapeClass: Record<TileColor, string> = {
   lime: "bg-lime",
   blue: "bg-blue",
   orange: "bg-orange",
   lavender: "bg-lavender",
 };
 
-function ProjectTile({ colors }: { colors: [string, string] }) {
+function ProjectTile({ colors }: { colors: [TileColor, TileColor] }) {
   return (
     <div className="relative w-full h-full bg-navy overflow-hidden rounded-md">
       <div

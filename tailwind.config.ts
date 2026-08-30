@@ -9,7 +9,7 @@ const config: Config = {
         cream: "#F2EADC",
         lime: "#EAF35B",
         orange: "#E97C67",
-        blue: "#496AE8",
+        blue: "#2E53E5",
         lavender: "#B997FF",
       },
       fontFamily: {

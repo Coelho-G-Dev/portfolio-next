@@ -8,12 +8,16 @@ const EMAIL = "gabrielbiellosousa@gmail.com";
 
 export default function Contact() {
   const ref = useReveal<HTMLDivElement>();
-  const [copied, setCopied] = useState(false);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
 
   const copyEmail = async () => {
-    await navigator.clipboard.writeText(EMAIL);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setCopyState("copied");
+    } catch {
+      setCopyState("failed");
+    }
+    setTimeout(() => setCopyState("idle"), 2000);
   };
 
   return (
@@ -52,13 +56,14 @@ export default function Contact() {
             </a>
             <button
               onClick={copyEmail}
-              aria-label={copied ? "E-mail copiado" : "Copiar e-mail"}
+              aria-label={copyState === "copied" ? "E-mail copiado" : "Copiar e-mail"}
               className="w-11 h-11 rounded-full border border-navy/40 flex items-center justify-center hover:bg-navy hover:text-lavender transition-colors"
             >
               <span aria-live="polite" className="sr-only">
-                {copied ? "E-mail copiado" : ""}
+                {copyState === "copied" && "E-mail copiado"}
+                {copyState === "failed" && "Não foi possível copiar — selecione o texto manualmente"}
               </span>
-              {copied ? <Check size={16} /> : <Copy size={16} />}
+              {copyState === "copied" ? <Check size={16} /> : <Copy size={16} />}
             </button>
           </div>
 

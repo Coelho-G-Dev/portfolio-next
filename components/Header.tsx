@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 
 const links = [
-  { href: "#trabalho", label: "TRABALHO" },
-  { href: "#metodo", label: "MÉTODO" },
-  { href: "#sobre", label: "SOBRE" },
+  { href: "/#trabalho", label: "TRABALHO" },
+  { href: "/#metodo", label: "MÉTODO" },
+  { href: "/#sobre", label: "SOBRE" },
 ];
 
 export default function Header() {
@@ -20,11 +20,15 @@ export default function Header() {
   }, [open]);
 
   useEffect(() => {
-    const sections = links.map((l) => document.getElementById(l.href.slice(1))).filter(Boolean);
+    const trackedIds = ["hero", ...links.map((l) => l.href.slice(1)), "contato"];
+    const sections = trackedIds.map((id) => document.getElementById(id)).filter(Boolean);
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) setActive(`#${entry.target.id}`);
+          if (!entry.isIntersecting) return;
+          const id = entry.target.id;
+          const isNavLink = links.some((l) => l.href === `#${id}`);
+          setActive(isNavLink ? `#${id}` : "");
         });
       },
       { rootMargin: "-45% 0px -50% 0px" }
