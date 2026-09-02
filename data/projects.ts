@@ -9,6 +9,7 @@ export type Project = {
   description: string;
   tags: string[];
   githubLink: string;
+  demoLink?: string;
   shapeColors: [TileColor, TileColor];
 };
 
@@ -35,7 +36,7 @@ export const projects: Project[] = [
       "Projeto full-stack pra centralizar o acesso a serviços públicos no Maranhão, integrando dados do IBGE e Google Maps Platform.",
     tags: ["Node.js", "Mongoose", "JWT"],
     githubLink: "https://github.com/Coelho-G-Dev/Guia-Maranhao",
-    shapeColors: ["orange", "lavender"],
+    shapeColors: ["lavender", "lime"],
   },
   {
     id: 3,
@@ -47,6 +48,6 @@ export const projects: Project[] = [
       "API RESTful de gestão financeira com auditoria automatizada e geração de insights via IA do Google Gemini.",
     tags: ["Node.js", "PostgreSQL", "Gemini AI", "Jest"],
     githubLink: "https://github.com/Coelho-G-Dev/api-financeira-inteligente",
-    shapeColors: ["blue", "lime"],
+    shapeColors: ["blue", "lavender"],
   },
 ];

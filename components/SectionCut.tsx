@@ -10,12 +10,6 @@ const colorClass: Record<Props["color"], string> = {
   cream: "border-cream text-cream",
 };
 
-/**
- * Marca a "costura" entre dois blocos de cor: um losango rotacionado (só
- * contorno) que fica meio pra dentro da seção acima e meio pra fora,
- * mais um rótulo mono minúsculo com um losango pequeno como bullet.
- * Replica o motivo "color cuts" visto no mockup de referência.
- */
 export default function SectionCut({ label, color, side = "right" }: Props) {
   const sideClass = side === "right" ? "right-10 md:right-24" : "left-10 md:left-24";
   return (

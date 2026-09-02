@@ -22,7 +22,6 @@ export default function Method() {
   return (
     <section id="metodo" className="relative min-h-screen bg-blue text-cream px-6 md:px-10 py-32 overflow-hidden">
       <SectionCut label="segundo corte" color="lime" side="right" />
-      {/* arco decorativo, canto inferior esquerdo - visto no mockup de referência */}
       <div
         className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full border-[10px] border-lime"
         aria-hidden="true"
@@ -47,7 +46,6 @@ export default function Method() {
               key={s.title}
               className="group relative grid grid-cols-[auto_1fr] gap-6 py-6 items-start px-4 -mx-4 transition-colors duration-300 hover:bg-cream/[0.04] overflow-hidden"
             >
-              {/* barra que "corta" da esquerda no hover - mesmo motivo visual dos cortes entre seções */}
               <span
                 aria-hidden="true"
                 className="absolute left-0 top-0 h-full w-0 bg-lime group-hover:w-1 transition-all duration-300 ease-out"

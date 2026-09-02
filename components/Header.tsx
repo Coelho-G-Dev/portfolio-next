@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 
 const links = [
@@ -11,6 +11,10 @@ const links = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("");
+
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -37,6 +41,72 @@ export default function Header() {
     return () => observer.disconnect();
   }, []);
 
+  const getFocusableElements = (container: HTMLElement | null): HTMLElement[] => {
+    if (!container) return [];
+    const focusableSelectors = [
+      'input',
+      'select',
+      'textarea',
+      'button',
+      'a[href]',
+      'area',
+      'iframe',
+      'object',
+      'embed',
+      '[tabindex]:not([tabindex="-1"])',
+      '[contenteditable]'
+    ].join(',');
+    const elements = container.querySelectorAll<HTMLElement>(focusableSelectors);
+    return Array.from(elements).filter(
+      el => !el.hasAttribute('disabled') &&
+            (el.getAttribute('aria-hidden') !== 'true') &&
+            el.offsetParent !== null
+    );
+  };
+
+  useEffect(() => {
+    if (open) {
+      closeButtonRef.current?.focus();
+
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key === "Escape") {
+          setOpen(false);
+        }
+      };
+
+      const handleTrapFocus = (event: KeyboardEvent) => {
+        if (event.key === "Tab") {
+          const focusableElements = getFocusableElements(menuRef.current);
+          if (focusableElements.length === 0) return;
+
+          const first = focusableElements[0];
+          const last = focusableElements[focusableElements.length - 1];
+
+          if (event.shiftKey) { // Shift + Tab
+            if (document.activeElement === first) {
+              event.preventDefault();
+              last.focus();
+            }
+          } else { // Tab
+            if (document.activeElement === last) {
+              event.preventDefault();
+              first.focus();
+            }
+          }
+        }
+      };
+
+      document.addEventListener("keydown", handleKeyDown);
+      document.addEventListener("keydown", handleTrapFocus);
+
+      return () => {
+        document.removeEventListener("keydown", handleKeyDown);
+        document.removeEventListener("keydown", handleTrapFocus);
+        hamburgerRef.current?.focus();
+      };
+    }
+  }, [open, menuRef, closeButtonRef, hamburgerRef]);
+
   return (
     <>
       <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-10 py-5 text-cream bg-navy/95 backdrop-blur-md border-b border-cream/10">
@@ -47,7 +117,7 @@ export default function Header() {
           <span className="font-mono text-xs tracking-widest uppercase">Gabriel Coelho</span>
         </a>
 
-        <nav className="hidden md:flex items-center gap-8 font-mono text-xs tracking-widest uppercase">
+        <nav className="hidden md:flex items-center gap-8 font-mono text-xs tracking-widest uppercase" aria-label="Menu principal">
           {links.map((l) => (
             <a
               key={l.href}
@@ -71,6 +141,7 @@ export default function Header() {
           </a>
 
           <button
+            ref={hamburgerRef}
             onClick={() => setOpen(true)}
             aria-label="Abrir menu"
             aria-expanded={open}
@@ -82,14 +153,15 @@ export default function Header() {
         </div>
       </header>
 
-      {/* menu mobile: flyout full-screen, fecha com X ou clicando num link */}
       <div
+        ref={menuRef}
         id="mobile-menu"
         className={`fixed inset-0 z-[60] bg-navy text-cream flex flex-col items-center justify-center gap-10 transition-transform duration-300 md:hidden ${
           open ? "translate-x-0" : "translate-x-full pointer-events-none"
         }`}
       >
         <button
+          ref={closeButtonRef}
           onClick={() => setOpen(false)}
           aria-label="Fechar menu"
           className="absolute top-6 right-6"

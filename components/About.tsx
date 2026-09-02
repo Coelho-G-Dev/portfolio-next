@@ -8,7 +8,6 @@ export default function About() {
   return (
     <section id="sobre" className="relative min-h-screen bg-lime text-navy px-6 md:px-10 py-32 overflow-hidden">
       <SectionCut label="terceiro corte" color="lavender" side="right" />
-      {/* losango vazando do canto - visto no mockup de referência */}
       <div className="absolute -top-16 -right-16 w-40 h-40 bg-lavender rotate-45" aria-hidden />
       <div ref={ref} className="reveal max-w-5xl mx-auto grid md:grid-cols-[0.9fr_1.1fr] gap-16 items-start">
         <div className="relative aspect-square bg-navy rounded-md overflow-hidden flex flex-col justify-end p-6">

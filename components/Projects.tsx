@@ -12,17 +12,6 @@ const shapeClass: Record<TileColor, string> = {
   lavender: "bg-lavender",
 };
 
-function ProjectTile({ colors }: { colors: [TileColor, TileColor] }) {
-  return (
-    <div className="relative w-full h-full bg-navy overflow-hidden rounded-md">
-      <div
-        className={`absolute -left-4 top-1/2 -translate-y-1/2 w-20 h-20 ${shapeClass[colors[1]]} rotate-45`}
-      />
-      <div className={`absolute right-6 top-6 w-16 h-16 rounded-full ${shapeClass[colors[0]]}`} />
-    </div>
-  );
-}
-
 const filters = [
   { key: "all", label: "TUDO" },
   { key: "backend", label: "BACKEND" },
@@ -62,24 +51,37 @@ export default function Projects() {
 
         <div className="divide-y divide-navy/20 border-t border-navy/20 mt-8">
           {visible.map((project) => (
-            <a
+            <div
               key={project.id}
-              href={project.githubLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative grid grid-cols-1 md:grid-cols-[auto_1fr_1fr_auto] gap-6 items-center py-8 px-4 -mx-4 overflow-hidden"
+              className="relative group grid grid-cols-1 md:grid-cols-[auto_1fr_1fr_auto] gap-6 items-center py-8 px-4 -mx-4 overflow-hidden"
             >
-              {/* sweep: um bloco sólido "corta" da esquerda pra direita no hover, ecoando o motivo de cor da identidade */}
+              <a
+                href={project.githubLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Ver ${project.title} no GitHub`}
+                className="absolute inset-0"
+              ></a>
+
               <span
                 aria-hidden="true"
                 className="absolute inset-0 bg-navy/[0.06] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out -z-10"
               />
 
-              <span className="font-mono text-xs opacity-50">
+              <div
+                aria-hidden="true"
+                className={`hidden md:block absolute -left-4 top-1/2 -translate-y-1/2 w-20 h-20 ${shapeClass[project.shapeColors[1]]} rotate-45`}
+              ></div>
+              <div
+                aria-hidden="true"
+                className={`hidden md:block absolute right-6 top-6 w-16 h-16 rounded-full ${shapeClass[project.shapeColors[0]]}`}
+              ></div>
+
+              <span className="relative font-mono text-xs opacity-50">
                 {String(project.id).padStart(2, "0")}
               </span>
 
-              <div>
+              <div className="relative">
                 <h3 className="relative inline-block font-display font-bold text-3xl md:text-4xl transition-colors duration-300 group-hover:text-lime">
                   {project.title}
                   <span className="absolute left-0 -bottom-1 h-[3px] w-full bg-current origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out" />
@@ -99,17 +101,20 @@ export default function Projects() {
                 </div>
               </div>
 
-              <p className="text-sm leading-relaxed max-w-xs">{project.description}</p>
+              <p className="relative text-sm leading-relaxed max-w-xs">{project.description}</p>
 
-              <div className="flex items-center gap-4">
-                <div className="w-24 h-24 hidden md:block transition-transform duration-500 ease-out group-hover:scale-110 group-hover:-rotate-3">
-                  <ProjectTile colors={project.shapeColors} />
-                </div>
-                <span className="w-10 h-10 rounded-full border border-navy/40 flex items-center justify-center transition-all duration-300 group-hover:bg-navy group-hover:text-orange group-hover:rotate-45">
-                  <ArrowUpRight size={16} />
-                </span>
-              </div>
-            </a>
+              {project.demoLink && (
+                <a
+                  href={project.demoLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Ver demonstração do projeto ${project.title}`}
+                  className="relative md:absolute md:bottom-2 md:right-2 justify-self-end w-10 h-10 rounded-full border border-navy/40 flex items-center justify-center transition-all duration-300 hover:bg-navy hover:text-orange"
+                >
+                  <ArrowUpRight size={16} className="rotate-45" />
+                </a>
+              )}
+            </div>
           ))}
         </div>
 

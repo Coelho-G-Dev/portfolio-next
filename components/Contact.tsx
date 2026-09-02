@@ -26,7 +26,6 @@ export default function Contact() {
       className="relative min-h-screen bg-lavender text-navy px-6 md:px-10 py-32 flex items-center overflow-hidden"
     >
       <SectionCut label="quarto corte" color="cream" side="left" />
-      {/* arco decorativo, canto inferior direito - visto no mockup de referência */}
       <div
         className="absolute -bottom-20 -right-20 w-40 h-40 rounded-full border-[10px] border-orange"
         aria-hidden="true"
