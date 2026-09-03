@@ -78,8 +78,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         {children}
         <ScrollRestore />
-        <Analytics />
-        <SpeedInsights />
+        {process.env.NODE_ENV === "production" && (
+          <>
+            <Analytics />
+            <SpeedInsights />
+          </>
+        )}
         <ContrastChecker />
       </body>
     </html>

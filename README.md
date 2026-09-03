@@ -21,7 +21,7 @@ Abre em `http://localhost:3000`. O build de produção (`npm run build`) precisa
 
 ## O que foi adaptado do mockup de referência
 
-- Conteúdo trocado pro seu real: nome, bio, os 3 projetos (BuscaSUS, Guia Maranhão, API Financeira Inteligente), stack.
+- Conteúdo trocado pro seu real: nome, bio, os 4 projetos (BuscaSUS, Guia Maranhão, API Financeira Inteligente, AuthGuard), stack.
 - Localização ajustada pra São Luís/MA.
 - Os tiles de projeto usam formas geométricas abstratas nas cores da marca (não são screenshots) — se quiser, dá pra trocar por prints reais dos projetos depois.
 - "Fora da tela" (seção Sobre) preenchido com hobbies reais (powerlifting, xadrez).

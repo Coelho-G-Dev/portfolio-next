@@ -50,4 +50,16 @@ export const projects: Project[] = [
     githubLink: "https://github.com/Coelho-G-Dev/api-financeira-inteligente",
     shapeColors: ["blue", "lavender"],
   },
+  {
+    id: 4,
+    title: "AuthGuard",
+    category: "backend",
+    type: "Microsserviço de Identidade",
+    year: "2026",
+    description:
+      "Microsserviço corporativo de autenticação e RBAC com MFA/TOTP, mensageria RabbitMQ com DLQ, rate limiting em Redis e observabilidade completa.",
+    tags: ["Node.js", "TypeScript", "RabbitMQ", "Redis", "Docker"],
+    githubLink: "https://github.com/Coelho-G-Dev/auhthguard",
+    shapeColors: ["lime", "orange"],
+  },
 ];
