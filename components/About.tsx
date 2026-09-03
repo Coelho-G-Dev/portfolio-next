@@ -24,8 +24,8 @@ export default function About() {
         <div>
           <p className="font-mono text-xs tracking-widest uppercase mb-4">03 — Sobre mim</p>
           <h2 className="font-display font-black text-[8vw] md:text-4xl leading-tight mb-8">
-            Venho da logística antes do código — gosto de sistemas que têm ordem por trás, mesmo
-            quando a superfície parece simples.
+            Minha trajetória começou na logística antes da programação — valorizo sistemas estruturados,
+            que mantêm a ordem nos bastidores mesmo quando a superfície parece simples.
           </h2>
 
           <div className="grid grid-cols-2 gap-8 pt-6 border-t border-navy/20">
@@ -38,8 +38,8 @@ export default function About() {
             <div>
               <p className="font-mono text-sm tracking-widest uppercase mb-2">Fora da tela</p>
               <p className="text-base leading-relaxed">
-                Sou praticante de Powerlifting e xadrez, aprendendo sobre progressão disciplinada
-                e a pensar várias jogadas à frente.
+                Pratico powerlifting e xadrez, disciplinas em que exercito a evolução contínua
+                e a capacidade de pensar várias jogadas à frente.
               </p>
             </div>
           </div>

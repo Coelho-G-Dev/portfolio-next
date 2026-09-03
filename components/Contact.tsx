@@ -42,8 +42,8 @@ export default function Contact() {
 
         <div>
           <p className="text-lg leading-relaxed max-w-sm mb-8">
-            Me conta o que você está tentando construir. Eu respondo com atenção, mesmo que a
-            resposta seja um &ldquo;ainda não&rdquo;.
+            Conte-me o que você planeja construir. Respondo com atenção a cada mensagem, mesmo
+            quando a resposta for um &ldquo;ainda não&rdquo;.
           </p>
 
           <div className="flex items-center gap-3">

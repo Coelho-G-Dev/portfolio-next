@@ -34,8 +34,8 @@ export default function Hero() {
           <span className="font-mono text-xs tracking-widest" aria-hidden="true">01 / 05</span>
         </div>
         <p className="max-w-sm text-cream/80 text-lg leading-relaxed">
-          Sou Gabriel, desenvolvedor back-end Graduando em Ciências e Tecnologia (UFMA). Construo
-          APIs e sistemas que resolvem o problema antes de aparecer na tela.
+          Sou Gabriel, desenvolvedor back-end e graduando em Ciência e Tecnologia pela UFMA. Construo
+          APIs e sistemas que resolvem o problema antes mesmo que ele chegue à tela.
         </p>
       </div>
     </section>

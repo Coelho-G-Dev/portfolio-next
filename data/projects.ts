@@ -21,7 +21,7 @@ export const projects: Project[] = [
     type: "API de operações",
     year: "2024",
     description:
-      "Sistema back-end que integra dados públicos e Google Maps pra oferecer informações geolocalizadas sobre saúde, cultura e educação.",
+      "Sistema back-end que integra dados públicos e a Google Maps Platform para disponibilizar informações geolocalizadas sobre saúde, cultura e educação.",
     tags: ["Node.js", "Express", "MongoDB"],
     githubLink: "https://github.com/Coelho-G-Dev/Desafio-05-Back-End",
     shapeColors: ["lime", "blue"],
@@ -33,7 +33,7 @@ export const projects: Project[] = [
     type: "API de serviços públicos",
     year: "2024",
     description:
-      "Projeto full-stack pra centralizar o acesso a serviços públicos no Maranhão, integrando dados do IBGE e Google Maps Platform.",
+      "Projeto full-stack para centralizar o acesso a serviços públicos no Maranhão, integrando dados do IBGE e da Google Maps Platform.",
     tags: ["Node.js", "Mongoose", "JWT"],
     githubLink: "https://github.com/Coelho-G-Dev/Guia-Maranhao",
     shapeColors: ["lavender", "lime"],
@@ -57,7 +57,7 @@ export const projects: Project[] = [
     type: "Microsserviço de Identidade",
     year: "2026",
     description:
-      "Microsserviço corporativo de autenticação e RBAC com MFA/TOTP, mensageria RabbitMQ com DLQ, rate limiting em Redis e observabilidade completa.",
+      "Microsserviço corporativo de autenticação e RBAC com suporte a MFA/TOTP, mensageria RabbitMQ com DLQ, rate limiting em Redis e observabilidade completa.",
     tags: ["Node.js", "TypeScript", "RabbitMQ", "Redis", "Docker"],
     githubLink: "https://github.com/Coelho-G-Dev/auhthguard",
     shapeColors: ["lime", "orange"],

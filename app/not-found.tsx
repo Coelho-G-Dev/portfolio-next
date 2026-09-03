@@ -35,15 +35,15 @@ export default function NotFound() {
 
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mt-12 gap-8">
           <p className="max-w-sm text-cream/80 text-lg leading-relaxed">
-            Talvez seja um endpoint que eu nunca cheguei a construir. Ou um link quebrado — me avisa
-            se foi isso.
+            Talvez seja um endpoint que eu ainda não tenha construído ou um link quebrado — avise-me
+            se encontrar algum problema.
           </p>
 
           <Link
             href="/"
             className="inline-flex items-center gap-2 border border-lime text-lime rounded-full px-5 py-3 font-mono text-xs tracking-widest uppercase hover:bg-lime hover:text-navy transition-colors w-fit"
           >
-            <ArrowLeft size={14} /> Voltar pro início
+            <ArrowLeft size={14} /> Voltar ao início
           </Link>
         </div>
       </main>

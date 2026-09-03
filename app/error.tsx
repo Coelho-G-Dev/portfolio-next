@@ -36,8 +36,8 @@ export default function Error({
         </h1>
 
         <p className="max-w-sm text-cream/80 text-lg leading-relaxed mt-8">
-          Um erro inesperado aconteceu carregando essa página. Não foi você — tenta de novo, ou
-          volta pro início.
+          Ocorreu um erro inesperado ao carregar esta página. Não foi culpa sua — tente novamente
+          ou volte ao início.
         </p>
 
         <div className="flex flex-wrap gap-4 mt-10">
