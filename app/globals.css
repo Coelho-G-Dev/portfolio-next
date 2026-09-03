@@ -26,6 +26,21 @@ section[id] {
   scroll-margin-top: 5rem;
 }
 
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.reveal.is-visible .stack-pill {
+  animation: pop-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

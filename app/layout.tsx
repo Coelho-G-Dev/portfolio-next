@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 import ContrastChecker from "../components/ContrastChecker";
+import ScrollRestore from "@/components/ScrollRestore";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -76,6 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
         {children}
+        <ScrollRestore />
         <Analytics />
         <SpeedInsights />
         <ContrastChecker />

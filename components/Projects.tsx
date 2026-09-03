@@ -70,12 +70,15 @@ export default function Projects() {
 
               <div
                 aria-hidden="true"
-                className={`hidden md:block absolute -left-4 top-1/2 -translate-y-1/2 w-20 h-20 ${shapeClass[project.shapeColors[1]]} rotate-45`}
-              ></div>
-              <div
-                aria-hidden="true"
-                className={`hidden md:block absolute right-6 top-6 w-16 h-16 rounded-full ${shapeClass[project.shapeColors[0]]}`}
-              ></div>
+                className="hidden md:block absolute right-6 top-1/2 -translate-y-1/2 w-24 h-24 bg-navy rounded-md overflow-hidden transition-transform duration-500 ease-out group-hover:scale-110 group-hover:-rotate-3"
+              >
+                <div
+                  className={`absolute -left-4 top-1/2 -translate-y-1/2 w-20 h-20 ${shapeClass[project.shapeColors[1]]} rotate-45`}
+                />
+                <div
+                  className={`absolute right-6 top-6 w-16 h-16 rounded-full ${shapeClass[project.shapeColors[0]]}`}
+                />
+              </div>
 
               <span className="relative font-mono text-xs opacity-50">
                 {String(project.id).padStart(2, "0")}
