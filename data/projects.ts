@@ -59,7 +59,7 @@ export const projects: Project[] = [
     description:
       "Microsserviço corporativo de autenticação e RBAC com suporte a MFA/TOTP, mensageria RabbitMQ com DLQ, rate limiting em Redis e observabilidade completa.",
     tags: ["Node.js", "TypeScript", "RabbitMQ", "Redis", "Docker"],
-    githubLink: "https://github.com/Coelho-G-Dev/auhthguard",
+    githubLink: "https://github.com/Coelho-G-Dev/authguard",
     shapeColors: ["lime", "orange"],
   },
   {
