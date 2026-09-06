@@ -62,4 +62,16 @@ export const projects: Project[] = [
     githubLink: "https://github.com/Coelho-G-Dev/auhthguard",
     shapeColors: ["lime", "orange"],
   },
+  {
+    id: 5,
+    title: "RAG Serviços Públicos",
+    category: "ia",
+    type: "Arquitetura RAG & Microsserviços",
+    year: "2026",
+    description:
+      "Sistema de busca semântica e respostas fundamentadas em microsserviços desacoplados (FastAPI + Node.js/TS), com embeddings locais, PostgreSQL/pgvector (HNSW) e geração restrita via Google Gemini.",
+    tags: ["Python", "FastAPI", "pgvector", "Gemini AI", "Docker", "TypeScript"],
+    githubLink: "https://github.com/Coelho-G-Dev/rag-servicos-publicos",
+    shapeColors: ["lavender", "blue"],
+  },
 ];

@@ -67,6 +67,7 @@ Selecionei para o portfólio projetos que refletem meu foco em solidez no back-e
 
 | Projeto | Categoria | Stack Principal | Repositório |
 | :--- | :--- | :--- | :--- |
+| **RAG Serviços Públicos** | Arquitetura RAG & IA | Python, FastAPI, pgvector, Gemini AI, TypeScript, Docker | [GitHub](https://github.com/Coelho-G-Dev/rag-servicos-publicos) |
 | **AuthGuard** | Microsserviço de Identidade | TypeScript, Node.js, RabbitMQ, Redis, Docker | [GitHub](https://github.com/Coelho-G-Dev/auhthguard) |
 | **API Financeira Inteligente** | IA & Auditoria Financeira | Node.js, PostgreSQL, Google Gemini AI, Jest | [GitHub](https://github.com/Coelho-G-Dev/api-financeira-inteligente) |
 | **BuscaSUS** | Integração & Geolocalização | Node.js, Express, MongoDB, Google Maps Platform | [GitHub](https://github.com/Coelho-G-Dev/Desafio-05-Back-End) |
