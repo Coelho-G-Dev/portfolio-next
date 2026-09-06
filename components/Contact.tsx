@@ -36,7 +36,7 @@ export default function Contact() {
           <h2 className="font-display font-black text-[13vw] md:text-6xl leading-[0.95]">
             Tem uma
             <br />
-            <span className="font-serif italic font-normal text-cream">boa ideia?</span>
+            <span className="font-serif italic font-normal text-cream">boa ideia ?</span>
           </h2>
         </div>
 
