@@ -1,32 +1,23 @@
 "use client";
 import { useReveal } from "@/lib/useReveal";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 import SectionCut from "@/components/SectionCut";
 
-const steps = [
-  {
-    title: "Escuto o problema",
-    body: "Antes da implementação, vem a pergunta certa. Entendo o domínio, o negócio e o que precisa continuar funcionando.",
-  },
-  {
-    title: "Dou forma ao sistema",
-    body: "Transformo regras e fluxos complexos em contratos de API, dados bem modelados e serviços fáceis de evoluir.",
-  },
-  {
-    title: "Construo com cuidado",
-    body: "Código legível, testes automatizados (Jest/Supertest) e decisões documentadas que continuam sólidas depois do lançamento.",
-  },
-];
-
-const stack = {
-  "Back-end": ["Node.js", "Express", "MongoDB", "Mongoose", "JWT", "Jest", "PostgreSQL", "SQL"],
-  "Front-end": ["HTML", "CSS", "JavaScript", "React", "TypeScript", "Next.js"],
-};
+const backendTechs = ["Node.js", "Express", "MongoDB", "Mongoose", "JWT", "Jest", "PostgreSQL", "SQL"];
+const frontendTechs = ["HTML", "CSS", "JavaScript", "React", "TypeScript", "Next.js"];
 
 export default function Method() {
+  const { t } = useLanguage();
   const ref = useReveal<HTMLDivElement>();
+
+  const stack = [
+    { category: t.method.categories.backend, techs: backendTechs },
+    { category: t.method.categories.frontend, techs: frontendTechs },
+  ];
+
   return (
     <section id="metodo" className="relative min-h-screen bg-blue text-cream px-6 md:px-10 py-32 overflow-hidden">
-      <SectionCut label="segundo corte" color="lime" side="right" />
+      <SectionCut label={t.method.cutLabel} color="lime" side="right" />
       <div
         className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full border-[10px] border-lime"
         aria-hidden="true"
@@ -34,20 +25,19 @@ export default function Method() {
       <div ref={ref} className="reveal max-w-5xl mx-auto">
         <div className="grid md:grid-cols-[1fr_1.3fr] gap-16">
           <div>
-            <p className="font-mono text-xs tracking-widest uppercase mb-4">02 — Como eu trabalho</p>
+            <p className="font-mono text-xs tracking-widest uppercase mb-4">{t.method.sectionNumber}</p>
             <h2 className="font-display font-black text-[10vw] md:text-5xl leading-[0.95]">
-              A arquitetura é o
+              {t.method.titleLine1}
               <br />
-              <span className="font-serif italic font-normal text-lime">meio.</span>
+              <span className="font-serif italic font-normal text-lime">{t.method.titleHighlight}</span>
             </h2>
             <p className="text-cream/80 text-sm leading-relaxed mt-6 max-w-sm">
-              O trabalho é encontrar a forma mais honesta de um sistema existir. Às vezes é um produto
-              inteiro. Às vezes é um endpoint no lugar certo.
+              {t.method.subtitle}
             </p>
           </div>
 
           <div className="divide-y divide-cream/20 border-t border-cream/20">
-            {steps.map((s, i) => (
+            {t.method.steps.map((s, i) => (
               <div
                 key={s.title}
                 className="group relative grid grid-cols-[auto_1fr] gap-6 py-6 items-start px-4 -mx-4 transition-colors duration-300 hover:bg-cream/[0.04] overflow-hidden"
@@ -71,9 +61,9 @@ export default function Method() {
         </div>
 
         <div className="mt-16 pt-12 border-t border-cream/20">
-          <p className="font-mono text-xs tracking-widest uppercase mb-8">Stack</p>
+          <p className="font-mono text-xs tracking-widest uppercase mb-8">{t.method.stackTitle}</p>
           <div className="grid md:grid-cols-2 gap-10">
-            {Object.entries(stack).map(([category, techs]) => (
+            {stack.map(({ category, techs }) => (
               <div key={category}>
                 <h3 className="font-display font-bold text-lg mb-4">{category}</h3>
                 <div className="flex flex-wrap gap-2">

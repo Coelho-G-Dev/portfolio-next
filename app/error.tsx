@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import Header from "@/components/Header";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function Error({
   error,
@@ -10,6 +11,8 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const { t } = useLanguage();
+
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -26,18 +29,17 @@ export default function Error({
       >
         <div className="flex items-center gap-2 font-mono text-sm tracking-widest uppercase text-cream/70 mb-8">
           <span className="w-1.5 h-1.5 rounded-full bg-orange" />
-          Corte mal feito
+          {t.error.cutTag}
         </div>
 
         <h1 className="font-display font-black leading-[0.95] text-[15vw] md:text-[7vw]">
-          Algo quebrou
+          {t.error.titleLine1}
           <br />
-          <span className="font-serif italic font-normal text-lime">nos bastidores.</span>
+          <span className="font-serif italic font-normal text-lime">{t.error.titleHighlight}</span>
         </h1>
 
         <p className="max-w-sm text-cream/80 text-lg leading-relaxed mt-8">
-          Ocorreu um erro inesperado ao carregar esta página. Não foi culpa sua — tente novamente
-          ou volte ao início.
+          {t.error.description}
         </p>
 
         <div className="flex flex-wrap gap-4 mt-10">
@@ -45,13 +47,13 @@ export default function Error({
             onClick={reset}
             className="inline-flex items-center gap-2 w-fit border border-lime text-lime rounded-full px-5 py-3 font-mono text-xs tracking-widest uppercase hover:bg-lime hover:text-navy transition-colors"
           >
-            <RotateCcw size={14} /> Tentar de novo
+            <RotateCcw size={14} /> {t.error.retry}
           </button>
           <a
             href="/"
             className="inline-flex items-center gap-2 w-fit border border-cream/40 text-cream rounded-full px-5 py-3 font-mono text-xs tracking-widest uppercase hover:bg-cream hover:text-navy transition-colors"
           >
-            <ArrowLeft size={14} /> Voltar ao início
+            <ArrowLeft size={14} /> {t.error.backHome}
           </a>
         </div>
       </main>

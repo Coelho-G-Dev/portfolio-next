@@ -6,6 +6,8 @@ import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 import ContrastChecker from "../components/ContrastChecker";
 import ScrollRestore from "@/components/ScrollRestore";
+import { LanguageProvider } from "@/lib/i18n/LanguageContext";
+import SkipLink from "@/components/SkipLink";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -69,22 +71,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR" className={`${archivo.variable} ${fraunces.variable} ${jetbrainsMono.variable}`}>
       <body className="font-display bg-navy text-cream">
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:z-50 focus:bg-navy focus:text-cream focus:p-2 focus:m-2 focus:border focus:border-cream focus:rounded">
-          Pular para o conteúdo principal
-        </a>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
-        />
-        {children}
-        <ScrollRestore />
-        {process.env.NODE_ENV === "production" && (
-          <>
-            <Analytics />
-            <SpeedInsights />
-          </>
-        )}
-        <ContrastChecker />
+        <LanguageProvider>
+          <SkipLink />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+          />
+          {children}
+          <ScrollRestore />
+          {process.env.NODE_ENV === "production" && (
+            <>
+              <Analytics />
+              <SpeedInsights />
+            </>
+          )}
+          <ContrastChecker />
+        </LanguageProvider>
       </body>
     </html>
   );

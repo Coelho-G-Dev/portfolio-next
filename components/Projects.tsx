@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import { projects, type TileColor } from "@/data/projects";
 import { useReveal } from "@/lib/useReveal";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 import SectionCut from "@/components/SectionCut";
 
 const shapeClass: Record<TileColor, string> = {
@@ -12,26 +13,27 @@ const shapeClass: Record<TileColor, string> = {
   lavender: "bg-lavender",
 };
 
-const filters = [
-  { key: "all", label: "TUDO" },
-  { key: "backend", label: "BACKEND" },
-  { key: "ia", label: "IA" },
-] as const;
-
 export default function Projects() {
-  const [filter, setFilter] = useState<(typeof filters)[number]["key"]>("all");
+  const { language, t } = useLanguage();
+  const [filter, setFilter] = useState<"all" | "backend" | "ia">("all");
   const ref = useReveal<HTMLDivElement>();
   const visible = filter === "all" ? projects : projects.filter((p) => p.category === filter);
 
+  const filters = [
+    { key: "all", label: t.projects.filters.all },
+    { key: "backend", label: t.projects.filters.backend },
+    { key: "ia", label: t.projects.filters.ia },
+  ] as const;
+
   return (
     <section id="trabalho" className="relative min-h-screen bg-orange text-navy px-6 md:px-10 py-32">
-      <SectionCut label="primeiro corte" color="cream" side="right" />
+      <SectionCut label={t.projects.cutLabel} color="cream" side="right" />
       <div ref={ref} className="reveal max-w-5xl mx-auto">
-        <p className="font-mono text-xs tracking-widest uppercase mb-4">01 — Sistemas recentes</p>
+        <p className="font-mono text-xs tracking-widest uppercase mb-4">{t.projects.sectionNumber}</p>
         <h2 className="font-display font-black text-[10vw] md:text-5xl leading-[0.95] mb-4">
-          Sistemas que sobrevivem
+          {t.projects.titleLine1}
           <br />
-          <span className="font-serif italic font-normal">à primeira versão.</span>
+          <span className="font-serif italic font-normal">{t.projects.titleHighlight}</span>
         </h2>
 
         <div className="flex gap-6 font-mono text-xs tracking-widest uppercase mt-10 mb-2">
@@ -59,8 +61,9 @@ export default function Projects() {
                 href={project.githubLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`Ver ${project.title} no GitHub`}
-                className="absolute inset-0"
+                tabIndex={-1}
+                aria-hidden="true"
+                className="absolute inset-0 z-0"
               ></a>
 
               <span
@@ -84,35 +87,46 @@ export default function Projects() {
                 {String(project.id).padStart(2, "0")}
               </span>
 
-              <div className="relative">
+              <div className="relative z-10">
                 <h3 className="relative inline-block font-display font-bold text-3xl md:text-4xl transition-colors duration-300 group-hover:text-lime">
-                  {project.title}
-                  <span className="absolute left-0 -bottom-1 h-[3px] w-full bg-current origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out" />
+                  <a
+                    href={project.githubLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t.projects.viewGithubAria(project.title)}
+                    className="hover:underline focus:outline-none focus-visible:underline"
+                  >
+                    {project.title}
+                  </a>
+                  <span
+                    aria-hidden="true"
+                    className="absolute left-0 -bottom-1 h-[3px] w-full bg-current origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out pointer-events-none"
+                  />
                 </h3>
                 <p className="font-mono text-sm tracking-widest uppercase opacity-60 mt-1">
-                  {project.type} · {project.year}
+                  {project.type[language]} · {project.year}
                 </p>
                 <div className="flex flex-wrap gap-2 mt-3">
-                  {project.tags.map((t) => (
+                  {project.tags.map((tTag) => (
                     <span
-                      key={t}
+                      key={tTag}
                       className="font-mono text-sm tracking-wide uppercase border border-navy/30 rounded-full px-3 py-1.5"
                     >
-                      {t}
+                      {tTag}
                     </span>
                   ))}
                 </div>
               </div>
 
-              <p className="relative text-sm leading-relaxed max-w-xs">{project.description}</p>
+              <p className="relative text-sm leading-relaxed max-w-xs">{project.description[language]}</p>
 
               {project.demoLink && (
                 <a
                   href={project.demoLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`Ver demonstração do projeto ${project.title}`}
-                  className="relative md:absolute md:bottom-2 md:right-2 justify-self-end w-10 h-10 rounded-full border border-navy/40 flex items-center justify-center transition-all duration-300 hover:bg-navy hover:text-orange"
+                  aria-label={t.projects.viewDemoAria(project.title)}
+                  className="relative md:absolute md:bottom-2 md:right-2 justify-self-end w-10 h-10 rounded-full border border-navy/40 flex items-center justify-center transition-all duration-300 hover:bg-navy hover:text-orange z-20"
                 >
                   <ArrowUpRight size={16} className="rotate-45" />
                 </a>
@@ -127,7 +141,7 @@ export default function Projects() {
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 font-mono text-xs tracking-widest uppercase mt-10 border-b border-navy pb-1 hover:opacity-70 transition-opacity"
         >
-          Ver todos os projetos <ArrowUpRight size={14} />
+          {t.projects.viewAll} <ArrowUpRight size={14} />
         </a>
       </div>
     </section>

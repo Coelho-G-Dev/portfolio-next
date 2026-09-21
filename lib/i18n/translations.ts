@@ -1,0 +1,218 @@
+export type Locale = "pt" | "en";
+
+export const translations = {
+  pt: {
+    nav: {
+      work: "TRABALHO",
+      method: "MÉTODO",
+      about: "SOBRE",
+      contact: "CONTATO",
+      contactCta: "Vamos conversar",
+      ariaMenu: "Menu principal",
+      openMenu: "Abrir menu",
+      closeMenu: "Fechar menu",
+      langSwitchAria: "Alterar idioma para Inglês",
+      skipLink: "Pular para o conteúdo principal",
+    },
+    hero: {
+      badge: "corte limpo",
+      location: "São Luís · Brasil — Backend, APIs e Sistemas",
+      titleLine1: "Back-end com",
+      titleHighlight: "presença.",
+      counter: "01 / 05",
+      bio: "Sou Gabriel, desenvolvedor back-end e graduando em Ciência e Tecnologia pela UFMA. Construo APIs e sistemas que resolvem o problema antes mesmo que ele chegue à tela.",
+    },
+    projects: {
+      cutLabel: "primeiro corte",
+      sectionNumber: "01 — Sistemas recentes",
+      titleLine1: "Sistemas que sobrevivem",
+      titleHighlight: "à primeira versão.",
+      filters: {
+        all: "TUDO",
+        backend: "BACKEND",
+        ia: "IA",
+      },
+      viewGithubAria: (title: string) => `Ver ${title} no GitHub`,
+      viewDemoAria: (title: string) => `Ver demonstração do projeto ${title}`,
+      viewAll: "Ver todos os projetos",
+    },
+    method: {
+      cutLabel: "segundo corte",
+      sectionNumber: "02 — Como eu trabalho",
+      titleLine1: "A arquitetura é o",
+      titleHighlight: "meio.",
+      subtitle:
+        "O trabalho é encontrar a forma mais honesta de um sistema existir. Às vezes é um produto inteiro. Às vezes é um endpoint no lugar certo.",
+      steps: [
+        {
+          title: "Escuto o problema",
+          body: "Antes da implementação, vem a pergunta certa. Entendo o domínio, o negócio e o que precisa continuar funcionando.",
+        },
+        {
+          title: "Dou forma ao sistema",
+          body: "Transformo regras e fluxos complexos em contratos de API, dados bem modelados e serviços fáceis de evoluir.",
+        },
+        {
+          title: "Construo com cuidado",
+          body: "Código legível, testes automatizados (Jest/Supertest) e decisões documentadas que continuam sólidas depois do lançamento.",
+        },
+      ],
+      stackTitle: "Stack",
+      categories: {
+        backend: "Back-end",
+        frontend: "Front-end",
+      },
+    },
+    about: {
+      cutLabel: "terceiro corte",
+      badgeTag: "Arquivo pessoal",
+      badgeHighlight: "não é só código.",
+      sectionNumber: "03 — Sobre mim",
+      highlight:
+        "Minha trajetória começou na logística antes da programação — valorizo sistemas estruturados, que mantêm a ordem nos bastidores mesmo quando a superfície parece simples.",
+      workshopTitle: "Na bancada",
+      workshopText:
+        "Node.js, TypeScript, PostgreSQL, MongoDB, Java/Spring Boot, Docker.",
+      offScreenTitle: "Fora da tela",
+      offScreenText:
+        "Pratico powerlifting e xadrez, disciplinas em que exercito a evolução contínua e a capacidade de pensar várias jogadas à frente.",
+    },
+    contact: {
+      cutLabel: "quarto corte",
+      sectionNumber: "04 — Próximo capítulo",
+      titleLine1: "Tem uma",
+      titleHighlight: "boa ideia ?",
+      text: "Conte-me o que você planeja construir. Respondo com atenção a cada mensagem, mesmo quando a resposta for um “ainda não”.",
+      emailAria: "Enviar e-mail para Gabriel Coelho",
+      copyEmail: "Copiar e-mail",
+      copiedEmail: "E-mail copiado",
+      failedCopy: "Não foi possível copiar — selecione o texto manualmente",
+      location: "São Luís, Brasil · UTC-3",
+    },
+    error: {
+      cutTag: "Corte mal feito",
+      titleLine1: "Algo quebrou",
+      titleHighlight: "nos bastidores.",
+      description:
+        "Ocorreu um erro inesperado ao carregar esta página. Não foi culpa sua — tente novamente ou volte ao início.",
+      retry: "Tentar de novo",
+      backHome: "Voltar ao início",
+    },
+    notFound: {
+      cutTag: "Corte não encontrado",
+      title: "404",
+      highlight: "essa rota não existe.",
+      description:
+        "Talvez seja um endpoint que eu ainda não tenha construído ou um link quebrado — avise-me se encontrar algum problema.",
+      backHome: "Voltar ao início",
+    },
+  },
+  en: {
+    nav: {
+      work: "WORK",
+      method: "METHOD",
+      about: "ABOUT",
+      contact: "CONTACT",
+      contactCta: "Let's talk",
+      ariaMenu: "Main menu",
+      openMenu: "Open menu",
+      closeMenu: "Close menu",
+      langSwitchAria: "Switch language to Portuguese",
+      skipLink: "Skip to main content",
+    },
+    hero: {
+      badge: "clean cut",
+      location: "São Luís · Brazil — Backend, APIs & Systems",
+      titleLine1: "Back-end with",
+      titleHighlight: "presence.",
+      counter: "01 / 05",
+      bio: "I'm Gabriel, a back-end developer and Science & Technology undergrad at UFMA. I build APIs and systems that solve problems before they even reach the screen.",
+    },
+    projects: {
+      cutLabel: "first cut",
+      sectionNumber: "01 — Recent systems",
+      titleLine1: "Systems that outlive",
+      titleHighlight: "the first version.",
+      filters: {
+        all: "ALL",
+        backend: "BACKEND",
+        ia: "AI",
+      },
+      viewGithubAria: (title: string) => `View ${title} on GitHub`,
+      viewDemoAria: (title: string) => `View demo for ${title}`,
+      viewAll: "View all projects",
+    },
+    method: {
+      cutLabel: "second cut",
+      sectionNumber: "02 — How I work",
+      titleLine1: "Architecture is the",
+      titleHighlight: "medium.",
+      subtitle:
+        "The work is finding the most honest way for a system to exist. Sometimes that's a whole product. Sometimes it's an endpoint in the right place.",
+      steps: [
+        {
+          title: "I listen to the problem",
+          body: "Before implementation comes the right question. I understand the domain, the business logic, and what needs to stay unbroken.",
+        },
+        {
+          title: "I shape the system",
+          body: "I transform complex rules and flows into clean API contracts, well-modeled data schemas, and services built to evolve.",
+        },
+        {
+          title: "I build with care",
+          body: "Readable code, automated tests (Jest/Supertest), and documented architectural decisions that stay rock-solid post-launch.",
+        },
+      ],
+      stackTitle: "Stack",
+      categories: {
+        backend: "Back-end",
+        frontend: "Front-end",
+      },
+    },
+    about: {
+      cutLabel: "third cut",
+      badgeTag: "Personal archive",
+      badgeHighlight: "more than just code.",
+      sectionNumber: "03 — About me",
+      highlight:
+        "My journey began in logistics before programming — I value structured systems that maintain order behind the scenes even when the surface appears effortless.",
+      workshopTitle: "In the workshop",
+      workshopText:
+        "Node.js, TypeScript, PostgreSQL, MongoDB, Java/Spring Boot, Docker.",
+      offScreenTitle: "Off screen",
+      offScreenText:
+        "I practice powerlifting and chess — disciplines where I cultivate continuous discipline and the foresight to think several moves ahead.",
+    },
+    contact: {
+      cutLabel: "fourth cut",
+      sectionNumber: "04 — Next chapter",
+      titleLine1: "Got a",
+      titleHighlight: "great idea?",
+      text: "Tell me what you are planning to build. I read and thoughtfully reply to every message, even when the answer happens to be “not yet”.",
+      emailAria: "Send email to Gabriel Coelho",
+      copyEmail: "Copy email",
+      copiedEmail: "Email copied",
+      failedCopy: "Could not copy — please select text manually",
+      location: "São Luís, Brazil · UTC-3",
+    },
+    error: {
+      cutTag: "Bad cut",
+      titleLine1: "Something broke",
+      titleHighlight: "behind the scenes.",
+      description:
+        "An unexpected error occurred while loading this page. It wasn't your fault — try again or return to home.",
+      retry: "Try again",
+      backHome: "Back to home",
+    },
+    notFound: {
+      cutTag: "Cut not found",
+      title: "404",
+      highlight: "this route does not exist.",
+      description:
+        "Perhaps an endpoint I haven't built yet or a broken link — please let me know if you run into any issues.",
+      backHome: "Back to home",
+    },
+  },
+} as const;
+
+export type Translations = typeof translations.pt;

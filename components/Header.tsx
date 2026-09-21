@@ -1,20 +1,23 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
-
-const links = [
-  { href: "/#trabalho", label: "TRABALHO" },
-  { href: "/#metodo", label: "MÉTODO" },
-  { href: "/#sobre", label: "SOBRE" },
-];
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function Header() {
+  const { language, setLanguage, t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("");
 
   const hamburgerRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const links = [
+    { href: "/#trabalho", label: t.nav.work },
+    { href: "/#metodo", label: t.nav.method },
+    { href: "/#sobre", label: t.nav.about },
+    { href: "/#contato", label: t.nav.contact },
+  ];
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -24,22 +27,22 @@ export default function Header() {
   }, [open]);
 
   useEffect(() => {
-    const trackedIds = ["hero", ...links.map((l) => l.href.slice(1)), "contato"];
+    const trackedIds = ["hero", "trabalho", "metodo", "sobre", "contato"];
     const sections = trackedIds.map((id) => document.getElementById(id)).filter(Boolean);
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           const id = entry.target.id;
-          const isNavLink = links.some((l) => l.href === `#${id}`);
-          setActive(isNavLink ? `#${id}` : "");
+          const isNavLink = links.some((l) => l.href.includes(id));
+          setActive(isNavLink ? `/#${id}` : "");
         });
       },
       { rootMargin: "-45% 0px -50% 0px" }
     );
     sections.forEach((s) => s && observer.observe(s));
     return () => observer.disconnect();
-  }, []);
+  }, [links]);
 
   const getFocusableElements = (container: HTMLElement | null): HTMLElement[] => {
     if (!container) return [];
@@ -117,7 +120,7 @@ export default function Header() {
           <span className="font-mono text-xs tracking-widest uppercase">Gabriel Coelho</span>
         </a>
 
-        <nav className="hidden md:flex items-center gap-8 font-mono text-xs tracking-widest uppercase" aria-label="Menu principal">
+        <nav className="hidden md:flex items-center gap-8 font-mono text-xs tracking-widest uppercase" aria-label={t.nav.ariaMenu}>
           {links.map((l) => (
             <a
               key={l.href}
@@ -132,21 +135,56 @@ export default function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
+          {/* Seletor de Idioma Desktop */}
+          <div
+            className="flex items-center bg-cream/[0.07] border border-cream/20 rounded-full p-0.5 font-mono text-xs tracking-wider"
+            role="group"
+            aria-label="Seleção de idioma / Language selector"
+          >
+            <button
+              type="button"
+              onClick={() => setLanguage("pt")}
+              className={`px-2.5 py-1 rounded-full transition-all duration-200 text-xs ${
+                language === "pt"
+                  ? "bg-lime text-navy font-bold shadow-sm"
+                  : "text-cream/70 hover:text-cream"
+              }`}
+              aria-pressed={language === "pt"}
+              aria-label="Português"
+            >
+              PT
+            </button>
+            <span className="text-cream/30 text-[10px] px-0.5" aria-hidden="true">|</span>
+            <button
+              type="button"
+              onClick={() => setLanguage("en")}
+              className={`px-2.5 py-1 rounded-full transition-all duration-200 text-xs ${
+                language === "en"
+                  ? "bg-lime text-navy font-bold shadow-sm"
+                  : "text-cream/70 hover:text-cream"
+              }`}
+              aria-pressed={language === "en"}
+              aria-label="English"
+            >
+              EN
+            </button>
+          </div>
+
           <a
             href="#contato"
             className="hidden sm:flex items-center gap-1.5 border border-lime text-lime rounded-full px-4 py-2 font-mono text-xs tracking-widest uppercase hover:bg-lime hover:text-navy transition-colors"
           >
-            Vamos conversar <ArrowUpRight size={14} />
+            {t.nav.contactCta} <ArrowUpRight size={14} />
           </a>
 
           <button
             ref={hamburgerRef}
             onClick={() => setOpen(true)}
-            aria-label="Abrir menu"
+            aria-label={t.nav.openMenu}
             aria-expanded={open}
             aria-controls="mobile-menu"
-            className="md:hidden"
+            className="md:hidden p-1"
           >
             <Menu size={22} />
           </button>
@@ -156,18 +194,53 @@ export default function Header() {
       <div
         ref={menuRef}
         id="mobile-menu"
-        className={`fixed inset-0 z-[60] bg-navy text-cream flex flex-col items-center justify-center gap-10 transition-transform duration-300 md:hidden ${
+        className={`fixed inset-0 z-[60] bg-navy text-cream flex flex-col items-center justify-center gap-8 transition-transform duration-300 md:hidden ${
           open ? "translate-x-0" : "translate-x-full pointer-events-none"
         }`}
       >
         <button
           ref={closeButtonRef}
           onClick={() => setOpen(false)}
-          aria-label="Fechar menu"
+          aria-label={t.nav.closeMenu}
           className="absolute top-6 right-6"
         >
           <X size={24} />
         </button>
+
+        {/* Seletor de Idioma Mobile */}
+        <div
+          className="flex items-center bg-cream/10 border border-cream/20 rounded-full p-1 font-mono text-sm tracking-widest"
+          role="group"
+          aria-label="Seleção de idioma / Language selector"
+        >
+          <button
+            type="button"
+            onClick={() => setLanguage("pt")}
+            className={`px-4 py-1.5 rounded-full transition-all duration-200 ${
+              language === "pt"
+                ? "bg-lime text-navy font-bold"
+                : "text-cream/70 hover:text-cream"
+            }`}
+            aria-pressed={language === "pt"}
+            aria-label="Português"
+          >
+            PT
+          </button>
+          <span className="text-cream/30 text-xs px-1" aria-hidden="true">|</span>
+          <button
+            type="button"
+            onClick={() => setLanguage("en")}
+            className={`px-4 py-1.5 rounded-full transition-all duration-200 ${
+              language === "en"
+                ? "bg-lime text-navy font-bold"
+                : "text-cream/70 hover:text-cream"
+            }`}
+            aria-pressed={language === "en"}
+            aria-label="English"
+          >
+            EN
+          </button>
+        </div>
 
         <nav className="flex flex-col items-center gap-8 font-mono text-lg tracking-widest uppercase">
           {links.map((l) => (
@@ -180,7 +253,7 @@ export default function Header() {
             onClick={() => setOpen(false)}
             className="flex items-center gap-1.5 border border-lime text-lime rounded-full px-5 py-2.5 text-sm mt-4"
           >
-            Vamos conversar <ArrowUpRight size={14} />
+            {t.nav.contactCta} <ArrowUpRight size={14} />
           </a>
         </nav>
       </div>

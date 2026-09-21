@@ -1,13 +1,16 @@
 "use client";
 import { Github, Linkedin } from "lucide-react";
 import { useReveal } from "@/lib/useReveal";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 import SectionCut from "@/components/SectionCut";
 
 export default function About() {
+  const { t } = useLanguage();
   const ref = useReveal<HTMLDivElement>();
+
   return (
     <section id="sobre" className="relative min-h-screen bg-lime text-navy px-6 md:px-10 py-32 overflow-hidden">
-      <SectionCut label="terceiro corte" color="lavender" side="right" />
+      <SectionCut label={t.about.cutLabel} color="lavender" side="right" />
       <div className="absolute -top-16 -right-16 w-40 h-40 bg-lavender rotate-45" aria-hidden />
       <div ref={ref} className="reveal max-w-5xl mx-auto grid md:grid-cols-[0.9fr_1.1fr] gap-16 items-start">
         <div className="relative aspect-square bg-navy rounded-md overflow-hidden flex flex-col justify-end p-6">
@@ -16,30 +19,28 @@ export default function About() {
             <div className="absolute w-[140%] h-10 bg-blue/80 -rotate-45 top-1/3 -left-10" />
           </div>
           <span className="relative font-mono text-[10px] tracking-widest uppercase text-cream/70">
-            Arquivo pessoal
+            {t.about.badgeTag}
           </span>
-          <span className="relative font-serif italic text-2xl text-cream">não é só código.</span>
+          <span className="relative font-serif italic text-2xl text-cream">{t.about.badgeHighlight}</span>
         </div>
 
         <div>
-          <p className="font-mono text-xs tracking-widest uppercase mb-4">03 — Sobre mim</p>
+          <p className="font-mono text-xs tracking-widest uppercase mb-4">{t.about.sectionNumber}</p>
           <h2 className="font-display font-black text-[8vw] md:text-4xl leading-tight mb-8">
-            Minha trajetória começou na logística antes da programação — valorizo sistemas estruturados,
-            que mantêm a ordem nos bastidores mesmo quando a superfície parece simples.
+            {t.about.highlight}
           </h2>
 
           <div className="grid grid-cols-2 gap-8 pt-6 border-t border-navy/20">
             <div>
-              <p className="font-mono text-sm tracking-widest uppercase mb-2">Na bancada</p>
+              <p className="font-mono text-sm tracking-widest uppercase mb-2">{t.about.workshopTitle}</p>
               <p className="text-base leading-relaxed">
-                Node.js, TypeScript, PostgreSQL, MongoDB, Java/Spring Boot, Docker.
+                {t.about.workshopText}
               </p>
             </div>
             <div>
-              <p className="font-mono text-sm tracking-widest uppercase mb-2">Fora da tela</p>
+              <p className="font-mono text-sm tracking-widest uppercase mb-2">{t.about.offScreenTitle}</p>
               <p className="text-base leading-relaxed">
-                Pratico powerlifting e xadrez, disciplinas em que exercito a evolução contínua
-                e a capacidade de pensar várias jogadas à frente.
+                {t.about.offScreenText}
               </p>
             </div>
           </div>

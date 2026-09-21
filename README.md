@@ -47,9 +47,13 @@ Este repositório contém o código-fonte da aplicação web do meu portfólio p
 No desenvolvimento deste projeto, priorizei padrões modernos de engenharia web e experiência do usuário:
 
 - **Arquitetura Next.js 15 (App Router):** Renderização otimizada combinando Server Components e divisão inteligente de bundles.
+- **Internacionalização Bilíngue Completa (i18n):**
+  - Suporte nativo e instantâneo a **Português (PT-BR)** e **Inglês (EN)** com detecção de idioma e persistência via `localStorage`.
+  - Seletor de idioma editorial no Header (desktop e mobile) integrado à estética *Color Cuts*.
+  - Sincronização em tempo de execução de `<html lang="...">` e atributos acessíveis de navegação.
 - **Tipografia Editorial Harmoniosa:** Curadoria entre *Archivo* (sans-serif display de impacto), *Fraunces* (serif itálica elegante) e *JetBrains Mono* (monoespaçada técnica).
 - **Acessibilidade Prioritária (A11y):**
-  - Implementei skip link (`Pular para o conteúdo principal`) para navegação facilitada por teclado.
+  - Implementei skip link (`Pular para o conteúdo principal` / `Skip to main content`) dinâmico para navegação facilitada por teclado.
   - Desenvolvi um verificador de contraste em runtime com logging de conformidade WCAG AA (`ContrastChecker`).
   - Suporte completo a `prefers-reduced-motion` no hook customizado de animação de scroll (`useReveal`).
   - Estrutura semântica rigorosa com atributos ARIA e marcações acessíveis.
@@ -68,7 +72,7 @@ Selecionei para o portfólio projetos que refletem meu foco em solidez no back-e
 | Projeto | Categoria | Stack Principal | Repositório |
 | :--- | :--- | :--- | :--- |
 | **RAG Serviços Públicos** | Arquitetura RAG & IA | Python, FastAPI, pgvector, Gemini AI, TypeScript, Docker | [GitHub](https://github.com/Coelho-G-Dev/rag-servicos-publicos) |
-| **AuthGuard** | Microsserviço de Identidade | TypeScript, Node.js, RabbitMQ, Redis, Docker | [GitHub](https://github.com/Coelho-G-Dev/auhthguard) |
+| **AuthGuard** | Microsserviço de Identidade | TypeScript, Node.js, RabbitMQ, Redis, Docker | [GitHub](https://github.com/Coelho-G-Dev/authguard) |
 | **API Financeira Inteligente** | IA & Auditoria Financeira | Node.js, PostgreSQL, Google Gemini AI, Jest | [GitHub](https://github.com/Coelho-G-Dev/api-financeira-inteligente) |
 | **BuscaSUS** | Integração & Geolocalização | Node.js, Express, MongoDB, Google Maps Platform | [GitHub](https://github.com/Coelho-G-Dev/Desafio-05-Back-End) |
 | **Guia Maranhão** | Serviços Públicos & Dados Abertos | Node.js, Mongoose, JWT, APIs IBGE & Google Maps | [GitHub](https://github.com/Coelho-G-Dev/Guia-Maranhao) |
