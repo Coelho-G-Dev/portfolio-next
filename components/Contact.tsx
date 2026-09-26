@@ -1,11 +1,13 @@
 "use client";
 import { useState } from "react";
-import { Mail, Copy, Check, MapPin } from "lucide-react";
+import { Mail, Copy, Check, MapPin, Github, Linkedin } from "lucide-react";
 import { useReveal } from "@/lib/useReveal";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import SectionCut from "@/components/SectionCut";
 
 const EMAIL = "gabrielbiellosousa@gmail.com";
+const GITHUB_URL = "https://github.com/Coelho-G-Dev";
+const LINKEDIN_URL = "https://www.linkedin.com/in/gabriel-coelho-7184a32a3/";
 
 export default function Contact() {
   const { t } = useLanguage();
@@ -38,7 +40,7 @@ export default function Contact() {
           <h2 className="font-display font-black text-[13vw] md:text-6xl leading-[0.95]">
             {t.contact.titleLine1}
             <br />
-            <span className="font-serif italic font-normal text-cream">{t.contact.titleHighlight}</span>
+            <span className="font-serif italic font-normal">{t.contact.titleHighlight}</span>
           </h2>
         </div>
 
@@ -47,7 +49,7 @@ export default function Contact() {
             {t.contact.text}
           </p>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <a
               href={`mailto:${EMAIL}`}
               aria-label={t.contact.emailAria}
@@ -66,6 +68,27 @@ export default function Contact() {
               </span>
               {copyState === "copied" ? <Check size={16} /> : <Copy size={16} />}
             </button>
+          </div>
+
+          <div className="flex items-center gap-3 mt-4">
+            <a
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t.contact.githubAria}
+              className="inline-flex items-center gap-2 border border-navy/40 rounded-full px-4 py-2 font-mono text-xs tracking-widest uppercase hover:bg-navy hover:text-lavender transition-all duration-200"
+            >
+              <Github size={14} /> GitHub
+            </a>
+            <a
+              href={LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t.contact.linkedinAria}
+              className="inline-flex items-center gap-2 border border-navy/40 rounded-full px-4 py-2 font-mono text-xs tracking-widest uppercase hover:bg-navy hover:text-lavender transition-all duration-200"
+            >
+              <Linkedin size={14} /> LinkedIn
+            </a>
           </div>
 
           <p className="flex items-center gap-1.5 font-mono text-sm tracking-widest uppercase opacity-70 mt-8">

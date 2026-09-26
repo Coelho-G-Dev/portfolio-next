@@ -36,15 +36,55 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || typeof document === "undefined") return;
+
     try {
       localStorage.setItem(STORAGE_KEY, language);
     } catch {
       // Ignorar erros de gravação em localStorage
     }
-    if (typeof document !== "undefined") {
-      document.documentElement.lang = language === "pt" ? "pt-BR" : "en";
+
+    const expectedTitle = translations[language].pageTitle;
+    document.documentElement.lang = language === "pt" ? "pt-BR" : "en";
+
+    const syncTitle = () => {
+      if (document.title !== expectedTitle) {
+        document.title = expectedTitle;
+      }
+    };
+
+    syncTitle();
+
+    // Reafirma após a reconciliação assíncrona de metadados do Next.js
+    const timer1 = setTimeout(syncTitle, 50);
+    const timer2 = setTimeout(syncTitle, 200);
+    const timer3 = setTimeout(syncTitle, 600);
+
+    let observer: MutationObserver | null = null;
+    try {
+      const headEl = document.head;
+      if (headEl && typeof MutationObserver !== "undefined") {
+        observer = new MutationObserver(() => {
+          if (document.title !== expectedTitle) {
+            document.title = expectedTitle;
+          }
+        });
+        observer.observe(headEl, {
+          subtree: true,
+          characterData: true,
+          childList: true,
+        });
+      }
+    } catch {
+      // Fallback seguro
     }
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      observer?.disconnect();
+    };
   }, [language, mounted]);
 
   const setLanguage = (lang: Locale) => {

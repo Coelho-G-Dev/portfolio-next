@@ -13,15 +13,39 @@ export default function About() {
       <SectionCut label={t.about.cutLabel} color="lavender" side="right" />
       <div className="absolute -top-16 -right-16 w-40 h-40 bg-lavender rotate-45" aria-hidden />
       <div ref={ref} className="reveal max-w-5xl mx-auto grid md:grid-cols-[0.9fr_1.1fr] gap-16 items-start">
-        <div className="relative aspect-square bg-navy rounded-md overflow-hidden flex flex-col justify-end p-6">
-          <div className="absolute inset-0">
-            <div className="absolute w-[140%] h-10 bg-orange/80 rotate-45 top-1/3 -left-10" />
-            <div className="absolute w-[140%] h-10 bg-blue/80 -rotate-45 top-1/3 -left-10" />
+        <div className="relative aspect-square bg-navy rounded-md overflow-hidden flex flex-col justify-between p-6 md:p-8">
+          <div className="absolute inset-0" aria-hidden="true">
+            <div className="absolute w-[140%] h-12 bg-orange/80 rotate-45 top-1/3 -left-10" />
+            <div className="absolute w-[140%] h-12 bg-blue/80 -rotate-45 top-1/3 -left-10" />
+            <div
+              className="absolute inset-0 opacity-20"
+              style={{
+                backgroundImage: "radial-gradient(circle, rgba(242,234,220,0.2) 1px, transparent 1px)",
+                backgroundSize: "20px 20px",
+              }}
+            />
           </div>
-          <span className="relative font-mono text-[10px] tracking-widest uppercase text-cream/70">
-            {t.about.badgeTag}
-          </span>
-          <span className="relative font-serif italic text-2xl text-cream">{t.about.badgeHighlight}</span>
+
+          <div className="relative z-10 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-lime animate-pulse" aria-hidden="true" />
+              <span className="font-mono text-[10px] tracking-widest uppercase text-cream/90">
+                UFMA · C&T
+              </span>
+            </div>
+            <span className="font-mono text-[10px] tracking-widest uppercase px-2.5 py-1 rounded border border-cream/20 text-cream/80 bg-navy/70 backdrop-blur-sm">
+              BACKEND & IA
+            </span>
+          </div>
+
+          <div className="relative z-10 bg-navy/80 backdrop-blur-md p-4 rounded border border-cream/20">
+            <span className="block font-mono text-[10px] tracking-widest uppercase text-lime mb-1">
+              {t.about.badgeTag}
+            </span>
+            <span className="font-serif italic text-2xl text-cream block leading-snug">
+              {t.about.badgeHighlight}
+            </span>
+          </div>
         </div>
 
         <div>

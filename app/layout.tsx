@@ -11,20 +11,23 @@ import SkipLink from "@/components/SkipLink";
 
 const archivo = Archivo({
   subsets: ["latin"],
-  weight: ["500", "700", "900"],
+  weight: ["400", "500", "700", "900"],
+  display: "swap",
   variable: "--font-archivo",
 });
 
 const fraunces = Fraunces({
   subsets: ["latin"],
   style: ["italic"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "700"],
+  display: "swap",
   variable: "--font-fraunces",
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  weight: ["500"],
+  weight: ["400", "500", "700"],
+  display: "swap",
   variable: "--font-jetbrains",
 });
 
@@ -32,7 +35,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Gabriel Coelho — Desenvolvedor Back-End",
   description:
-    "Gabriel Coelho, desenvolvedor back-end. APIs robustas e seguras com Node.js, Express, MongoDB e Java com Spring Boot.",
+    "Gabriel Coelho, desenvolvedor back-end focado em sistemas resilientes, APIs escaláveis e IA. Experiência com Node.js, TypeScript, Python, FastAPI, Docker, RabbitMQ e PostgreSQL.",
   robots: { index: true, follow: true },
   alternates: { canonical: "/" },
   openGraph: {
@@ -65,6 +68,19 @@ const personJsonLd = {
     "https://github.com/Coelho-G-Dev",
     "https://www.linkedin.com/in/gabriel-coelho-7184a32a3/",
   ],
+  knowsAbout: [
+    "Node.js",
+    "TypeScript",
+    "Python",
+    "FastAPI",
+    "PostgreSQL",
+    "pgvector",
+    "Docker",
+    "RabbitMQ",
+    "Redis",
+    "Microservices",
+    "RESTful APIs"
+  ]
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

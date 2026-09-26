@@ -2,6 +2,7 @@ export type Locale = "pt" | "en";
 
 export const translations = {
   pt: {
+    pageTitle: "Gabriel Coelho — Desenvolvedor Back-End",
     nav: {
       work: "TRABALHO",
       method: "MÉTODO",
@@ -21,6 +22,9 @@ export const translations = {
       titleHighlight: "presença.",
       counter: "01 / 05",
       bio: "Sou Gabriel, desenvolvedor back-end e graduando em Ciência e Tecnologia pela UFMA. Construo APIs e sistemas que resolvem o problema antes mesmo que ele chegue à tela.",
+      ctaProjects: "Explorar projetos",
+      viewGithub: "GitHub",
+      viewLinkedin: "LinkedIn",
     },
     projects: {
       cutLabel: "primeiro corte",
@@ -91,6 +95,20 @@ export const translations = {
       copiedEmail: "E-mail copiado",
       failedCopy: "Não foi possível copiar — selecione o texto manualmente",
       location: "São Luís, Brasil · UTC-3",
+      githubAria: "Ver perfil no GitHub",
+      linkedinAria: "Conectar no LinkedIn",
+      socialsTitle: "Redes & Código",
+    },
+    footer: {
+      status: "Disponível para novos projetos e oportunidades",
+      tagline: "Back-end com presença.",
+      backToTop: "Voltar ao topo",
+      builtWith: "Construído com Next.js 15, TypeScript & Tailwind CSS",
+      rights: "Todos os direitos reservados.",
+    },
+    scrollRestore: {
+      message: "Voltar para onde você estava",
+      dismiss: "Dispensar",
     },
     error: {
       cutTag: "Corte mal feito",
@@ -111,6 +129,7 @@ export const translations = {
     },
   },
   en: {
+    pageTitle: "Gabriel Coelho — Back-End Developer",
     nav: {
       work: "WORK",
       method: "METHOD",
@@ -130,6 +149,9 @@ export const translations = {
       titleHighlight: "presence.",
       counter: "01 / 05",
       bio: "I'm Gabriel, a back-end developer and Science & Technology undergrad at UFMA. I build APIs and systems that solve problems before they even reach the screen.",
+      ctaProjects: "Explore projects",
+      viewGithub: "GitHub",
+      viewLinkedin: "LinkedIn",
     },
     projects: {
       cutLabel: "first cut",
@@ -200,6 +222,20 @@ export const translations = {
       copiedEmail: "Email copied",
       failedCopy: "Could not copy — please select text manually",
       location: "São Luís, Brazil · UTC-3",
+      githubAria: "View GitHub profile",
+      linkedinAria: "Connect on LinkedIn",
+      socialsTitle: "Networks & Code",
+    },
+    footer: {
+      status: "Available for new projects & opportunities",
+      tagline: "Back-end with presence.",
+      backToTop: "Back to top",
+      builtWith: "Built with Next.js 15, TypeScript & Tailwind CSS",
+      rights: "All rights reserved.",
+    },
+    scrollRestore: {
+      message: "Resume where you left off",
+      dismiss: "Dismiss",
     },
     error: {
       cutTag: "Bad cut",

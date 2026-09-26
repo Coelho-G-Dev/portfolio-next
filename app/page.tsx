@@ -4,6 +4,7 @@ import Projects from "@/components/Projects";
 import Method from "@/components/Method";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
         <About />
         <Contact />
       </main>
+      <Footer />
     </>
   );
 }

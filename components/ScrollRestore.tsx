@@ -1,12 +1,14 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { RotateCcw, X } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const STORAGE_KEY = "portfolio:lastScrollY";
 const MIN_SCROLL_TO_OFFER = 400;
 const AUTO_DISMISS_MS = 8000;
 
 export default function ScrollRestore() {
+  const { t } = useLanguage();
   const [savedY, setSavedY] = useState<number | null>(null);
   const dismissTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -60,11 +62,11 @@ export default function ScrollRestore() {
         onClick={restore}
         className="flex items-center gap-2 hover:text-lime transition-colors"
       >
-        <RotateCcw size={14} /> Voltar pra onde você estava
+        <RotateCcw size={14} /> {t.scrollRestore.message}
       </button>
       <button
         onClick={dismiss}
-        aria-label="Dispensar"
+        aria-label={t.scrollRestore.dismiss}
         className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-cream/10 transition-colors"
       >
         <X size={12} />

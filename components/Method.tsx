@@ -3,8 +3,20 @@ import { useReveal } from "@/lib/useReveal";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import SectionCut from "@/components/SectionCut";
 
-const backendTechs = ["Node.js", "Express", "MongoDB", "Mongoose", "JWT", "Jest", "PostgreSQL", "SQL"];
-const frontendTechs = ["HTML", "CSS", "JavaScript", "React", "TypeScript", "Next.js"];
+const backendTechs = [
+  "Node.js",
+  "TypeScript",
+  "Python",
+  "FastAPI",
+  "Docker",
+  "RabbitMQ",
+  "Redis",
+  "PostgreSQL",
+  "pgvector",
+  "MongoDB",
+  "Jest",
+];
+const frontendTechs = ["React", "Next.js", "TypeScript", "Tailwind CSS", "HTML5", "CSS3"];
 
 export default function Method() {
   const { t } = useLanguage();
@@ -31,7 +43,7 @@ export default function Method() {
               <br />
               <span className="font-serif italic font-normal text-lime">{t.method.titleHighlight}</span>
             </h2>
-            <p className="text-cream/80 text-sm leading-relaxed mt-6 max-w-sm">
+            <p className="text-cream text-sm leading-relaxed mt-6 max-w-sm">
               {t.method.subtitle}
             </p>
           </div>
@@ -53,7 +65,7 @@ export default function Method() {
                   <h3 className="font-display font-bold text-xl transition-colors duration-300 group-hover:text-lime">
                     {s.title}
                   </h3>
-                  <p className="text-sm text-cream/80 leading-relaxed">{s.body}</p>
+                  <p className="text-sm text-cream leading-relaxed">{s.body}</p>
                 </div>
               </div>
             ))}
