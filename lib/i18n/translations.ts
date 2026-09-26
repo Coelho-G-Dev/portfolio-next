@@ -34,6 +34,9 @@ export const translations = {
       },
       viewGithubAria: (title: string) => `Ver ${title} no GitHub`,
       viewDemoAria: (title: string) => `Ver demonstração do projeto ${title}`,
+      viewGithub: "Ver no GitHub",
+      viewDemo: "Live Demo",
+      clickHint: "Clique no projeto para abrir o repositório",
       viewAll: "Ver todos os projetos",
     },
     method: {
@@ -140,6 +143,9 @@ export const translations = {
       },
       viewGithubAria: (title: string) => `View ${title} on GitHub`,
       viewDemoAria: (title: string) => `View demo for ${title}`,
+      viewGithub: "View on GitHub",
+      viewDemo: "Live Demo",
+      clickHint: "Click on a project to open repository",
       viewAll: "View all projects",
     },
     method: {

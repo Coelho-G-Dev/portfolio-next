@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Github } from "lucide-react";
 import { projects, type TileColor } from "@/data/projects";
 import { useReveal } from "@/lib/useReveal";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
@@ -36,26 +36,33 @@ export default function Projects() {
           <span className="font-serif italic font-normal">{t.projects.titleHighlight}</span>
         </h2>
 
-        <div className="flex gap-6 font-mono text-xs tracking-widest uppercase mt-10 mb-2">
-          {filters.map((f) => (
-            <button
-              key={f.key}
-              onClick={() => setFilter(f.key)}
-              aria-pressed={filter === f.key}
-              className={`pb-1 border-b-2 transition-colors ${
-                filter === f.key ? "border-navy" : "border-transparent opacity-50 hover:opacity-100"
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-10 mb-2">
+          <div className="flex gap-6 font-mono text-xs tracking-widest uppercase">
+            {filters.map((f) => (
+              <button
+                key={f.key}
+                onClick={() => setFilter(f.key)}
+                aria-pressed={filter === f.key}
+                className={`pb-1 border-b-2 transition-colors ${
+                  filter === f.key ? "border-navy" : "border-transparent opacity-50 hover:opacity-100"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase opacity-75 border border-navy/20 rounded-full px-3 py-1 bg-navy/5">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-navy animate-pulse" aria-hidden="true" />
+            <span>{t.projects.clickHint}</span>
+          </div>
         </div>
 
         <div className="divide-y divide-navy/20 border-t border-navy/20 mt-8">
           {visible.map((project) => (
             <div
               key={project.id}
-              className="relative group grid grid-cols-1 md:grid-cols-[auto_1fr_1fr_auto] gap-6 items-center py-8 px-4 -mx-4 overflow-hidden"
+              className="relative group grid grid-cols-1 md:grid-cols-[auto_1.2fr_1fr_auto] gap-6 items-center py-8 px-4 -mx-4 overflow-hidden cursor-pointer"
             >
               <a
                 href={project.githubLink}
@@ -64,16 +71,16 @@ export default function Projects() {
                 tabIndex={-1}
                 aria-hidden="true"
                 className="absolute inset-0 z-0"
-              ></a>
+              />
 
               <span
                 aria-hidden="true"
-                className="absolute inset-0 bg-navy/[0.06] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out -z-10"
+                className="absolute inset-0 bg-navy/[0.06] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out -z-10 pointer-events-none"
               />
 
               <div
                 aria-hidden="true"
-                className="hidden md:block absolute right-6 top-1/2 -translate-y-1/2 w-24 h-24 bg-navy rounded-md overflow-hidden transition-transform duration-500 ease-out group-hover:scale-110 group-hover:-rotate-3"
+                className="hidden lg:block absolute right-2 top-1/2 -translate-y-1/2 w-28 h-28 bg-navy/90 rounded-md overflow-hidden transition-all duration-500 ease-out opacity-20 group-hover:opacity-100 group-hover:scale-105 group-hover:-rotate-3 pointer-events-none -z-0"
               >
                 <div
                   className={`absolute -left-4 top-1/2 -translate-y-1/2 w-20 h-20 ${shapeClass[project.shapeColors[1]]} rotate-45`}
@@ -83,7 +90,7 @@ export default function Projects() {
                 />
               </div>
 
-              <span className="relative font-mono text-xs opacity-50">
+              <span className="relative font-mono text-xs opacity-50 z-10">
                 {String(project.id).padStart(2, "0")}
               </span>
 
@@ -94,9 +101,14 @@ export default function Projects() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={t.projects.viewGithubAria(project.title)}
-                    className="hover:underline focus:outline-none focus-visible:underline"
+                    className="inline-flex items-center gap-2 hover:underline focus:outline-none focus-visible:underline"
                   >
-                    {project.title}
+                    <span>{project.title}</span>
+                    <ArrowUpRight
+                      size={20}
+                      className="opacity-60 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 shrink-0"
+                      aria-hidden="true"
+                    />
                   </a>
                   <span
                     aria-hidden="true"
@@ -118,19 +130,34 @@ export default function Projects() {
                 </div>
               </div>
 
-              <p className="relative text-sm leading-relaxed max-w-xs">{project.description[language]}</p>
+              <p className="relative text-sm leading-relaxed max-w-xs z-10">{project.description[language]}</p>
 
-              {project.demoLink && (
+              <div className="relative z-20 flex flex-wrap md:flex-col items-start md:items-end gap-2.5">
                 <a
-                  href={project.demoLink}
+                  href={project.githubLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={t.projects.viewDemoAria(project.title)}
-                  className="relative md:absolute md:bottom-2 md:right-2 justify-self-end w-10 h-10 rounded-full border border-navy/40 flex items-center justify-center transition-all duration-300 hover:bg-navy hover:text-orange z-20"
+                  aria-label={t.projects.viewGithubAria(project.title)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-navy/40 font-mono text-xs font-semibold tracking-wider uppercase transition-all duration-300 bg-navy/10 text-navy hover:bg-navy hover:text-cream group-hover:bg-navy group-hover:text-cream shadow-sm hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy"
                 >
-                  <ArrowUpRight size={16} className="rotate-45" />
+                  <Github size={14} className="shrink-0" />
+                  <span>{t.projects.viewGithub}</span>
+                  <ArrowUpRight size={13} className="shrink-0 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </a>
-              )}
+
+                {project.demoLink && (
+                  <a
+                    href={project.demoLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t.projects.viewDemoAria(project.title)}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-navy/40 font-mono text-xs font-semibold tracking-wider uppercase transition-all duration-300 bg-lime text-navy hover:bg-navy hover:text-lime shadow-sm hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy"
+                  >
+                    <span>{t.projects.viewDemo}</span>
+                    <ArrowUpRight size={13} className="shrink-0" />
+                  </a>
+                )}
+              </div>
             </div>
           ))}
         </div>

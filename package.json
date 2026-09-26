@@ -2,6 +2,22 @@
   "name": "gabriel-coelho-portfolio",
   "version": "1.0.0",
   "private": true,
+  "description": "<div align=\"center\">",
+  "homepage": "https://github.com/Coelho-G-Dev/portfolio-next#readme",
+  "bugs": {
+    "url": "https://github.com/Coelho-G-Dev/portfolio-next/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Coelho-G-Dev/portfolio-next.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "postcss.config.js",
+  "directories": {
+    "lib": "lib"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
