@@ -63,6 +63,19 @@ section[id] {
   transform: translateY(0);
 }
 
+/* Botões de Ações dos Projetos: ao passar o mouse em outra opção, a primeira perde o hover */
+.project-actions .project-primary-btn {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-actions:has(> :not(:first-child):hover) .project-primary-btn:not(:hover) {
+  background-color: rgba(18, 34, 45, 0.1) !important;
+  color: #12222D !important;
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: rgba(18, 34, 45, 0.4) !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

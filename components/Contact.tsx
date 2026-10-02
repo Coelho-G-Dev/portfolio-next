@@ -38,7 +38,7 @@ export default function Contact() {
         <div>
           <p className="font-mono text-xs tracking-widest uppercase mb-4">{t.contact.sectionNumber}</p>
           <h2 className="font-display font-black text-[13vw] md:text-6xl leading-[0.95]">
-            {t.contact.titleLine1}
+            {t.contact.titleLine1}{" "}
             <br />
             <span className="font-serif italic font-normal">{t.contact.titleHighlight}</span>
           </h2>
@@ -60,7 +60,7 @@ export default function Contact() {
             <button
               onClick={copyEmail}
               aria-label={copyState === "copied" ? t.contact.copiedEmail : t.contact.copyEmail}
-              className="w-11 h-11 rounded-full border border-navy/40 flex items-center justify-center hover:bg-navy hover:text-lavender transition-colors"
+              className="w-11 h-11 rounded-full border border-navy/40 flex items-center justify-center hover:bg-navy hover:text-lavender transition-all duration-200 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy cursor-pointer"
             >
               <span aria-live="polite" className="sr-only">
                 {copyState === "copied" && t.contact.copiedEmail}
@@ -76,7 +76,7 @@ export default function Contact() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t.contact.githubAria}
-              className="inline-flex items-center gap-2 border border-navy/40 rounded-full px-4 py-2 font-mono text-xs tracking-widest uppercase hover:bg-navy hover:text-lavender transition-all duration-200"
+              className="inline-flex items-center gap-2 border border-navy/40 rounded-full px-4 py-2 font-mono text-xs tracking-widest uppercase hover:bg-navy hover:text-lavender transition-all duration-200 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy"
             >
               <Github size={14} /> GitHub
             </a>
@@ -85,13 +85,13 @@ export default function Contact() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t.contact.linkedinAria}
-              className="inline-flex items-center gap-2 border border-navy/40 rounded-full px-4 py-2 font-mono text-xs tracking-widest uppercase hover:bg-navy hover:text-lavender transition-all duration-200"
+              className="inline-flex items-center gap-2 border border-navy/40 rounded-full px-4 py-2 font-mono text-xs tracking-widest uppercase hover:bg-navy hover:text-lavender transition-all duration-200 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy"
             >
               <Linkedin size={14} /> LinkedIn
             </a>
           </div>
 
-          <p className="flex items-center gap-1.5 font-mono text-sm tracking-widest uppercase opacity-70 mt-8">
+          <p className="flex items-center gap-1.5 font-mono text-sm tracking-widest uppercase text-navy/90 font-medium mt-8">
             <MapPin size={12} /> {t.contact.location}
           </p>
         </div>

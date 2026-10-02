@@ -249,6 +249,8 @@ function generateRealSitePairs(): ContrastPair[] {
 
     { foreground: siteColors.navy, background: siteColors.orange, label: 'Título Projetos ("Sistemas...")', isLargeText: true, category: 'Tipografia' },
     { foreground: siteColors.navy, background: siteColors.orange, label: 'Títulos dos Projetos (BuscaSUS...)', isLargeText: false, category: 'Tipografia' },
+    { foreground: siteColors.navy, background: siteColors.orange, label: 'Títulos dos Projetos (Hover com Translação)', isLargeText: true, category: 'Interativo' },
+    { foreground: calculateEffectiveColor(siteColors.navy, siteColors.orange, 0.85), background: siteColors.orange, label: 'Projetos: Tipo e Ano (Navy 85%)', isLargeText: false, category: 'Opacidade' },
     { foreground: siteColors.navy, background: siteColors.orange, label: 'Descrição dos Projetos', isLargeText: false, category: 'Tipografia' },
     { foreground: siteColors.navy, background: siteColors.orange, label: 'Tags dos Projetos', isLargeText: false, category: 'Tipografia' },
     { foreground: siteColors.navy, background: siteColors.orange, label: 'Filtros da Seção Projetos', isLargeText: false, category: 'Interativo' },
@@ -260,6 +262,7 @@ function generateRealSitePairs(): ContrastPair[] {
     { foreground: siteColors.lime, background: siteColors.blue, label: 'Destaque Método ("meio.")', isLargeText: true, category: 'Tipografia' },
     { foreground: siteColors.cream, background: siteColors.blue, label: 'Títulos dos Passos do Método', isLargeText: false, category: 'Tipografia' },
     { foreground: siteColors.cream, background: siteColors.blue, label: 'Texto dos Passos e Subtítulo (cream 100%)', isLargeText: false, category: 'Tipografia' },
+    { foreground: calculateEffectiveColor(siteColors.cream, siteColors.blue, 0.95), background: siteColors.blue, label: 'Método: Descrição das Stacks (Cream 95%)', isLargeText: false, category: 'Opacidade' },
     { foreground: siteColors.lime, background: siteColors.blue, label: 'Hover no título do Método', isLargeText: false, category: 'Interativo' },
 
     { foreground: siteColors.navy, background: siteColors.lime, label: 'Título Sobre Mim', isLargeText: true, category: 'Tipografia' },
@@ -271,6 +274,7 @@ function generateRealSitePairs(): ContrastPair[] {
     { foreground: siteColors.navy, background: siteColors.lavender, label: 'Título Contato ("Tem uma")', isLargeText: true, category: 'Tipografia' },
     { foreground: siteColors.navy, background: siteColors.lavender, label: 'Destaque Contato ("boa ideia?")', isLargeText: true, category: 'Tipografia' },
     { foreground: siteColors.navy, background: siteColors.lavender, label: 'Descrição Contato', isLargeText: false, category: 'Tipografia' },
+    { foreground: calculateEffectiveColor(siteColors.navy, siteColors.lavender, 0.9), background: siteColors.lavender, label: 'Contato: Localização (Navy 90%)', isLargeText: false, category: 'Opacidade' },
     { foreground: siteColors.cream, background: siteColors.navy, label: 'Botão E-mail (Contato)', isLargeText: false, category: 'Botões' },
     { foreground: siteColors.navy, background: siteColors.lavender, label: 'Botões GitHub e LinkedIn (Contato)', isLargeText: false, category: 'Botões' },
 
