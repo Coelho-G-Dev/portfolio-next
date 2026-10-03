@@ -160,7 +160,9 @@ export default function Projects() {
                           >
                             <span className="w-1.5 h-1.5 rounded-full bg-navy/80 shrink-0" />
                             <span className="opacity-90 font-medium">{m.label[language]}:</span>
-                            <span className="font-semibold">{m.value}</span>
+                            <span className="font-semibold">
+                              {typeof m.value === "string" ? m.value : m.value[language]}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -254,7 +256,7 @@ export default function Projects() {
                           {project.architecture.title[language]}
                         </h4>
                         <p className="font-mono text-xs text-lime tracking-wider uppercase mt-0.5">
-                          {t.projects.architectureFlowTitle} · Architecture Flow
+                          {t.projects.architectureFlowTitle}
                         </p>
                       </div>
                     </div>
@@ -264,7 +266,14 @@ export default function Projects() {
                       project={project}
                       language={language}
                       copiedId={copiedId}
-                      onCopyDiagram={() => handleCopyDiagram(project.architecture!.diagram, project.id)}
+                      onCopyDiagram={() =>
+                        handleCopyDiagram(
+                          typeof project.architecture!.diagram === "string"
+                            ? project.architecture!.diagram
+                            : project.architecture!.diagram[language],
+                          project.id
+                        )
+                      }
                       copyLabel={t.projects.copyDiagram}
                       copiedLabel={t.projects.copiedDiagram}
                     />

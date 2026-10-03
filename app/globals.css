@@ -76,6 +76,63 @@ section[id] {
   border-color: rgba(18, 34, 45, 0.4) !important;
 }
 
+@keyframes data-flow-h {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(350%);
+    opacity: 0;
+  }
+}
+
+@keyframes data-flow-v {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(350%);
+    opacity: 0;
+  }
+}
+
+@keyframes flow-pulse-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 1px rgba(234, 243, 91, 0.4));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 5px rgba(234, 243, 91, 0.95));
+    transform: scale(1.08);
+  }
+}
+
+.animate-data-flow-h {
+  animation: data-flow-h 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-data-flow-v {
+  animation: data-flow-v 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-flow-pulse {
+  animation: flow-pulse-glow 2s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -85,7 +142,11 @@ section[id] {
     transform: none !important;
     transition: none !important;
   }
-  .animate-pulse {
+  .animate-pulse,
+  .animate-ping,
+  .animate-data-flow-h,
+  .animate-data-flow-v,
+  .animate-flow-pulse {
     animation: none !important;
   }
   * {

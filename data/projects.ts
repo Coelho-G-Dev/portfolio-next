@@ -7,12 +7,12 @@ export type LocalizedString = {
 
 export type ProjectMetric = {
   label: LocalizedString;
-  value: string;
+  value: LocalizedString;
 };
 
 export type ProjectArchitecture = {
   title: LocalizedString;
-  diagram: string;
+  diagram: LocalizedString;
   highlights: LocalizedString[];
 };
 
@@ -58,15 +58,24 @@ export const projects: Project[] = [
     metrics: [
       {
         label: { pt: "Cobertura & Testes", en: "Coverage & Tests" },
-        value: "94 testes · >90% cobertura (Jest)",
+        value: {
+          pt: "94 testes · >90% cobertura (Jest)",
+          en: "94 tests · >90% coverage (Jest)",
+        },
       },
       {
         label: { pt: "Throughput & Carga", en: "Throughput & Load" },
-        value: "1.400 req/s · latência p99 < 35ms",
+        value: {
+          pt: "1.400 req/s · latência p99 < 35ms",
+          en: "1,400 req/s · p99 latency < 35ms",
+        },
       },
       {
         label: { pt: "Resiliência Assíncrona", en: "Async Resilience" },
-        value: "RabbitMQ Exchange + Dead-Letter Queue (DLQ)",
+        value: {
+          pt: "RabbitMQ Exchange + Dead-Letter Queue (DLQ)",
+          en: "RabbitMQ Exchange + Dead-Letter Queue (DLQ)",
+        },
       },
     ],
     architecture: {
@@ -74,13 +83,22 @@ export const projects: Project[] = [
         pt: "Arquitetura Distribuída & Fluxo de Autenticação",
         en: "Distributed Architecture & Auth Flow",
       },
-      diagram: `[Client / HTTP] ──> [API Gateway / Express] ──> [Redis Token Bucket / Rate Limit]
+      diagram: {
+        pt: `[Client / HTTP] ──> [API Gateway / Express] ──> [Redis Token Bucket / Rate Limit]
+                              │
+                              ├──> [Auth Service] ──> [PostgreSQL (Usuários & Roles)]
+                              │           │
+                              │           └──> [Redis Blacklist (Tokens Revogados)]
+                              │
+                              └──> [RabbitMQ Exchange] ──> [Fila / DLQ] ──> [Audit Consumer]`,
+        en: `[Client / HTTP] ──> [API Gateway / Express] ──> [Redis Token Bucket / Rate Limit]
                               │
                               ├──> [Auth Service] ──> [PostgreSQL (Users & Roles)]
                               │           │
                               │           └──> [Redis Blacklist (Revoked Tokens)]
                               │
                               └──> [RabbitMQ Exchange] ──> [Queue / DLQ] ──> [Audit Consumer]`,
+      },
       highlights: [
         {
           pt: "Rate limiting distribuído com algoritmo Token Bucket em Redis para mitigação ativa de ataques de força bruta.",
@@ -121,15 +139,24 @@ export const projects: Project[] = [
     metrics: [
       {
         label: { pt: "Busca Vetorial HNSW", en: "HNSW Vector Search" },
-        value: "Latência sub-15ms · Similaridade de Cosseno",
+        value: {
+          pt: "Latência sub-15ms · Similaridade de Cosseno",
+          en: "Sub-15ms latency · Cosine Similarity",
+        },
       },
       {
         label: { pt: "Embeddings Locais", en: "Local Embeddings" },
-        value: "Modelo 384d · Chunking semântico estruturado",
+        value: {
+          pt: "Modelo 384d · Chunking semântico estruturado",
+          en: "384d model · Structured semantic chunking",
+        },
       },
       {
         label: { pt: "Grounding Estrito", en: "Strict Grounding" },
-        value: "Geração ancorada em contexto (Zero Alucinações)",
+        value: {
+          pt: "Geração ancorada em contexto (Zero Alucinações)",
+          en: "Context-grounded generation (Zero Hallucinations)",
+        },
       },
     ],
     architecture: {
@@ -137,7 +164,8 @@ export const projects: Project[] = [
         pt: "Pipeline RAG com Microsserviços e Busca Vetorial HNSW",
         en: "RAG Pipeline with Microservices & HNSW Vector Search",
       },
-      diagram: `[User Query] ──> [FastAPI Gateway] ────────────────> [Semantic Router]
+      diagram: {
+        pt: `[User Query] ──> [FastAPI Gateway] ────────────────> [Semantic Router]
                         │                                   │
                         ▼                                   ▼
             [Local Embeddings (384d)]           [Node.js Search Service]
@@ -150,6 +178,20 @@ export const projects: Project[] = [
                                                             │
                                                             ▼
                                                [Grounded Answer + Sources]`,
+        en: `[User Query] ──> [FastAPI Gateway] ────────────────> [Semantic Router]
+                        │                                   │
+                        ▼                                   ▼
+            [Local Embeddings (384d)]           [Node.js Search Service]
+                        │                                   │
+                        ▼                                   ▼
+          [PostgreSQL + pgvector (HNSW)] ─────>    [Context Assembly]
+                                                            │
+                                                            ▼
+                                                [Google Gemini AI Engine]
+                                                            │
+                                                            ▼
+                                               [Grounded Answer + Sources]`,
+      },
       highlights: [
         {
           pt: "Busca vetorial por similaridade de cosseno com índice HNSW em sub-15ms sobre base com embeddings locais 384d.",
@@ -190,11 +232,17 @@ export const projects: Project[] = [
     metrics: [
       {
         label: { pt: "Consistência Contábil", en: "Ledger Consistency" },
-        value: "Transações ACID em PostgreSQL com ledger seguro",
+        value: {
+          pt: "Transações ACID em PostgreSQL com ledger seguro",
+          en: "ACID transactions in PostgreSQL with secure ledger",
+        },
       },
       {
         label: { pt: "Auditoria com IA", en: "AI Auditing" },
-        value: "Classificação preditiva e detecção de anomalias",
+        value: {
+          pt: "Classificação preditiva e detecção de anomalias",
+          en: "Predictive classification and anomaly detection",
+        },
       },
     ],
     architecture: {
@@ -202,7 +250,8 @@ export const projects: Project[] = [
         pt: "Fluxo Transacional ACID e Auditoria Assistida por IA",
         en: "ACID Transaction Flow & AI-Assisted Audit",
       },
-      diagram: `[Client / HTTP] ──> [Express REST API] ──> [Validação Zod / JWT]
+      diagram: {
+        pt: `[Client / HTTP] ──> [Express REST API] ──> [Validação Zod / JWT]
                               │
                 ┌─────────────┴─────────────┐
                 ▼                           ▼
@@ -212,6 +261,17 @@ export const projects: Project[] = [
                 └─────────────┬─────────────┘
                               ▼
                  [Relatórios e Recomendações]`,
+        en: `[Client / HTTP] ──> [Express REST API] ──> [Zod / JWT Validation]
+                              │
+                ┌─────────────┴─────────────┐
+                ▼                           ▼
+   [PostgreSQL (ACID Ledger)]       [Gemini AI Engine]
+ (Balance Sheets & Statements)    (Auditing & Anomalies)
+                │                           │
+                └─────────────┬─────────────┘
+                              ▼
+                    [Reports & Insights]`,
+      },
       highlights: [
         {
           pt: "Contratos de entrada estritamente tipados e validados em runtime com Zod.",
@@ -248,11 +308,17 @@ export const projects: Project[] = [
     metrics: [
       {
         label: { pt: "Agregação de Dados", en: "Data Aggregation" },
-        value: "Consumo e normalização de dados do IBGE e Maps",
+        value: {
+          pt: "Consumo e normalização de dados do IBGE e Maps",
+          en: "Consumption and normalization of IBGE & Maps data",
+        },
       },
       {
         label: { pt: "Segurança de Acesso", en: "Access Security" },
-        value: "Autenticação baseada em tokens JWT",
+        value: {
+          pt: "Autenticação baseada em tokens JWT",
+          en: "JWT token-based authentication",
+        },
       },
     ],
     architecture: {
@@ -260,12 +326,20 @@ export const projects: Project[] = [
         pt: "Agregação de Fontes Governamentais e Geolocalização",
         en: "Government Data Aggregation & Geolocation",
       },
-      diagram: `[Client App] ───> [Express REST API] ───> [MongoDB / Mongoose]
+      diagram: {
+        pt: `[Client App] ───> [Express REST API] ───> [MongoDB / Mongoose]
                            │
              ┌─────────────┴─────────────┐
              ▼                           ▼
   [Google Maps Platform]        [IBGE Open Data API]
    (Geocoding & Places)       (Dados & Estatísticas)`,
+        en: `[Client App] ───> [Express REST API] ───> [MongoDB / Mongoose]
+                           │
+             ┌─────────────┴─────────────┐
+             ▼                           ▼
+  [Google Maps Platform]        [IBGE Open Data API]
+   (Geocoding & Places)        (Data & Statistics)`,
+      },
       highlights: [
         {
           pt: "Normalização de esquemas heterogêneos de fontes governamentais em API RESTful consistente.",
@@ -298,7 +372,10 @@ export const projects: Project[] = [
     metrics: [
       {
         label: { pt: "Consultas Espaciais", en: "Spatial Queries" },
-        value: "Busca geoespacial por raio de proximidade de postos",
+        value: {
+          pt: "Busca geoespacial por raio de proximidade de postos",
+          en: "Geospatial search by health unit proximity radius",
+        },
       },
     ],
     architecture: {
@@ -306,9 +383,14 @@ export const projects: Project[] = [
         pt: "Mapeamento Espacial e Roteamento de Unidades Públicas",
         en: "Spatial Mapping & Public Health Unit Routing",
       },
-      diagram: `[Client] ──> [Node.js / Express API] ──> [MongoDB Geo Index (2dsphere)]
+      diagram: {
+        pt: `[Client] ──> [Node.js / Express API] ──> [MongoDB Geo Index (2dsphere)]
                         │
                         └──> [Google Maps Platform (Rotas & Geocoding)]`,
+        en: `[Client] ──> [Node.js / Express API] ──> [MongoDB Geo Index (2dsphere)]
+                        │
+                        └──> [Google Maps Platform (Routing & Geocoding)]`,
+      },
       highlights: [
         {
           pt: "Indexação geoespacial 2dsphere para cálculo veloz de distâncias euclidianas e rotas até a unidade de saúde mais próxima.",
