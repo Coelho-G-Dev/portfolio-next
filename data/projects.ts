@@ -13,6 +13,7 @@ export type ProjectMetric = {
 export type ProjectArchitecture = {
   title: LocalizedString;
   diagram: LocalizedString;
+  mermaid?: LocalizedString;
   highlights: LocalizedString[];
 };
 
@@ -98,6 +99,48 @@ export const projects: Project[] = [
                               │           └──> [Redis Blacklist (Revoked Tokens)]
                               │
                               └──> [RabbitMQ Exchange] ──> [Queue / DLQ] ──> [Audit Consumer]`,
+      },
+      mermaid: {
+        pt: `flowchart TD
+    Client["Client / HTTP\\n(Apps Web & Mobile)"] --> Gateway["API Gateway (Express)\\n(Rate Limiter Token Bucket)"]
+    Gateway -->|"Desacoplamento Assíncrono"| Auth["Auth Service\\n(MFA / TOTP & JWT RS256)"]
+    Gateway -.->|"Eventos de Auditoria"| Broker["RabbitMQ Exchange\\n(Fanout / Direct)"]
+    Auth --> PG[("PostgreSQL\\n(Usuários & Roles ACID)")]
+    Auth --> Redis[("Redis Blacklist\\n(O(1) Revogação de Tokens)")]
+    Broker --> DLQ["DLQ Queue\\n(Zero Perda de Eventos)"]
+    Broker --> Audit["Audit Consumer\\n(Logging Assíncrono)"]
+
+    classDef lime fill:#1a2e1f,stroke:#EAF35B,stroke-width:1.5px,color:#EAF35B;
+    classDef blue fill:#101d36,stroke:#2E53E5,stroke-width:1.5px,color:#93c5fd;
+    classDef orange fill:#2e1815,stroke:#E97C67,stroke-width:1.5px,color:#E97C67;
+    classDef lavender fill:#221533,stroke:#B997FF,stroke-width:1.5px,color:#B997FF;
+    classDef cream fill:#242220,stroke:#F2EADC,stroke-width:1.5px,color:#F2EADC;
+
+    class Gateway,Auth lime;
+    class PG blue;
+    class Redis,Broker,DLQ orange;
+    class Audit lavender;
+    class Client cream;`,
+        en: `flowchart TD
+    Client["Client / HTTP\\n(Web & Mobile Apps)"] --> Gateway["API Gateway (Express)\\n(Token Bucket Rate Limiter)"]
+    Gateway -->|"Async Decoupling"| Auth["Auth Service\\n(MFA / TOTP & JWT RS256)"]
+    Gateway -.->|"Audit Events"| Broker["RabbitMQ Exchange\\n(Fanout / Direct)"]
+    Auth --> PG[("PostgreSQL\\n(Users & Roles ACID)")]
+    Auth --> Redis[("Redis Blacklist\\n(O(1) Token Revocation)")]
+    Broker --> DLQ["DLQ Queue\\n(Zero Event Loss)"]
+    Broker --> Audit["Audit Consumer\\n(Async Logging)"]
+
+    classDef lime fill:#1a2e1f,stroke:#EAF35B,stroke-width:1.5px,color:#EAF35B;
+    classDef blue fill:#101d36,stroke:#2E53E5,stroke-width:1.5px,color:#93c5fd;
+    classDef orange fill:#2e1815,stroke:#E97C67,stroke-width:1.5px,color:#E97C67;
+    classDef lavender fill:#221533,stroke:#B997FF,stroke-width:1.5px,color:#B997FF;
+    classDef cream fill:#242220,stroke:#F2EADC,stroke-width:1.5px,color:#F2EADC;
+
+    class Gateway,Auth lime;
+    class PG blue;
+    class Redis,Broker,DLQ orange;
+    class Audit lavender;
+    class Client cream;`,
       },
       highlights: [
         {
@@ -192,6 +235,68 @@ export const projects: Project[] = [
                                                             ▼
                                                [Grounded Answer + Sources]`,
       },
+      mermaid: {
+        pt: `flowchart TD
+    Query["User Query\\n(Busca em Linguagem Natural)"] --> Gateway["FastAPI Gateway\\n(Orquestrador Assíncrono)"]
+    Gateway --> Router{"Semantic Router\\n(Classificação de Intenção)"}
+
+    subgraph VectorBranch ["Ramo Vetorial (Semântico)"]
+        Router -->|"Vetorização"| Embed["Local Embeddings (384d)\\n(FastEmbed / Zero Custo API)"]
+        Embed --> PGVector[("PostgreSQL + pgvector\\n(Índice HNSW <15ms)")]
+    end
+
+    subgraph MetaBranch ["Ramo de Metadados & Filtros"]
+        Router -->|"Filtros Estruturados"| NodeSearch["Node.js Search Service\\n(Tags & Órgãos)"]
+        NodeSearch --> DocMeta[("Document Metadata\\n(Store JSONB)")]
+    end
+
+    PGVector --> Assembly["Context Assembly\\n(RRF Rerank & Deduplicação)"]
+    DocMeta --> Assembly
+    Assembly --> Gemini["Google Gemini AI Engine\\n(Geração Restrita / Grounding)"]
+    Gemini --> Output["Resposta Fundamentada + Fontes Oficiais"]
+
+    classDef lime fill:#1a2e1f,stroke:#EAF35B,stroke-width:1.5px,color:#EAF35B;
+    classDef blue fill:#101d36,stroke:#2E53E5,stroke-width:1.5px,color:#93c5fd;
+    classDef orange fill:#2e1815,stroke:#E97C67,stroke-width:1.5px,color:#E97C67;
+    classDef lavender fill:#221533,stroke:#B997FF,stroke-width:1.5px,color:#B997FF;
+    classDef cream fill:#242220,stroke:#F2EADC,stroke-width:1.5px,color:#F2EADC;
+
+    class Gateway,Embed,Output lime;
+    class PGVector blue;
+    class DocMeta orange;
+    class Router,NodeSearch,Gemini lavender;
+    class Query,Assembly cream;`,
+        en: `flowchart TD
+    Query["User Query\\n(Natural Language Query)"] --> Gateway["FastAPI Gateway\\n(Async Orchestrator)"]
+    Gateway --> Router{"Semantic Router\\n(Intent Classification)"}
+
+    subgraph VectorBranch ["Vector Branch (Semantic)"]
+        Router -->|"Vector Path"| Embed["Local Embeddings (384d)\\n(FastEmbed / Zero API Cost)"]
+        Embed --> PGVector[("PostgreSQL + pgvector\\n(HNSW Index <15ms)")]
+    end
+
+    subgraph MetaBranch ["Metadata & Filters Branch"]
+        Router -->|"Filter Path"| NodeSearch["Node.js Search Service\\n(Tags & Agencies)"]
+        NodeSearch --> DocMeta[("Document Metadata\\n(JSONB Store)")]
+    end
+
+    PGVector --> Assembly["Context Assembly\\n(RRF Rerank & Deduplication)"]
+    DocMeta --> Assembly
+    Assembly --> Gemini["Google Gemini AI Engine\\n(Constrained Generation / Grounding)"]
+    Gemini --> Output["Grounded Response + Official Sources"]
+
+    classDef lime fill:#1a2e1f,stroke:#EAF35B,stroke-width:1.5px,color:#EAF35B;
+    classDef blue fill:#101d36,stroke:#2E53E5,stroke-width:1.5px,color:#93c5fd;
+    classDef orange fill:#2e1815,stroke:#E97C67,stroke-width:1.5px,color:#E97C67;
+    classDef lavender fill:#221533,stroke:#B997FF,stroke-width:1.5px,color:#B997FF;
+    classDef cream fill:#242220,stroke:#F2EADC,stroke-width:1.5px,color:#F2EADC;
+
+    class Gateway,Embed,Output lime;
+    class PGVector blue;
+    class DocMeta orange;
+    class Router,NodeSearch,Gemini lavender;
+    class Query,Assembly cream;`,
+      },
       highlights: [
         {
           pt: "Busca vetorial por similaridade de cosseno com índice HNSW em sub-15ms sobre base com embeddings locais 384d.",
@@ -272,6 +377,40 @@ export const projects: Project[] = [
                               ▼
                     [Reports & Insights]`,
       },
+      mermaid: {
+        pt: `flowchart TD
+    Client["Client / HTTP\\n(Requisições Financeiras)"] --> API["Express REST API\\n(Validação Zod + JWT)"]
+    API --> Ledger[("PostgreSQL (ACID Ledger)\\n(Partidas Dobradas)")]
+    API -.->|"Alimentação Assíncrona"| AI["Gemini AI Engine\\n(Detecção Preditiva de Anomalias)"]
+    Ledger --> Reports["Relatórios & Recomendações\\n(Painel de Decisão Estratégica)"]
+    AI --> Reports
+
+    classDef lime fill:#1a2e1f,stroke:#EAF35B,stroke-width:1.5px,color:#EAF35B;
+    classDef blue fill:#101d36,stroke:#2E53E5,stroke-width:1.5px,color:#93c5fd;
+    classDef lavender fill:#221533,stroke:#B997FF,stroke-width:1.5px,color:#B997FF;
+    classDef cream fill:#242220,stroke:#F2EADC,stroke-width:1.5px,color:#F2EADC;
+
+    class API,Reports lime;
+    class Ledger blue;
+    class AI lavender;
+    class Client cream;`,
+        en: `flowchart TD
+    Client["Client / HTTP\\n(Financial Requests)"] --> API["Express REST API\\n(Zod Schema & JWT)"]
+    API --> Ledger[("PostgreSQL (ACID Ledger)\\n(Double-Entry Bookkeeping)")]
+    API -.->|"Async Feed"| AI["Gemini AI Engine\\n(Predictive Anomaly Detection)"]
+    Ledger --> Reports["Reports & Recommendations\\n(Strategic Decision Dashboard)"]
+    AI --> Reports
+
+    classDef lime fill:#1a2e1f,stroke:#EAF35B,stroke-width:1.5px,color:#EAF35B;
+    classDef blue fill:#101d36,stroke:#2E53E5,stroke-width:1.5px,color:#93c5fd;
+    classDef lavender fill:#221533,stroke:#B997FF,stroke-width:1.5px,color:#B997FF;
+    classDef cream fill:#242220,stroke:#F2EADC,stroke-width:1.5px,color:#F2EADC;
+
+    class API,Reports lime;
+    class Ledger blue;
+    class AI lavender;
+    class Client cream;`,
+      },
       highlights: [
         {
           pt: "Contratos de entrada estritamente tipados e validados em runtime com Zod.",
@@ -340,6 +479,42 @@ export const projects: Project[] = [
   [Google Maps Platform]        [IBGE Open Data API]
    (Geocoding & Places)        (Data & Statistics)`,
       },
+      mermaid: {
+        pt: `flowchart TD
+    Client["Client App\\n(Interface do Cidadão)"] --> API["Express REST API\\n(Controle & Autenticação JWT)"]
+    API --> Mongo[("MongoDB / Mongoose\\n(Catálogo Centralizado)")]
+    API -.-> Maps["Google Maps Platform\\n(Geocoding & Places API)"]
+    API -.-> IBGE["IBGE Open Data API\\n(Dados Demográficos e Censitários)"]
+
+    classDef lime fill:#1a2e1f,stroke:#EAF35B,stroke-width:1.5px,color:#EAF35B;
+    classDef blue fill:#101d36,stroke:#2E53E5,stroke-width:1.5px,color:#93c5fd;
+    classDef orange fill:#2e1815,stroke:#E97C67,stroke-width:1.5px,color:#E97C67;
+    classDef lavender fill:#221533,stroke:#B997FF,stroke-width:1.5px,color:#B997FF;
+    classDef cream fill:#242220,stroke:#F2EADC,stroke-width:1.5px,color:#F2EADC;
+
+    class API lime;
+    class Mongo blue;
+    class Maps orange;
+    class IBGE lavender;
+    class Client cream;`,
+        en: `flowchart TD
+    Client["Client App\\n(Citizen Interface)"] --> API["Express REST API\\n(Access Control & JWT Auth)"]
+    API --> Mongo[("MongoDB / Mongoose\\n(Centralized Catalog)")]
+    API -.-> Maps["Google Maps Platform\\n(Geocoding & Places API)"]
+    API -.-> IBGE["IBGE Open Data API\\n(Demographic Data & Municipalities)"]
+
+    classDef lime fill:#1a2e1f,stroke:#EAF35B,stroke-width:1.5px,color:#EAF35B;
+    classDef blue fill:#101d36,stroke:#2E53E5,stroke-width:1.5px,color:#93c5fd;
+    classDef orange fill:#2e1815,stroke:#E97C67,stroke-width:1.5px,color:#E97C67;
+    classDef lavender fill:#221533,stroke:#B997FF,stroke-width:1.5px,color:#B997FF;
+    classDef cream fill:#242220,stroke:#F2EADC,stroke-width:1.5px,color:#F2EADC;
+
+    class API lime;
+    class Mongo blue;
+    class Maps orange;
+    class IBGE lavender;
+    class Client cream;`,
+      },
       highlights: [
         {
           pt: "Normalização de esquemas heterogêneos de fontes governamentais em API RESTful consistente.",
@@ -390,6 +565,36 @@ export const projects: Project[] = [
         en: `[Client] ──> [Node.js / Express API] ──> [MongoDB Geo Index (2dsphere)]
                         │
                         └──> [Google Maps Platform (Routing & Geocoding)]`,
+      },
+      mermaid: {
+        pt: `flowchart TD
+    Mobile["Client / Mobile\\n(Busca de Postos de Saúde)"] --> API["Node.js / Express API\\n(Processamento Geoespacial)"]
+    API --> Mongo[("MongoDB (2dsphere)\\n(Cálculo de Distâncias Euclidianas)")]
+    API -.-> Maps["Google Maps Platform\\n(Rotas até o Posto Mais Próximo)"]
+
+    classDef lime fill:#1a2e1f,stroke:#EAF35B,stroke-width:1.5px,color:#EAF35B;
+    classDef blue fill:#101d36,stroke:#2E53E5,stroke-width:1.5px,color:#93c5fd;
+    classDef orange fill:#2e1815,stroke:#E97C67,stroke-width:1.5px,color:#E97C67;
+    classDef cream fill:#242220,stroke:#F2EADC,stroke-width:1.5px,color:#F2EADC;
+
+    class API lime;
+    class Mongo blue;
+    class Maps orange;
+    class Mobile cream;`,
+        en: `flowchart TD
+    Mobile["Client / Mobile\\n(Health Unit Search)"] --> API["Node.js / Express API\\n(Geospatial Processing)"]
+    API --> Mongo[("MongoDB (2dsphere)\\n(Euclidean Distance Calculation)")]
+    API -.-> Maps["Google Maps Platform\\n(Routes to Nearest Health Center)"]
+
+    classDef lime fill:#1a2e1f,stroke:#EAF35B,stroke-width:1.5px,color:#EAF35B;
+    classDef blue fill:#101d36,stroke:#2E53E5,stroke-width:1.5px,color:#93c5fd;
+    classDef orange fill:#2e1815,stroke:#E97C67,stroke-width:1.5px,color:#E97C67;
+    classDef cream fill:#242220,stroke:#F2EADC,stroke-width:1.5px,color:#F2EADC;
+
+    class API lime;
+    class Mongo blue;
+    class Maps orange;
+    class Mobile cream;`,
       },
       highlights: [
         {

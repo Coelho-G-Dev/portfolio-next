@@ -133,6 +133,22 @@ section[id] {
   animation: flow-pulse-glow 2s ease-in-out infinite;
 }
 
+/* Modern Dark Scrollbar for Panels */
+.custom-dark-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-dark-scrollbar::-webkit-scrollbar-track {
+  background: rgba(18, 34, 45, 0.7);
+  border-radius: 8px;
+}
+.custom-dark-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(242, 234, 220, 0.25);
+  border-radius: 8px;
+}
+.custom-dark-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(234, 243, 91, 0.7);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
