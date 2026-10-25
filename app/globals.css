@@ -38,7 +38,7 @@ section[id] {
 }
 
 .reveal.is-visible .stack-pill {
-  animation: pop-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: pop-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .sr-only {
@@ -55,8 +55,8 @@ section[id] {
 
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transform: translateY(16px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 .reveal.is-visible {
   opacity: 1;

@@ -142,7 +142,7 @@ export default function Method() {
                   {techs.map((tech, i) => (
                     <span
                       key={tech}
-                      style={{ animationDelay: `${i * 40}ms` }}
+                      style={{ animationDelay: `${i * 20}ms` }}
                       className="stack-pill opacity-0 font-mono text-[11px] tracking-wide uppercase border border-cream/30 rounded-full px-2.5 py-1 transition-all duration-300 hover:bg-lime hover:text-navy hover:border-lime hover:-translate-y-0.5 cursor-default bg-navy/40 font-medium text-cream"
                     >
                       {tech}
