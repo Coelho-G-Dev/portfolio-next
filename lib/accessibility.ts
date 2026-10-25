@@ -134,9 +134,6 @@ export function getContrastSuggestion(
 
   const isFgLighter = fgLum > bgLum;
 
-  const currentDiff = Math.abs(fgLum - bgLum);
-  const targetDiff = targetRatio * 0.05 - 0.05; // Derived from contrast ratio formula
-
   let suggestion: string;
   if (isFgLighter) {
     suggestion = `Consider darkening the text color`;

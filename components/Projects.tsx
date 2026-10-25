@@ -5,12 +5,11 @@ import {
   Github,
   FileCode,
   Network,
-  Copy,
-  Check,
   ChevronDown,
   ChevronUp,
   X,
   RotateCcw,
+  Trophy,
 } from "lucide-react";
 import { projects, type TileColor } from "@/data/projects";
 import { useReveal } from "@/lib/useReveal";
@@ -18,6 +17,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import SectionCut from "@/components/SectionCut";
 import ArchitectureVisualizer from "@/components/ArchitectureVisualizer";
 import StackFilterConsole from "@/components/StackFilterConsole";
+import { copyText } from "@/lib/clipboard";
 
 const shapeClass: Record<TileColor, string> = {
   lime: "bg-lime",
@@ -32,6 +32,7 @@ export default function Projects() {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [expandedArchId, setExpandedArchId] = useState<number | null>(null);
   const [copiedId, setCopiedId] = useState<number | null>(null);
+  const [copyFailedId, setCopyFailedId] = useState<number | null>(null);
   const ref = useReveal<HTMLDivElement>();
 
   // Extract all unique tags across projects
@@ -70,7 +71,7 @@ export default function Projects() {
     });
   }, [categoryFilter, selectedTag]);
 
-  // Opção 08: Global Esc shortcut to collapse active architecture drawer
+  // Global Esc shortcut to collapse active architecture drawer
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && expandedArchId !== null) {
@@ -106,12 +107,13 @@ export default function Projects() {
   };
 
   const handleCopyDiagram = async (diagram: string, id: number) => {
-    try {
-      await navigator.clipboard.writeText(diagram);
+    const ok = await copyText(diagram);
+    if (ok) {
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 2500);
-    } catch {
-      // fallback
+    } else {
+      setCopyFailedId(id);
+      setTimeout(() => setCopyFailedId(null), 2500);
     }
   };
 
@@ -211,11 +213,14 @@ export default function Projects() {
           ) : (
             visible.map((project) => {
               const isArchExpanded = expandedArchId === project.id;
+              const isFeatured = Boolean(project.award);
 
               return (
                 <div
                   key={project.id}
-                  className="relative group py-8 px-4 -mx-4 overflow-hidden transition-colors duration-300 hover:bg-navy/[0.04] rounded-xl"
+                  className={`relative group py-8 px-4 -mx-4 overflow-hidden transition-colors duration-300 hover:bg-navy/[0.04] rounded-xl ${
+                    isFeatured ? "my-2 bg-navy/[0.06] ring-2 ring-navy/30" : ""
+                  }`}
                 >
                   <span
                     aria-hidden="true"
@@ -244,6 +249,12 @@ export default function Projects() {
                     </span>
 
                     <div className="relative z-10">
+                      {project.award && (
+                        <p className="inline-flex items-center gap-1.5 mb-2 px-2.5 py-1 rounded-full bg-navy text-lime font-mono text-xs font-bold tracking-wider uppercase shadow-sm">
+                          <Trophy size={13} className="shrink-0" aria-hidden="true" />
+                          <span>{project.award[language]}</span>
+                        </p>
+                      )}
                       <h3 className="relative inline-block font-display font-bold text-3xl md:text-4xl text-navy transition-all duration-300 group-hover:translate-x-1">
                         <a
                           href={project.githubLink}
@@ -322,6 +333,20 @@ export default function Projects() {
                         <ArrowUpRight size={13} className="shrink-0" />
                       </a>
 
+                      {project.frontendLink && (
+                        <a
+                          href={project.frontendLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={t.projects.viewFrontendAria(project.title)}
+                          className="project-secondary-btn inline-flex items-center gap-2 px-4 py-2 rounded-full border border-navy/40 font-mono text-xs font-semibold tracking-wider uppercase transition-all duration-300 bg-navy/10 text-navy hover:bg-navy hover:text-cream shadow-sm hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-navy"
+                        >
+                          <Github size={14} className="shrink-0" />
+                          <span>{t.projects.viewFrontend}</span>
+                          <ArrowUpRight size={13} className="shrink-0" />
+                        </a>
+                      )}
+
                       {project.apiDocsLink && (
                         <a
                           href={project.apiDocsLink}
@@ -377,7 +402,7 @@ export default function Projects() {
                     </div>
                   </div>
 
-                  {/* Opção 07: Architecture Visualizer Drawer with Smooth CSS Grid Transition */}
+                  {/* Architecture Visualizer Drawer with Smooth CSS Grid Transition */}
                   {project.architecture && (
                     <div
                       className={`grid transition-[grid-template-rows,opacity,margin] duration-500 ease-in-out ${
@@ -410,6 +435,7 @@ export default function Projects() {
                             project={project}
                             language={language}
                             copiedId={copiedId}
+                            copyFailed={copyFailedId === project.id}
                             onCopyDiagram={() =>
                               handleCopyDiagram(
                                 typeof project.architecture!.diagram === "string"
@@ -420,6 +446,7 @@ export default function Projects() {
                             }
                             copyLabel={t.projects.copyDiagram}
                             copiedLabel={t.projects.copiedDiagram}
+                            copyFailedLabel={t.projects.copyFailed}
                           />
 
                           {/* Technical Highlights */}

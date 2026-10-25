@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ Gabriel Coelho — Portfólio
+# ⚡ Gabriel Coelho | Portfólio
 
 <p align="center">
   <strong>Meu portfólio interativo desenvolvido com Next.js 15, TypeScript e Tailwind CSS.</strong><br>
@@ -71,6 +71,7 @@ Selecionei para o portfólio projetos que refletem meu foco em solidez no back-e
 
 | Projeto | Categoria | Stack Principal | Repositório |
 | :--- | :--- | :--- | :--- |
+| **Cidade Energia** 🏆 | Campeão do Hackathon Equatorial 2026 | Next.js, TypeScript, Supabase, pgvector, Gemini AI, Zod, Vitest, PWA | [Back-End](https://github.com/Coelho-G-Dev/Cidade-Energia-Back-End) · [Front-End](https://github.com/Coelho-G-Dev/Cidade-Energia-Front-End) |
 | **RAG Serviços Públicos** | Arquitetura RAG & IA | Python, FastAPI, pgvector, Gemini AI, TypeScript, Docker | [GitHub](https://github.com/Coelho-G-Dev/rag-servicos-publicos) |
 | **AuthGuard** | Microsserviço de Identidade | TypeScript, Node.js, RabbitMQ, Redis, Docker | [GitHub](https://github.com/Coelho-G-Dev/authguard) |
 | **API Financeira Inteligente** | IA & Auditoria Financeira | Node.js, PostgreSQL, Google Gemini AI, Jest | [GitHub](https://github.com/Coelho-G-Dev/api-financeira-inteligente) |
@@ -127,7 +128,7 @@ portfolio-next/
 ## 💻 Como Rodar Localmente
 
 ### Pré-requisitos
-- [Node.js](https://nodejs.org/) (versão 18.18+ ou superior recomendada)
+- [Node.js](https://nodejs.org/) (versão 18.18 ou superior)
 - Gerenciador de pacotes `npm`, `yarn` ou `pnpm`
 
 ### Passo a passo
@@ -160,13 +161,13 @@ portfolio-next/
 | `npm run dev` | Inicia o servidor local de desenvolvimento |
 | `npm run build` | Compila e otimiza a aplicação para produção |
 | `npm run start` | Inicia a aplicação após o build de produção |
-| `npm run lint` | Executa a verificação estática de código com ESLint/Next Lint |
+| `npm run lint` | Executa a verificação estática de código com ESLint |
 
 ---
 
 ## 🌐 Deploy
 
-O projeto está configurado para deploy contínuo na **[Vercel](https://vercel.com/)**. Cada push realizado na branch principal dispara automaticamente uma nova compilação com prévias de build e testes de regressão.
+O projeto está configurado para deploy contínuo na **[Vercel](https://vercel.com/)**. Cada push na branch principal dispara automaticamente um novo build e deploy.
 
 Link de produção ativo:  
 👉 **[portfolio-next-flax-seven.vercel.app](https://portfolio-next-flax-seven.vercel.app)**

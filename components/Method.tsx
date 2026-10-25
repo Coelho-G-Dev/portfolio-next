@@ -4,7 +4,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import SectionCut from "@/components/SectionCut";
 
 export default function Method() {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
   const ref = useReveal<HTMLDivElement>();
 
   const stack = [
@@ -18,7 +18,9 @@ export default function Method() {
         "FastAPI",
         "Java / Spring Boot",
         "Express",
+        "Next.js API Routes",
         "REST APIs",
+        "OpenAPI / Swagger",
         "Zod",
       ],
     },
@@ -39,6 +41,7 @@ export default function Method() {
       techs: [
         "PostgreSQL",
         "pgvector (HNSW)",
+        "Supabase (Auth + RLS)",
         "MongoDB",
         "Mongoose",
         "Prisma / TypeORM",
@@ -52,6 +55,8 @@ export default function Method() {
         "Docker Compose",
         "Jest",
         "Supertest",
+        "Vitest",
+        "Vercel",
         "CI/CD Pipelines",
         "Linux / Bash",
       ],
@@ -63,7 +68,9 @@ export default function Method() {
         "Next.js",
         "React",
         "Tailwind CSS",
-        "TypeScript",
+        "PWA",
+        "Motion",
+        "Leaflet",
         "HTML5 / CSS3",
       ],
     },

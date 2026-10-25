@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Gabriel Coelho — Desenvolvedor Back-End";
+export const alt = "Gabriel Coelho | Desenvolvedor Back-End";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -34,7 +34,7 @@ export default function OGImage() {
           }}
         >
           <div style={{ width: 8, height: 8, borderRadius: 999, background: "#EAF35B" }} />
-          SÃO LUÍS · BRASIL — BACKEND, APIS E SISTEMAS
+          SÃO LUÍS · BRASIL · BACKEND, APIS E SISTEMAS
         </div>
         <div style={{ display: "flex", flexDirection: "column", color: "#F2EADC", fontSize: 96, fontWeight: 900, lineHeight: 1 }}>
           <span>Back-end com</span>

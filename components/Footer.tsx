@@ -31,7 +31,7 @@ export default function Footer() {
               <span className="font-display font-black text-2xl tracking-tight">Gabriel Coelho</span>
             </div>
             <p className="font-mono text-xs text-cream/70 tracking-widest uppercase">
-              // {t.footer.tagline}
+              {"// "}{t.footer.tagline}
             </p>
           </div>
 
@@ -93,7 +93,7 @@ export default function Footer() {
         {/* Base: Copyright */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-mono text-cream/40 pt-6 border-t border-cream/5">
           <p>© {currentYear} Gabriel Coelho. {t.footer.rights}</p>
-          <p>São Luís · Maranhão — Brasil</p>
+          <p>São Luís · Maranhão · Brasil</p>
         </div>
       </div>
     </footer>

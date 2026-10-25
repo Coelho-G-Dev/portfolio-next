@@ -8,7 +8,7 @@ import {
   calculateEffectiveColor,
   siteColors
 } from '@/lib/accessibility';
-import { CheckCircle2, AlertTriangle, X, SlidersHorizontal, ChevronUp } from 'lucide-react';
+import { AlertTriangle, X, SlidersHorizontal, ChevronUp } from 'lucide-react';
 
 interface ContrastPair {
   foreground: string;

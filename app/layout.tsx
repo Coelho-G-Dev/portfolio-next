@@ -33,20 +33,20 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Gabriel Coelho — Desenvolvedor Back-End",
+  title: "Gabriel Coelho | Desenvolvedor Back-End",
   description:
     "Gabriel Coelho, desenvolvedor back-end focado em sistemas resilientes, APIs escaláveis e IA. Experiência com Node.js, TypeScript, Python, FastAPI, Docker, RabbitMQ e PostgreSQL.",
   robots: { index: true, follow: true },
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Gabriel Coelho — Desenvolvedor Back-End",
+    title: "Gabriel Coelho | Desenvolvedor Back-End",
     description: "Sistemas que sobrevivem à primeira versão.",
     type: "website",
     locale: "pt_BR",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Gabriel Coelho — Desenvolvedor Back-End",
+    title: "Gabriel Coelho | Desenvolvedor Back-End",
     description: "Sistemas que sobrevivem à primeira versão.",
   },
 };
@@ -91,7 +91,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SkipLink />
           <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+            // Escapa "<" para que nenhum valor feche a tag <script> antes da hora.
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }}
           />
           {children}
           <ScrollRestore />

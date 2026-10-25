@@ -34,7 +34,7 @@ export const TECH_DOMAINS: TechDomainDef[] = [
     dotColor: "bg-lime",
     textColor: "text-lime",
     borderColor: "border-lime/30",
-    tags: ["Python", "FastAPI", "Node.js", "TypeScript", "Express"],
+    tags: ["Python", "FastAPI", "Node.js", "TypeScript", "Express", "Next.js", "Zod"],
   },
   {
     key: "messaging",
@@ -48,14 +48,14 @@ export const TECH_DOMAINS: TechDomainDef[] = [
     dotColor: "bg-blue-400",
     textColor: "text-blue-300",
     borderColor: "border-blue-400/30",
-    tags: ["PostgreSQL", "MongoDB", "Mongoose"],
+    tags: ["PostgreSQL", "Supabase", "MongoDB", "Mongoose"],
   },
   {
     key: "infra",
     dotColor: "bg-cream",
     textColor: "text-cream/90",
     borderColor: "border-cream/30",
-    tags: ["Docker", "Jest", "JWT", "Google Maps Platform"],
+    tags: ["Docker", "Jest", "Vitest", "JWT", "PWA", "Google Maps Platform"],
   },
 ];
 
@@ -286,7 +286,7 @@ export default function StackFilterConsole({
               <div className="mt-3 flex items-center justify-between px-3 py-2 rounded-xl bg-lime/15 border border-lime/40 text-lime font-mono text-xs">
                 <span className="flex items-center gap-1.5 font-bold">
                   <Sparkles size={12} />
-                  <span>{selectedTag} ativo</span>
+                  <span>{t.projects.stackFilter.activeTag(selectedTag)}</span>
                 </span>
                 <button
                   type="button"
@@ -309,7 +309,7 @@ export default function StackFilterConsole({
                     onClick={() => setSearchQuery("")}
                     className="mt-2 text-lime hover:underline font-semibold cursor-pointer"
                   >
-                    Limpar busca
+                    {t.projects.stackFilter.clearSearch}
                   </button>
                 </div>
               ) : (

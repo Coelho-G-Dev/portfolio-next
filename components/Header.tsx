@@ -3,6 +3,9 @@ import { useEffect, useState, useRef } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
+// Seções que têm link no menu; usadas para marcar o link ativo ao rolar.
+const NAV_SECTION_IDS = ["trabalho", "metodo", "sobre", "contato"];
+
 export default function Header() {
   const { language, setLanguage, t } = useLanguage();
   const [open, setOpen] = useState(false);
@@ -34,15 +37,14 @@ export default function Header() {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           const id = entry.target.id;
-          const isNavLink = links.some((l) => l.href.includes(id));
-          setActive(isNavLink ? `/#${id}` : "");
+          setActive(NAV_SECTION_IDS.includes(id) ? `/#${id}` : "");
         });
       },
       { rootMargin: "-45% 0px -50% 0px" }
     );
     sections.forEach((s) => s && observer.observe(s));
     return () => observer.disconnect();
-  }, [links]);
+  }, []);
 
   const getFocusableElements = (container: HTMLElement | null): HTMLElement[] => {
     if (!container) return [];
@@ -69,6 +71,7 @@ export default function Header() {
 
   useEffect(() => {
     if (open) {
+      const hamburger = hamburgerRef.current;
       closeButtonRef.current?.focus();
 
       const handleKeyDown = (event: KeyboardEvent) => {
@@ -105,7 +108,7 @@ export default function Header() {
       return () => {
         document.removeEventListener("keydown", handleKeyDown);
         document.removeEventListener("keydown", handleTrapFocus);
-        hamburgerRef.current?.focus();
+        hamburger?.focus();
       };
     }
   }, [open, menuRef, closeButtonRef, hamburgerRef]);

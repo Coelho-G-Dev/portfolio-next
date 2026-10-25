@@ -2,7 +2,7 @@ export type Locale = "pt" | "en";
 
 export const translations = {
   pt: {
-    pageTitle: "Gabriel Coelho — Desenvolvedor Back-End",
+    pageTitle: "Gabriel Coelho | Desenvolvedor Back-End",
     nav: {
       work: "TRABALHO",
       method: "MÉTODO",
@@ -12,12 +12,12 @@ export const translations = {
       ariaMenu: "Menu principal",
       openMenu: "Abrir menu",
       closeMenu: "Fechar menu",
-      langSwitchAria: "Alterar idioma para Inglês",
+      langSwitchAria: "Alterar idioma para inglês",
       skipLink: "Pular para o conteúdo principal",
     },
     hero: {
       badge: "corte limpo",
-      location: "São Luís · Brasil — Backend, APIs e Sistemas",
+      location: "São Luís · Brasil · Backend, APIs e Sistemas",
       titleLine1: "Back-end com",
       titleHighlight: "presença.",
       counter: "01 / 05",
@@ -28,7 +28,7 @@ export const translations = {
     },
     projects: {
       cutLabel: "primeiro corte",
-      sectionNumber: "01 — Sistemas recentes",
+      sectionNumber: "01 · Sistemas recentes",
       titleLine1: "Sistemas que sobrevivem",
       titleHighlight: "à primeira versão.",
       filters: {
@@ -38,9 +38,11 @@ export const translations = {
       },
       viewGithubAria: (title: string) => `Ver ${title} no GitHub`,
       viewDemoAria: (title: string) => `Ver demonstração do projeto ${title}`,
-      viewApiDocsAria: (title: string) => `Ver documentação de API do projeto ${title}`,
+      viewApiDocsAria: (title: string) => `Ver a documentação da API do projeto ${title}`,
       viewArchAria: (title: string) => `Alternar diagrama de arquitetura do projeto ${title}`,
       viewGithub: "Ver no GitHub",
+      viewFrontend: "Repo Front-End",
+      viewFrontendAria: (title: string) => `Ver o front-end de ${title} no GitHub`,
       viewDemo: "Live Demo",
       viewArchitecture: "Ver Arquitetura",
       hideArchitecture: "Ocultar Arquitetura",
@@ -48,6 +50,7 @@ export const translations = {
       architectureHighlightsTitle: "Destaques Técnicos de Engenharia",
       copyDiagram: "Copiar Diagrama",
       copiedDiagram: "Copiado!",
+      copyFailed: "Falha ao copiar",
       benchmarksTitle: "Métricas & Benchmarks",
       clickHint: "Clique no projeto para abrir o repositório",
       viewAll: "Ver todos os projetos",
@@ -79,6 +82,8 @@ export const translations = {
         closeConsole: "Fechar console",
         escShortcut: "Esc",
         emptySearch: "Nenhuma tecnologia encontrada",
+        clearSearch: "Limpar busca",
+        activeTag: (tag: string) => `${tag} ativo`,
         domains: {
           ia: "IA & Vetores",
           backend: "Backend & APIs",
@@ -90,7 +95,7 @@ export const translations = {
     },
     method: {
       cutLabel: "segundo corte",
-      sectionNumber: "02 — Como eu trabalho",
+      sectionNumber: "02 · Como eu trabalho",
       titleLine1: "A arquitetura é o",
       titleHighlight: "meio.",
       subtitle:
@@ -127,26 +132,26 @@ export const translations = {
       cutLabel: "terceiro corte",
       badgeTag: "Arquivo pessoal",
       badgeHighlight: "não é só código.",
-      sectionNumber: "03 — Sobre mim",
+      sectionNumber: "03 · Sobre mim",
       highlight:
-        "Vim da logística para o back-end — onde aprendi que sistemas de verdade mantêm a ordem nos bastidores, eliminam gargalos e nunca perdem uma mensagem.",
+        "Vim da logística para o back-end, onde aprendi que sistemas de verdade mantêm a ordem nos bastidores, eliminam gargalos e nunca perdem uma mensagem.",
       workshopTitle: "Na bancada",
       workshopText:
-        "Node.js, TypeScript, PostgreSQL, MongoDB, Java/Spring Boot, Docker.",
+        "Node.js, TypeScript, Next.js, PostgreSQL, Supabase, MongoDB, Java/Spring Boot, Docker.",
       offScreenTitle: "Fora da tela",
       offScreenText:
         "Pratico powerlifting e xadrez, disciplinas em que exercito a evolução contínua e a capacidade de pensar várias jogadas à frente.",
     },
     contact: {
       cutLabel: "quarto corte",
-      sectionNumber: "04 — Próximo capítulo",
+      sectionNumber: "04 · Próximo capítulo",
       titleLine1: "Tem uma",
       titleHighlight: "boa ideia?",
       text: "Conte-me o que você planeja construir. Respondo com atenção a cada mensagem, mesmo quando a resposta for um “ainda não”.",
       emailAria: "Enviar e-mail para Gabriel Coelho",
       copyEmail: "Copiar e-mail",
       copiedEmail: "E-mail copiado",
-      failedCopy: "Não foi possível copiar — selecione o texto manualmente",
+      failedCopy: "Não foi possível copiar. Selecione o texto manualmente.",
       location: "São Luís, Brasil · UTC-3",
       githubAria: "Ver perfil no GitHub",
       linkedinAria: "Conectar no LinkedIn",
@@ -164,11 +169,11 @@ export const translations = {
       dismiss: "Dispensar",
     },
     error: {
-      cutTag: "Corte mal feito",
+      cutTag: "Corte malfeito",
       titleLine1: "Algo quebrou",
       titleHighlight: "nos bastidores.",
       description:
-        "Ocorreu um erro inesperado ao carregar esta página. Não foi culpa sua — tente novamente ou volte ao início.",
+        "Ocorreu um erro inesperado ao carregar esta página. Não foi culpa sua. Tente novamente ou volte ao início.",
       retry: "Tentar de novo",
       backHome: "Voltar ao início",
     },
@@ -177,12 +182,12 @@ export const translations = {
       title: "404",
       highlight: "essa rota não existe.",
       description:
-        "Talvez seja um endpoint que eu ainda não tenha construído ou um link quebrado — avise-me se encontrar algum problema.",
+        "Talvez seja um endpoint que eu ainda não construí ou um link quebrado. Se encontrar algum problema, me avise.",
       backHome: "Voltar ao início",
     },
   },
   en: {
-    pageTitle: "Gabriel Coelho — Back-End Developer",
+    pageTitle: "Gabriel Coelho | Back-End Developer",
     nav: {
       work: "WORK",
       method: "METHOD",
@@ -197,7 +202,7 @@ export const translations = {
     },
     hero: {
       badge: "clean cut",
-      location: "São Luís · Brazil — Backend, APIs & Systems",
+      location: "São Luís · Brazil · Backend, APIs & Systems",
       titleLine1: "Back-end with",
       titleHighlight: "presence.",
       counter: "01 / 05",
@@ -208,7 +213,7 @@ export const translations = {
     },
     projects: {
       cutLabel: "first cut",
-      sectionNumber: "01 — Recent systems",
+      sectionNumber: "01 · Recent systems",
       titleLine1: "Systems that outlive",
       titleHighlight: "the first version.",
       filters: {
@@ -221,6 +226,8 @@ export const translations = {
       viewApiDocsAria: (title: string) => `View API documentation for ${title}`,
       viewArchAria: (title: string) => `Toggle architecture diagram for ${title}`,
       viewGithub: "View on GitHub",
+      viewFrontend: "Front-End Repo",
+      viewFrontendAria: (title: string) => `View ${title} front end on GitHub`,
       viewDemo: "Live Demo",
       viewArchitecture: "View Architecture",
       hideArchitecture: "Hide Architecture",
@@ -228,8 +235,9 @@ export const translations = {
       architectureHighlightsTitle: "Technical Engineering Highlights",
       copyDiagram: "Copy Diagram",
       copiedDiagram: "Copied!",
+      copyFailed: "Copy failed",
       benchmarksTitle: "Metrics & Benchmarks",
-      clickHint: "Click on a project to open repository",
+      clickHint: "Click a project to open its repository",
       viewAll: "View all projects",
       tagFilterLabel: "Filter by stack:",
       allTagsLabel: "All",
@@ -259,8 +267,10 @@ export const translations = {
         closeConsole: "Close console",
         escShortcut: "Esc",
         emptySearch: "No technologies found",
+        clearSearch: "Clear search",
+        activeTag: (tag: string) => `${tag} active`,
         domains: {
-          ia: "AI & Vector",
+          ia: "AI & Vectors",
           backend: "Backend & APIs",
           messaging: "Messaging & Cache",
           database: "Databases & Storage",
@@ -270,7 +280,7 @@ export const translations = {
     },
     method: {
       cutLabel: "second cut",
-      sectionNumber: "02 — How I work",
+      sectionNumber: "02 · How I work",
       titleLine1: "Architecture is the",
       titleHighlight: "medium.",
       subtitle:
@@ -307,26 +317,26 @@ export const translations = {
       cutLabel: "third cut",
       badgeTag: "Personal archive",
       badgeHighlight: "more than just code.",
-      sectionNumber: "03 — About me",
+      sectionNumber: "03 · About me",
       highlight:
-        "From logistics to backend engineering — where I learned that true systems maintain order behind the scenes, eliminate bottlenecks, and never lose a message.",
+        "I moved from logistics into back-end engineering, where I learned that real systems keep order behind the scenes, remove bottlenecks, and never lose a message.",
       workshopTitle: "In the workshop",
       workshopText:
-        "Node.js, TypeScript, PostgreSQL, MongoDB, Java/Spring Boot, Docker.",
+        "Node.js, TypeScript, Next.js, PostgreSQL, Supabase, MongoDB, Java/Spring Boot, Docker.",
       offScreenTitle: "Off screen",
       offScreenText:
-        "I practice powerlifting and chess — disciplines where I cultivate continuous discipline and the foresight to think several moves ahead.",
+        "I practice powerlifting and chess, two disciplines that train steady improvement and the habit of thinking several moves ahead.",
     },
     contact: {
       cutLabel: "fourth cut",
-      sectionNumber: "04 — Next chapter",
+      sectionNumber: "04 · Next chapter",
       titleLine1: "Got a",
       titleHighlight: "great idea?",
       text: "Tell me what you are planning to build. I read and thoughtfully reply to every message, even when the answer happens to be “not yet”.",
       emailAria: "Send email to Gabriel Coelho",
       copyEmail: "Copy email",
       copiedEmail: "Email copied",
-      failedCopy: "Could not copy — please select text manually",
+      failedCopy: "Could not copy. Please select the text manually.",
       location: "São Luís, Brazil · UTC-3",
       githubAria: "View GitHub profile",
       linkedinAria: "Connect on LinkedIn",
@@ -348,7 +358,7 @@ export const translations = {
       titleLine1: "Something broke",
       titleHighlight: "behind the scenes.",
       description:
-        "An unexpected error occurred while loading this page. It wasn't your fault — try again or return to home.",
+        "An unexpected error occurred while loading this page. It wasn't your fault. Try again or go back home.",
       retry: "Try again",
       backHome: "Back to home",
     },
@@ -357,7 +367,7 @@ export const translations = {
       title: "404",
       highlight: "this route does not exist.",
       description:
-        "Perhaps an endpoint I haven't built yet or a broken link — please let me know if you run into any issues.",
+        "Maybe it is an endpoint I haven't built yet, or a broken link. Let me know if you run into any issues.",
       backHome: "Back to home",
     },
   },

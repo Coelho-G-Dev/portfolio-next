@@ -26,6 +26,8 @@ export type Project = {
   description: LocalizedString;
   tags: string[];
   githubLink: string;
+  frontendLink?: string;
+  award?: LocalizedString;
   demoLink?: string;
   apiDocsLink?: string;
   apiDocsLabel?: LocalizedString;
@@ -37,6 +39,149 @@ export type Project = {
 export const projects: Project[] = [
   {
     id: 1,
+    title: "Cidade Energia",
+    category: "backend",
+    type: {
+      pt: "App Educacional Full-Stack & Tutor RAG",
+      en: "Full-Stack Educational App & RAG Tutor",
+    },
+    year: "2026",
+    award: {
+      pt: "Campeão · Hackathon Equatorial 2026",
+      en: "Winner · Equatorial Hackathon 2026",
+    },
+    description: {
+      pt: "Projeto campeão do Hackathon Equatorial (Desafio 9): transforma a conta de luz na primeira aula de energia de estudantes de escolas públicas de São Luís. API em Next.js + Supabase com RLS, simulador solar com dados da NASA POWER, gamificação à prova de trapaça e tutor com RAG (Gemini + pgvector), consumida por um PWA.",
+      en: "Winning project of the Equatorial Hackathon (Challenge 9): turns the electricity bill into the first energy lesson for public school students in São Luís. Next.js + Supabase API with RLS, solar simulator fed by NASA POWER data, cheat-proof gamification, and a RAG tutor (Gemini + pgvector), consumed by a PWA.",
+    },
+    tags: ["Next.js", "TypeScript", "Supabase", "PostgreSQL", "pgvector", "Gemini AI", "Zod", "Vitest", "PWA"],
+    githubLink: "https://github.com/Coelho-G-Dev/Cidade-Energia-Back-End",
+    frontendLink: "https://github.com/Coelho-G-Dev/Cidade-Energia-Front-End",
+    demoLink: "https://cidade-energia.vercel.app",
+    apiDocsLink: "https://cidade-energia-back-end.vercel.app/api/docs",
+    apiDocsLabel: {
+      pt: "Swagger Docs",
+      en: "Swagger Docs",
+    },
+    shapeColors: ["lime", "lavender"],
+    metrics: [
+      {
+        label: { pt: "Cobertura & Testes", en: "Coverage & Tests" },
+        value: {
+          pt: "435 testes Vitest (302 API · 133 PWA)",
+          en: "435 Vitest tests (302 API · 133 PWA)",
+        },
+      },
+      {
+        label: { pt: "Tutor RAG", en: "RAG Tutor" },
+        value: {
+          pt: "Embeddings 768d · HNSW · limiar calibrado",
+          en: "768d embeddings · HNSW · calibrated threshold",
+        },
+      },
+      {
+        label: { pt: "Segurança de Dados", en: "Data Security" },
+        value: {
+          pt: "RLS em 100% das tabelas · pontos só no servidor",
+          en: "RLS on 100% of tables · server-only scoring",
+        },
+      },
+    ],
+    architecture: {
+      title: {
+        pt: "API Serverless com RLS, Gamificação e Tutor RAG",
+        en: "Serverless API with RLS, Gamification & RAG Tutor",
+      },
+      diagram: {
+        pt: `[PWA Next.js (Estudante)] ──> [Supabase Auth (Login Anônimo)]
+              │
+              └── Bearer token ──> [proxy.ts (CORS · 404 · 405)] ──> [API Routes + Zod]
+                                                                         │
+                     ┌───────────────────────────┬───────────────────────┤
+                     ▼                           ▼                       ▼
+     [Supabase Postgres (RLS)]        [Tutor Energinho (RAG)]      [NASA POWER]
+      (Pontos · Rankings · Views)       │                         (Irradiação · Cache 6h)
+                     │                  ├──> [pgvector (HNSW 768d)]
+                     │                  └──> [Gemini API]
+                     ▼
+     [Pontos & Rankings (Views Agregadas)]`,
+        en: `[PWA Next.js (Student)] ──> [Supabase Auth (Anonymous Login)]
+              │
+              └── Bearer token ──> [proxy.ts (CORS · 404 · 405)] ──> [API Routes + Zod]
+                                                                         │
+                     ┌───────────────────────────┬───────────────────────┤
+                     ▼                           ▼                       ▼
+     [Supabase Postgres (RLS)]        [Energinho Tutor (RAG)]      [NASA POWER]
+      (Points · Rankings · Views)       │                         (Irradiance · 6h Cache)
+                     │                  ├──> [pgvector (HNSW 768d)]
+                     │                  └──> [Gemini API]
+                     ▼
+     [Points & Rankings (Aggregated Views)]`,
+      },
+      mermaid: {
+        pt: `flowchart TD
+    PWA["PWA Next.js\\n(Estudante · Login Anônimo)"] -.->|"signInAnonymously"| Auth["Supabase Auth\\n(Sem e-mail · Só primeiro nome)"]
+    PWA -->|"Bearer token"| Proxy["proxy.ts\\n(CORS · 404 · 405)"]
+    Proxy --> Routes["API Routes + Zod\\n(Next.js App Router)"]
+    Routes --> PG[("Supabase Postgres\\n(RLS em todas as tabelas)")]
+    Routes --> Tutor["Tutor Energinho\\n(RAG · Limiar 0,64)"]
+    Routes -.->|"Cache 6h / 30 dias"| NASA["NASA POWER\\n(Irradiação de São Luís)"]
+    Tutor --> Vector[("pgvector\\n(HNSW · 768d)")]
+    Tutor --> Gemini["Gemini API\\n(Resposta ancorada nas lições)"]
+    PG --> Ranking["Pontos & Rankings\\n(Views agregadas · Sem dados individuais)"]
+
+    classDef lime fill:#1a2e1f,stroke:#EAF35B,stroke-width:1.5px,color:#EAF35B;
+    classDef blue fill:#101d36,stroke:#2E53E5,stroke-width:1.5px,color:#93c5fd;
+    classDef orange fill:#2e1815,stroke:#E97C67,stroke-width:1.5px,color:#E97C67;
+    classDef lavender fill:#221533,stroke:#B997FF,stroke-width:1.5px,color:#B997FF;
+    classDef cream fill:#242220,stroke:#F2EADC,stroke-width:1.5px,color:#F2EADC;
+
+    class Proxy,Routes,Auth,Ranking lime;
+    class PG,Vector blue;
+    class NASA orange;
+    class Tutor,Gemini lavender;
+    class PWA cream;`,
+        en: `flowchart TD
+    PWA["PWA Next.js\\n(Student · Anonymous Login)"] -.->|"signInAnonymously"| Auth["Supabase Auth\\n(No email · First name only)"]
+    PWA -->|"Bearer token"| Proxy["proxy.ts\\n(CORS · 404 · 405)"]
+    Proxy --> Routes["API Routes + Zod\\n(Next.js App Router)"]
+    Routes --> PG[("Supabase Postgres\\n(RLS on every table)")]
+    Routes --> Tutor["Energinho Tutor\\n(RAG · 0.64 Threshold)"]
+    Routes -.->|"6h / 30-day cache"| NASA["NASA POWER\\n(São Luís Irradiance)"]
+    Tutor --> Vector[("pgvector\\n(HNSW · 768d)")]
+    Tutor --> Gemini["Gemini API\\n(Lesson-grounded answers)"]
+    PG --> Ranking["Points & Rankings\\n(Aggregated views · No individual data)"]
+
+    classDef lime fill:#1a2e1f,stroke:#EAF35B,stroke-width:1.5px,color:#EAF35B;
+    classDef blue fill:#101d36,stroke:#2E53E5,stroke-width:1.5px,color:#93c5fd;
+    classDef orange fill:#2e1815,stroke:#E97C67,stroke-width:1.5px,color:#E97C67;
+    classDef lavender fill:#221533,stroke:#B997FF,stroke-width:1.5px,color:#B997FF;
+    classDef cream fill:#242220,stroke:#F2EADC,stroke-width:1.5px,color:#F2EADC;
+
+    class Proxy,Routes,Auth,Ranking lime;
+    class PG,Vector blue;
+    class NASA orange;
+    class Tutor,Gemini lavender;
+    class PWA cream;`,
+      },
+      highlights: [
+        {
+          pt: "Privacidade de menores por design: login anônimo, só o primeiro nome, RLS em todas as tabelas e rankings saídos de views agregadas com mínimo de 3 participantes.",
+          en: "Privacy-by-design for minors: anonymous login, first name only, RLS on every table, and rankings from aggregated views with a 3-participant minimum.",
+        },
+        {
+          pt: "Gamificação à prova de trapaça: pontos calculados só no servidor, tabela pontos_eventos única por (perfil, origem, referência) e lições concluídas na ordem.",
+          en: "Cheat-proof gamification: server-only scoring, pontos_eventos table unique per (profile, source, reference), and lessons completed in order.",
+        },
+        {
+          pt: "Tutor Energinho com RAG (Gemini + pgvector HNSW), limiar de similaridade calibrado com perguntas reais e resiliência à NASA POWER com cache e valor de reserva.",
+          en: "Energinho tutor with RAG (Gemini + pgvector HNSW), similarity threshold calibrated on real questions, and NASA POWER resilience via caching and fallback values.",
+        },
+      ],
+    },
+  },
+  {
+    id: 2,
     title: "AuthGuard",
     category: "backend",
     type: {
@@ -106,7 +251,7 @@ export const projects: Project[] = [
     Gateway -->|"Desacoplamento Assíncrono"| Auth["Auth Service\\n(MFA / TOTP & JWT RS256)"]
     Gateway -.->|"Eventos de Auditoria"| Broker["RabbitMQ Exchange\\n(Fanout / Direct)"]
     Auth --> PG[("PostgreSQL\\n(Usuários & Roles ACID)")]
-    Auth --> Redis[("Redis Blacklist\\n(O(1) Revogação de Tokens)")]
+    Auth --> Redis[("Redis Blacklist\\n(Revogação de Tokens em O(1))")]
     Broker --> DLQ["DLQ Queue\\n(Zero Perda de Eventos)"]
     Broker --> Audit["Audit Consumer\\n(Logging Assíncrono)"]
 
@@ -159,7 +304,7 @@ export const projects: Project[] = [
     },
   },
   {
-    id: 2,
+    id: 3,
     title: "RAG Serviços Públicos",
     category: "ia",
     type: {
@@ -307,14 +452,14 @@ export const projects: Project[] = [
           en: "Decoupled microservices (FastAPI for AI orchestration & embeddings, Node.js/TS for routing & metadata).",
         },
         {
-          pt: "Constrained generation com Google Gemini: injeção de contexto estrito e checagem de fontes para eliminar alucinações.",
+          pt: "Geração restrita com Google Gemini: injeção de contexto estrito e checagem de fontes para eliminar alucinações.",
           en: "Constrained generation with Google Gemini: strict context injection and source citation preventing hallucinations.",
         },
       ],
     },
   },
   {
-    id: 3,
+    id: 4,
     title: "API Financeira Inteligente",
     category: "ia",
     type: {
@@ -424,7 +569,7 @@ export const projects: Project[] = [
     },
   },
   {
-    id: 4,
+    id: 5,
     title: "Guia Maranhão",
     category: "backend",
     type: {
@@ -518,13 +663,13 @@ export const projects: Project[] = [
       highlights: [
         {
           pt: "Normalização de esquemas heterogêneos de fontes governamentais em API RESTful consistente.",
-          en: "Normalization of heterogeneous governmental data into a unified, consistent RESTful API.",
+          en: "Normalization of heterogeneous government data into a unified, consistent RESTful API.",
         },
       ],
     },
   },
   {
-    id: 5,
+    id: 6,
     title: "BuscaSUS",
     category: "backend",
     type: {
@@ -598,8 +743,8 @@ export const projects: Project[] = [
       },
       highlights: [
         {
-          pt: "Indexação geoespacial 2dsphere para cálculo veloz de distâncias euclidianas e rotas até a unidade de saúde mais próxima.",
-          en: "MongoDB 2dsphere geospatial indexing for fast calculation of distance and routing to nearest health facilities.",
+          pt: "Indexação geoespacial 2dsphere para cálculo rápido de distâncias geodésicas e rotas até a unidade de saúde mais próxima.",
+          en: "MongoDB 2dsphere geospatial indexing for fast distance calculation and routing to the nearest health facilities.",
         },
       ],
     },

@@ -27,16 +27,33 @@ import {
   Info,
   Download,
   FileCode,
+  Sun,
+  Trophy,
+  AlertCircle,
 } from "lucide-react";
 import type { Project } from "@/data/projects";
+import { copyText } from "@/lib/clipboard";
 
 interface Props {
   project: Project;
   language: "pt" | "en";
   copiedId: number | null;
+  copyFailed: boolean;
   onCopyDiagram: () => void;
   copyLabel: string;
   copiedLabel: string;
+  copyFailedLabel: string;
+}
+
+// Texto interpolado no SVG exportado precisa ser escapado: um "&" solto
+// (presente em vários títulos) torna o arquivo XML inválido.
+function escapeXml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
 }
 
 type NodeColor = "lime" | "blue" | "orange" | "lavender" | "cream";
@@ -89,7 +106,149 @@ const colorStyles: Record<NodeColor, { border: string; bg: string; text: string;
 };
 
 const nodeSpecs: Record<string, NodeSpec> = {
-  // Project 1 - AuthGuard
+  // Project 1 - Cidade Energia
+  "PWA Next.js": {
+    icon: Globe,
+    color: "cream",
+    protocol: "Next.js 16 · React 19 · PWA",
+    badge: "Student App",
+    role: {
+      pt: "PWA usado pelos estudantes: simulador, trilhas com quiz, missões, mapa e o tutor Energinho.",
+      en: "PWA used by students: simulator, lesson tracks with quizzes, missions, map, and the Energinho tutor.",
+    },
+    tradeoff: {
+      pt: "Cliente único com um modo simulado que usa a mesma interface: o app inteiro roda sem backend, ideal para a demo do hackathon.",
+      en: "Single client with a same-interface mock mode: the whole app runs without a backend, ideal for the hackathon demo.",
+    },
+  },
+  "Supabase Auth": {
+    icon: Shield,
+    color: "lime",
+    protocol: "Supabase Auth · JWT",
+    badge: "Anonymous Login",
+    role: {
+      pt: "Login anônimo sem e-mail, telefone ou documento; o front envia o access_token como Bearer em cada chamada.",
+      en: "Anonymous login with no email, phone, or ID; the front end sends the access_token as Bearer on every call.",
+    },
+    tradeoff: {
+      pt: "Estudantes podem ser menores de idade: coletar só o primeiro nome reduz o risco de LGPD a quase zero.",
+      en: "Students may be minors: collecting only the first name brings LGPD exposure close to zero.",
+    },
+  },
+  "proxy.ts": {
+    icon: Network,
+    color: "lime",
+    protocol: "Next.js Proxy · CORS",
+    badge: "Edge Guard",
+    role: {
+      pt: "Camada única de CORS por lista de origens e respostas 404/405 padronizadas para todas as rotas /api.",
+      en: "Single layer for allow-listed CORS and standardized 404/405 responses across every /api route.",
+    },
+    tradeoff: {
+      pt: "Centralizar a borda evita que cada rota repita CORS e mantém o formato { erro: { codigo, mensagem } } em tudo.",
+      en: "Centralizing the edge keeps routes free of CORS boilerplate and enforces the { erro: { codigo, mensagem } } shape everywhere.",
+    },
+  },
+  "API Routes + Zod": {
+    icon: Server,
+    color: "lime",
+    protocol: "Next.js App Router · Zod 4",
+    badge: "REST API",
+    role: {
+      pt: "22 rotas que só validam com Zod, chamam regras puras em src/lib e respondem, documentadas em OpenAPI 3.1.",
+      en: "22 routes that only validate with Zod, call pure rules in src/lib, and respond, documented with OpenAPI 3.1.",
+    },
+    tradeoff: {
+      pt: "Regra de negócio em funções puras permite 302 testes rápidos, sem banco e sem APIs externas.",
+      en: "Business rules as pure functions enable 302 fast tests with no database or external APIs.",
+    },
+  },
+  "Supabase Postgres": {
+    icon: Database,
+    color: "blue",
+    protocol: "PostgreSQL · Row Level Security",
+    badge: "RLS",
+    role: {
+      pt: "Perfis, simulações, progresso e pontos com RLS ativada; funções SQL atômicas para pontos, trocas e limites.",
+      en: "Profiles, simulations, progress, and points with RLS enabled; atomic SQL functions for points, swaps, and limits.",
+    },
+    tradeoff: {
+      pt: "Limite de requisições no banco (hash do IP), pois cada chamada serverless pode cair numa instância diferente.",
+      en: "Rate limiting lives in the database (hashed IP), since each serverless call may hit a different instance.",
+    },
+  },
+  "Tutor Energinho": {
+    icon: Bot,
+    color: "lavender",
+    protocol: "RAG · Similaridade ≥ 0,64",
+    badge: "AI Tutor",
+    role: {
+      pt: "Responde só sobre energia e conta de luz, com base nas lições do app e na última simulação do estudante.",
+      en: "Answers only about energy and electricity bills, grounded in the app's lessons and the student's last simulation.",
+    },
+    tradeoff: {
+      pt: "Limiar calibrado com perguntas reais: puxa a lição certa sem trazer contexto para perguntas fora do tema.",
+      en: "Threshold calibrated on real questions: retrieves the right lesson without pulling context for off-topic questions.",
+    },
+  },
+  pgvector: {
+    icon: Database,
+    color: "blue",
+    protocol: "pgvector · HNSW · 768d",
+    badge: "Vector Store",
+    role: {
+      pt: "Trechos das lições indexados com gemini-embedding-2 (768 dimensões) e busca por similaridade de cosseno.",
+      en: "Lesson chunks indexed with gemini-embedding-2 (768 dimensions) and cosine similarity search.",
+    },
+    tradeoff: {
+      pt: "Vetores no mesmo Postgres do app: sem cluster vetorial dedicado e com RLS valendo também para o RAG.",
+      en: "Vectors in the app's own Postgres: no dedicated vector cluster, with RLS covering RAG too.",
+    },
+  },
+  "Gemini API": {
+    icon: Sparkles,
+    color: "lavender",
+    protocol: "REST · Sem SDK",
+    badge: "LLM",
+    role: {
+      pt: "Gera a resposta do tutor a partir dos trechos recuperados, com limite de 20 mensagens por hora por estudante.",
+      en: "Generates the tutor's answer from retrieved chunks, capped at 20 messages per hour per student.",
+    },
+    tradeoff: {
+      pt: "O nome do estudante nunca vai ao modelo e o texto das conversas não é gravado em banco nem em logs.",
+      en: "The student's name never reaches the model, and conversation text is never stored in the database or logs.",
+    },
+  },
+  "NASA POWER": {
+    icon: Sun,
+    color: "orange",
+    protocol: "HTTPS · ALLSKY_SFC_SW_DWN",
+    badge: "Open Data",
+    role: {
+      pt: "Irradiação solar diária e climatológica de São Luís para o simulador e o módulo Sol de hoje.",
+      en: "Daily and climatological solar irradiance for São Luís, feeding the simulator and the Sun Today module.",
+    },
+    tradeoff: {
+      pt: "Cache de 6 h (diário) e 30 dias (média anual), com valor de reserva se a NASA e o cache falharem.",
+      en: "6h (daily) and 30-day (annual average) caching, with a fallback value if both NASA and cache fail.",
+    },
+  },
+  "Pontos & Rankings": {
+    icon: Trophy,
+    color: "lime",
+    protocol: "SQL Views · pontos_eventos",
+    badge: "Gamification",
+    role: {
+      pt: "Pontos, conquistas e rankings de bairros e escolas calculados só no servidor, sem duplicidade.",
+      en: "Points, achievements, and neighborhood and school rankings computed server-side only, with no duplicates.",
+    },
+    tradeoff: {
+      pt: "Só quem entra pelo código da turma soma para a escola, impedindo que contas em massa inflem o ranking.",
+      en: "Only students who join via class code count toward their school, preventing mass accounts from inflating rankings.",
+    },
+  },
+
+  // Project 2 - AuthGuard
   "Client / HTTP": {
     icon: Globe,
     color: "cream",
@@ -111,7 +270,7 @@ const nodeSpecs: Record<string, NodeSpec> = {
     badge: "Gateway",
     role: {
       pt: "Roteamento reverso, terminação TLS e validação de quota via algoritmo Token Bucket.",
-      en: "Reverse routing, TLS termination, and quota validation using Token Bucket algorithm.",
+      en: "Reverse routing, TLS termination, and quota validation using the Token Bucket algorithm.",
     },
     tradeoff: {
       pt: "Gateway stateless em Node.js com Redis dedicado: latência sub-5ms e desacoplamento do core de autenticação.",
@@ -129,7 +288,7 @@ const nodeSpecs: Record<string, NodeSpec> = {
     },
     tradeoff: {
       pt: "Chaves assimétricas RS256 permitem validação de tokens em microsserviços sem consultar o banco central.",
-      en: "Asymmetric RS256 keys enable microservices to validate tokens locally without hitting central DB.",
+      en: "Asymmetric RS256 keys enable microservices to validate tokens locally without hitting the central DB.",
     },
   },
   PostgreSQL: {
@@ -203,7 +362,7 @@ const nodeSpecs: Record<string, NodeSpec> = {
     },
   },
 
-  // Project 2 - RAG Serviços Públicos
+  // Project 3 - RAG Serviços Públicos
   "User Query": {
     icon: Search,
     color: "cream",
@@ -215,7 +374,7 @@ const nodeSpecs: Record<string, NodeSpec> = {
     },
     tradeoff: {
       pt: "Sanitização de entrada contra prompt injection antes do encaminhamento ao pipeline.",
-      en: "Input sanitization against prompt injection before dispatching into pipeline.",
+      en: "Input sanitization against prompt injection before dispatching into the pipeline.",
     },
   },
   "FastAPI Gateway": {
@@ -228,7 +387,7 @@ const nodeSpecs: Record<string, NodeSpec> = {
       en: "Asynchronous RAG pipeline orchestrator with strict Pydantic V2 validation.",
     },
     tradeoff: {
-      pt: "Asyncio com Starlette oferece concorrência de I/O massiva para chamadas concorrentes de embeddings.",
+      pt: "Asyncio com Starlette oferece alta concorrência de I/O para chamadas paralelas de embeddings.",
       en: "Asyncio with Starlette delivers massive I/O concurrency for parallel embedding calls.",
     },
   },
@@ -239,7 +398,7 @@ const nodeSpecs: Record<string, NodeSpec> = {
     badge: "AI Routing",
     role: {
       pt: "Classificação prévia da intenção do usuário para rotear entre busca vetorial ou metadados diretos.",
-      en: "Pre-classification of user intent to dispatch between vector search or direct metadata.",
+      en: "Pre-classification of user intent to choose between vector search and direct metadata lookup.",
     },
     tradeoff: {
       pt: "Evita execuções caras de LLM quando a consulta pode ser respondida por filtros tabulares estritos.",
@@ -298,8 +457,8 @@ const nodeSpecs: Record<string, NodeSpec> = {
       en: "Structured storage of official sources, gazette numbers, and responsible agencies.",
     },
     tradeoff: {
-      pt: "Campos indexados em GIN no PostgreSQL viabilizam buscas por atributos arbitrários em sub-milissegundos.",
-      en: "PostgreSQL GIN indexed fields enable arbitrary attribute queries in sub-milliseconds.",
+      pt: "Campos indexados em GIN no PostgreSQL viabilizam buscas por atributos arbitrários em menos de 1 ms.",
+      en: "PostgreSQL GIN indexed fields enable arbitrary attribute queries in under 1ms.",
     },
   },
   "Context Assembly": {
@@ -313,7 +472,7 @@ const nodeSpecs: Record<string, NodeSpec> = {
     },
     tradeoff: {
       pt: "Limita o prompt aos 5 trechos mais relevantes, minimizando tokens consumidos e tempo de inferência.",
-      en: "Caps prompt context to top 5 relevant passages, minimizing token consumption and time-to-first-token.",
+      en: "Caps prompt context to the top 5 relevant passages, minimizing token consumption and time-to-first-token.",
     },
   },
   "Google Gemini AI Engine": {
@@ -337,7 +496,7 @@ const nodeSpecs: Record<string, NodeSpec> = {
     badge: "Output Ingress",
     role: {
       pt: "Entrega da resposta com citações e hyperlinks diretos para as fontes oficiais dos editais.",
-      en: "Delivery of synthesised response with inline citations and direct hyperlinks to official gazettes.",
+      en: "Delivery of the synthesized response with inline citations and direct hyperlinks to official gazettes.",
     },
     tradeoff: {
       pt: "Permite auditoria imediata pelo cidadão, elevando a confiabilidade do serviço público digital.",
@@ -345,7 +504,7 @@ const nodeSpecs: Record<string, NodeSpec> = {
     },
   },
 
-  // Project 3 - API Financeira Inteligente
+  // Project 4 - API Financeira Inteligente
   "Express REST API": {
     icon: Server,
     color: "lime",
@@ -371,7 +530,7 @@ const nodeSpecs: Record<string, NodeSpec> = {
     },
     tradeoff: {
       pt: "Garante matematicamente que a soma de débitos e créditos de qualquer lançamento seja sempre zero.",
-      en: "Mathematically guarantees that the sum of debits and credits of any posting is perpetually zero.",
+      en: "Mathematically guarantees that the sum of debits and credits of any posting is always zero.",
     },
   },
   "Gemini AI Engine": {
@@ -380,8 +539,8 @@ const nodeSpecs: Record<string, NodeSpec> = {
     protocol: "Gemini API",
     badge: "Anomaly Engine",
     role: {
-      pt: "Análise preditiva de fluxo de caixa e detecção de desvios padrão em contas a pagar/receber.",
-      en: "Predictive cashflow analysis and standard deviation anomaly detection in payables/receivables.",
+      pt: "Análise preditiva de fluxo de caixa e detecção de desvios fora do padrão em contas a pagar/receber.",
+      en: "Predictive cash flow analysis and standard deviation anomaly detection in payables/receivables.",
     },
     tradeoff: {
       pt: "Execução assíncrona desacoplada do fechamento de caixa, não bloqueando a emissão de notas fiscais.",
@@ -394,7 +553,7 @@ const nodeSpecs: Record<string, NodeSpec> = {
     protocol: "Analytics Dashboard",
     badge: "Executive Insights",
     role: {
-      pt: "Geração de DRE automatizado, índices de liquidez e recomendações táticas de capital de giro.",
+      pt: "Geração automatizada de DRE, índices de liquidez e recomendações táticas de capital de giro.",
       en: "Automated P&L generation, liquidity ratios, and tactical working capital suggestions.",
     },
     tradeoff: {
@@ -403,7 +562,7 @@ const nodeSpecs: Record<string, NodeSpec> = {
     },
   },
 
-  // Project 4 - Guia Maranhão
+  // Project 5 - Guia Maranhão
   "Client App": {
     icon: Globe,
     color: "cream",
@@ -461,7 +620,7 @@ const nodeSpecs: Record<string, NodeSpec> = {
     },
   },
 
-  // Project 5 - BuscaSUS
+  // Project 6 - BuscaSUS
   "Client / Mobile": {
     icon: Globe,
     color: "cream",
@@ -544,7 +703,7 @@ function SemanticLegend({
       key: "cream",
       dotColor: "bg-cream/90 border-cream/40",
       glow: "shadow-[0_0_5px_#F2EADC]",
-      label: { pt: "Clientes & Ingress", en: "Clients & Requesters" },
+      label: { pt: "Clientes & Requisições", en: "Clients & Requesters" },
     },
   ];
 
@@ -750,11 +909,59 @@ function Connector({
 }
 
 function generateArchitectureSVG(project: Project, language: "pt" | "en"): string {
-  const title = project.architecture?.title[language] || project.title;
-  const projectTitle = project.title;
+  const title = escapeXml(project.architecture?.title[language] || project.title);
+  const projectTitle = escapeXml(project.title);
 
   let content = "";
   if (project.id === 1) {
+    content = `
+    <g transform="translate(50, 105)">
+      <rect width="190" height="55" rx="8" fill="#141c2e" stroke="#F2EADC" stroke-width="1.5"/>
+      <text x="15" y="25" fill="#F2EADC" font-family="monospace" font-size="12" font-weight="bold">PWA Next.js</text>
+      <text x="15" y="42" fill="#a0aec0" font-family="monospace" font-size="10">${language === "pt" ? "Estudante · Login Anônimo" : "Student · Anonymous Login"}</text>
+    </g>
+    <line x1="240" y1="132" x2="300" y2="132" stroke="#EAF35B" stroke-width="2" marker-end="url(#arrow)"/>
+    <g transform="translate(300, 105)">
+      <rect width="230" height="55" rx="8" fill="#14281f" stroke="#EAF35B" stroke-width="1.5"/>
+      <text x="15" y="25" fill="#EAF35B" font-family="monospace" font-size="12" font-weight="bold">proxy.ts</text>
+      <text x="15" y="42" fill="#a0aec0" font-family="monospace" font-size="10">CORS · 404 · 405</text>
+    </g>
+    <line x1="530" y1="132" x2="590" y2="132" stroke="#EAF35B" stroke-width="2" marker-end="url(#arrow)"/>
+    <g transform="translate(590, 105)">
+      <rect width="270" height="55" rx="8" fill="#14281f" stroke="#EAF35B" stroke-width="1.5"/>
+      <text x="15" y="25" fill="#EAF35B" font-family="monospace" font-size="12" font-weight="bold">API Routes + Zod</text>
+      <text x="15" y="42" fill="#a0aec0" font-family="monospace" font-size="10">Next.js App Router · OpenAPI 3.1</text>
+    </g>
+    <g transform="translate(50, 190)">
+      <rect width="390" height="200" rx="12" fill="#0d1829" stroke="#2E53E5" stroke-opacity="0.3" stroke-width="1"/>
+      <text x="15" y="25" fill="#2E53E5" font-family="monospace" font-size="10" font-weight="bold">${language === "pt" ? "DADOS &amp; PRIVACIDADE" : "DATA &amp; PRIVACY"}</text>
+      <rect x="20" y="40" width="350" height="45" rx="6" fill="#14281f" stroke="#EAF35B" stroke-width="1.2"/>
+      <text x="35" y="62" fill="#EAF35B" font-family="monospace" font-size="11" font-weight="bold">Supabase Auth</text>
+      <text x="35" y="76" fill="#a0aec0" font-family="monospace" font-size="9">${language === "pt" ? "Login anônimo · Só primeiro nome" : "Anonymous login · First name only"}</text>
+      <rect x="20" y="95" width="350" height="45" rx="6" fill="#0f1d38" stroke="#2E53E5" stroke-width="1.2"/>
+      <text x="35" y="117" fill="#93c5fd" font-family="monospace" font-size="11" font-weight="bold">Supabase Postgres</text>
+      <text x="35" y="131" fill="#64748b" font-family="monospace" font-size="9">${language === "pt" ? "RLS em todas as tabelas" : "RLS on every table"}</text>
+      <rect x="20" y="150" width="350" height="40" rx="6" fill="#14281f" stroke="#EAF35B" stroke-width="1.2"/>
+      <text x="35" y="175" fill="#EAF35B" font-family="monospace" font-size="11" font-weight="bold">${language === "pt" ? "Pontos &amp; Rankings (Views)" : "Points &amp; Rankings (Views)"}</text>
+    </g>
+    <g transform="translate(470, 190)">
+      <rect width="390" height="200" rx="12" fill="#0d1829" stroke="#B997FF" stroke-opacity="0.3" stroke-width="1"/>
+      <text x="15" y="25" fill="#B997FF" font-family="monospace" font-size="10" font-weight="bold">${language === "pt" ? "TUTOR RAG &amp; DADOS SOLARES" : "RAG TUTOR &amp; SOLAR DATA"}</text>
+      <rect x="20" y="40" width="350" height="45" rx="6" fill="#201533" stroke="#B997FF" stroke-width="1.2"/>
+      <text x="35" y="62" fill="#B997FF" font-family="monospace" font-size="11" font-weight="bold">Tutor Energinho</text>
+      <text x="35" y="76" fill="#a0aec0" font-family="monospace" font-size="9">Gemini API · RAG</text>
+      <rect x="20" y="95" width="350" height="45" rx="6" fill="#0f1d38" stroke="#2E53E5" stroke-width="1.2"/>
+      <text x="35" y="117" fill="#93c5fd" font-family="monospace" font-size="11" font-weight="bold">pgvector</text>
+      <text x="35" y="131" fill="#64748b" font-family="monospace" font-size="9">HNSW · 768d · gemini-embedding-2</text>
+      <rect x="20" y="150" width="350" height="40" rx="6" fill="#291612" stroke="#E97C67" stroke-width="1.2"/>
+      <text x="35" y="175" fill="#E97C67" font-family="monospace" font-size="11" font-weight="bold">${language === "pt" ? "NASA POWER (Cache 6h)" : "NASA POWER (6h Cache)"}</text>
+    </g>
+    <g transform="translate(250, 415)">
+      <rect width="420" height="50" rx="8" fill="#2a2510" stroke="#EAF35B" stroke-width="1.5"/>
+      <text x="25" y="30" fill="#EAF35B" font-family="monospace" font-size="12" font-weight="bold">${language === "pt" ? "1º LUGAR · HACKATHON EQUATORIAL 2026" : "1ST PLACE · EQUATORIAL HACKATHON 2026"}</text>
+    </g>
+    `;
+  } else if (project.id === 2) {
     content = `
     <g transform="translate(60, 130)">
       <rect width="190" height="60" rx="8" fill="#141c2e" stroke="#F2EADC" stroke-width="1.5"/>
@@ -795,7 +1002,7 @@ function generateArchitectureSVG(project: Project, language: "pt" | "en"): strin
       <text x="200" y="147" fill="#a0aec0" font-family="monospace" font-size="9">${language === "pt" ? "Logs Assíncronos" : "Async Logging"}</text>
     </g>
     `;
-  } else if (project.id === 2) {
+  } else if (project.id === 3) {
     content = `
     <g transform="translate(60, 110)">
       <rect width="180" height="50" rx="6" fill="#141c2e" stroke="#F2EADC" stroke-width="1.5"/>
@@ -843,7 +1050,7 @@ function generateArchitectureSVG(project: Project, language: "pt" | "en"): strin
       <text x="25" y="25" fill="#B997FF" font-family="monospace" font-size="10" font-weight="bold">Google Gemini AI Engine (Grounding &amp; Zero Hallucinations)</text>
     </g>
     `;
-  } else if (project.id === 3) {
+  } else if (project.id === 4) {
     content = `
     <g transform="translate(100, 140)">
       <rect width="200" height="55" rx="8" fill="#141c2e" stroke="#F2EADC" stroke-width="1.5"/>
@@ -872,7 +1079,7 @@ function generateArchitectureSVG(project: Project, language: "pt" | "en"): strin
       <text x="20" y="47" fill="#a0aec0" font-family="monospace" font-size="10">${language === "pt" ? "Painel de Decisão Estratégica" : "Strategic Decision Dashboard"}</text>
     </g>
     `;
-  } else if (project.id === 4) {
+  } else if (project.id === 5) {
     content = `
     <g transform="translate(60, 150)">
       <rect width="180" height="60" rx="8" fill="#141c2e" stroke="#F2EADC" stroke-width="1.5"/>
@@ -958,9 +1165,11 @@ export default function ArchitectureVisualizer({
   project,
   language,
   copiedId,
+  copyFailed,
   onCopyDiagram,
   copyLabel,
   copiedLabel,
+  copyFailedLabel,
 }: Props) {
   const [viewMode, setViewMode] = useState<"visual" | "ascii">("visual");
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -968,7 +1177,7 @@ export default function ArchitectureVisualizer({
   const [activeLayer, setActiveLayer] = useState<NodeColor | null>(null);
   const [selectedNodeLabel, setSelectedNodeLabel] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [copiedMermaid, setCopiedMermaid] = useState(false);
+  const [mermaidCopyState, setMermaidCopyState] = useState<"idle" | "copied" | "failed">("idle");
   const [downloadedSvg, setDownloadedSvg] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const asciiRef = useRef<HTMLDivElement>(null);
@@ -985,13 +1194,9 @@ export default function ArchitectureVisualizer({
       ? project.architecture.mermaid[language]
       : "";
     if (!mermaidCode) return;
-    try {
-      await navigator.clipboard.writeText("```mermaid\n" + mermaidCode + "\n```");
-      setCopiedMermaid(true);
-      setTimeout(() => setCopiedMermaid(false), 2500);
-    } catch {
-      // fallback
-    }
+    const ok = await copyText("```mermaid\n" + mermaidCode + "\n```");
+    setMermaidCopyState(ok ? "copied" : "failed");
+    setTimeout(() => setMermaidCopyState("idle"), 2500);
   };
 
   const handleDownloadSVG = () => {
@@ -1056,7 +1261,108 @@ export default function ArchitectureVisualizer({
     };
 
     switch (project.id) {
-      case 1: // AuthGuard
+      case 1: // Cidade Energia
+        return (
+          <div className="flex flex-col items-center gap-2 w-full max-w-3xl mx-auto py-2">
+            <div className="flex flex-col sm:flex-row items-center gap-2 w-full justify-center">
+              <ArchitectureNode
+                icon={Globe}
+                sub={language === "pt" ? "Estudante · Login Anônimo" : "Student · Anonymous Login"}
+                {...getNodeProps("PWA Next.js", "cream")}
+              />
+              <Connector orientation="horizontal" label="Bearer" isFlowing={isFlowing} />
+              <ArchitectureNode
+                icon={Network}
+                sub="CORS · 404 · 405"
+                {...getNodeProps("proxy.ts", "lime")}
+              />
+              <Connector orientation="horizontal" isFlowing={isFlowing} />
+              <ArchitectureNode
+                icon={Server}
+                sub={language === "pt" ? "Validação estrita" : "Strict validation"}
+                badge="OpenAPI 3.1"
+                {...getNodeProps("API Routes + Zod", "lime")}
+              />
+            </div>
+
+            <Connector
+              orientation="vertical"
+              label={language === "pt" ? "Regras Puras em src/lib" : "Pure Rules in src/lib"}
+              isFlowing={isFlowing}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+              <div className="flex flex-col items-center gap-2.5 p-3.5 sm:p-4 rounded-xl bg-navy/60 border border-blue/30 w-full min-w-0">
+                <span className="font-mono text-[10px] tracking-wider uppercase text-blue font-bold">
+                  {language === "pt" ? "Dados & Privacidade" : "Data & Privacy"}
+                </span>
+                <ArchitectureNode
+                  icon={Shield}
+                  sub={language === "pt" ? "Só o primeiro nome" : "First name only"}
+                  compact
+                  {...getNodeProps("Supabase Auth", "lime")}
+                />
+                <Connector orientation="vertical" isFlowing={isFlowing} />
+                <ArchitectureNode
+                  icon={Database}
+                  sub={language === "pt" ? "RLS em todas as tabelas" : "RLS on every table"}
+                  compact
+                  {...getNodeProps("Supabase Postgres", "blue")}
+                />
+              </div>
+
+              <div className="flex flex-col items-center gap-2.5 p-3.5 sm:p-4 rounded-xl bg-navy/60 border border-lavender/30 w-full min-w-0">
+                <span className="font-mono text-[10px] tracking-wider uppercase text-lavender font-bold">
+                  {language === "pt" ? "Tutor RAG & Dados Solares" : "RAG Tutor & Solar Data"}
+                </span>
+                <ArchitectureNode
+                  icon={Bot}
+                  sub={language === "pt" ? "Responde com base nas lições" : "Lesson-grounded answers"}
+                  compact
+                  {...getNodeProps("Tutor Energinho", "lavender")}
+                />
+                <Connector orientation="vertical" isFlowing={isFlowing} />
+                <div className="flex flex-col gap-2 w-full">
+                  <ArchitectureNode
+                    icon={Database}
+                    sub="HNSW · 768d"
+                    compact
+                    {...getNodeProps("pgvector", "blue")}
+                  />
+                  <ArchitectureNode
+                    icon={Sparkles}
+                    sub={language === "pt" ? "Geração ancorada" : "Grounded generation"}
+                    compact
+                    {...getNodeProps("Gemini API", "lavender")}
+                  />
+                  <ArchitectureNode
+                    icon={Sun}
+                    sub={language === "pt" ? "Irradiação de São Luís · Cache 6h" : "São Luís irradiance · 6h cache"}
+                    compact
+                    {...getNodeProps("NASA POWER", "orange")}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <Connector
+              orientation="vertical"
+              label={language === "pt" ? "Gamificação no Servidor" : "Server-Side Gamification"}
+              isFlowing={isFlowing}
+            />
+
+            <div className="w-full max-w-md">
+              <ArchitectureNode
+                icon={Trophy}
+                sub={language === "pt" ? "Views agregadas · Sem dados individuais" : "Aggregated views · No individual data"}
+                compact
+                {...getNodeProps("Pontos & Rankings", "lime")}
+              />
+            </div>
+          </div>
+        );
+
+      case 2: // AuthGuard
         return (
           <div className="flex flex-col items-center gap-2 w-full max-w-3xl mx-auto py-2">
             <div className="flex flex-col sm:flex-row items-center gap-2 w-full justify-center">
@@ -1138,7 +1444,7 @@ export default function ArchitectureVisualizer({
           </div>
         );
 
-      case 2: // RAG Serviços Públicos
+      case 3: // RAG Serviços Públicos
         return (
           <div className="flex flex-col items-center gap-2 w-full max-w-3xl mx-auto py-2">
             <div className="flex flex-col sm:flex-row items-center gap-2 w-full justify-center">
@@ -1240,7 +1546,7 @@ export default function ArchitectureVisualizer({
           </div>
         );
 
-      case 3: // API Financeira Inteligente
+      case 4: // API Financeira Inteligente
         return (
           <div className="flex flex-col items-center gap-2 w-full max-w-3xl mx-auto py-2">
             <div className="flex flex-col sm:flex-row items-center gap-2 w-full justify-center">
@@ -1313,7 +1619,7 @@ export default function ArchitectureVisualizer({
           </div>
         );
 
-      case 4: // Guia Maranhão
+      case 5: // Guia Maranhão
         return (
           <div className="flex flex-col items-center gap-2 w-full max-w-3xl mx-auto py-2">
             <div className="flex flex-col sm:flex-row items-center gap-2 w-full justify-center">
@@ -1370,7 +1676,7 @@ export default function ArchitectureVisualizer({
           </div>
         );
 
-      case 5: // BuscaSUS
+      case 6: // BuscaSUS
       default:
         return (
           <div className="flex flex-col items-center gap-2 w-full max-w-3xl mx-auto py-2">
@@ -1508,10 +1814,15 @@ export default function ArchitectureVisualizer({
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-cream/30 font-mono text-xs tracking-wider uppercase text-cream/90 hover:bg-lavender hover:text-navy hover:border-lavender transition-all duration-200 cursor-pointer"
               title={language === "pt" ? "Copiar diagrama para Mermaid.js (GitHub/Notion)" : "Copy diagram to Mermaid.js (GitHub/Notion)"}
             >
-              {copiedMermaid ? (
+              {mermaidCopyState === "copied" ? (
                 <>
                   <Check size={13} className="text-lime sm:text-navy" />
                   <span className="hidden md:inline">{language === "pt" ? "Mermaid Copiado!" : "Mermaid Copied!"}</span>
+                </>
+              ) : mermaidCopyState === "failed" ? (
+                <>
+                  <AlertCircle size={13} className="text-orange" />
+                  <span className="hidden md:inline">{copyFailedLabel}</span>
                 </>
               ) : (
                 <>
@@ -1565,6 +1876,11 @@ export default function ArchitectureVisualizer({
               <>
                 <Check size={14} className="text-lime sm:text-navy" />
                 <span>{copiedLabel}</span>
+              </>
+            ) : copyFailed ? (
+              <>
+                <AlertCircle size={14} className="text-orange" />
+                <span>{copyFailedLabel}</span>
               </>
             ) : (
               <>
@@ -1657,7 +1973,7 @@ export default function ArchitectureVisualizer({
         </div>
       ) : (
         <div className="relative group/ascii rounded-xl overflow-hidden border border-cream/15 bg-black/85 shadow-inner select-text">
-          {/* Opção 06: Right fade gradient when scrollable on mobile */}
+          {/* Right fade gradient when scrollable on mobile */}
           <div
             className={`pointer-events-none absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-black via-black/80 to-transparent transition-opacity duration-300 z-10 sm:hidden ${
               canScrollRight ? "opacity-100" : "opacity-0"
@@ -1682,7 +1998,7 @@ export default function ArchitectureVisualizer({
             </pre>
           </div>
 
-          {/* Opção 06: Mobile Scroll Indicator Bar */}
+          {/* Mobile Scroll Indicator Bar */}
           <div className="sm:hidden flex items-center justify-between px-3.5 py-1.5 bg-navy/90 border-t border-cream/10 text-[10px] font-mono text-lime/90">
             <span className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-lime animate-pulse" />
@@ -1787,8 +2103,10 @@ export default function ArchitectureVisualizer({
                     className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full border border-cream/30 font-mono text-[11px] tracking-wider uppercase text-cream/90 hover:bg-lavender hover:text-navy hover:border-lavender transition-all duration-200 cursor-pointer"
                     title={language === "pt" ? "Copiar Mermaid.js" : "Copy Mermaid.js"}
                   >
-                    {copiedMermaid ? (
+                    {mermaidCopyState === "copied" ? (
                       <Check size={12} className="text-lime" />
+                    ) : mermaidCopyState === "failed" ? (
+                      <AlertCircle size={12} className="text-orange" />
                     ) : (
                       <FileCode size={12} />
                     )}
@@ -1822,6 +2140,11 @@ export default function ArchitectureVisualizer({
                     <>
                       <Check size={13} className="text-lime sm:text-navy" />
                       <span className="hidden sm:inline">{copiedLabel}</span>
+                    </>
+                  ) : copyFailed ? (
+                    <>
+                      <AlertCircle size={13} className="text-orange" />
+                      <span className="hidden sm:inline">{copyFailedLabel}</span>
                     </>
                   ) : (
                     <>

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect } from "react";
+import Link from "next/link";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import Header from "@/components/Header";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
@@ -49,12 +50,12 @@ export default function Error({
           >
             <RotateCcw size={14} /> {t.error.retry}
           </button>
-          <a
+          <Link
             href="/"
             className="inline-flex items-center gap-2 w-fit border border-cream/40 text-cream rounded-full px-5 py-3 font-mono text-xs tracking-widest uppercase hover:bg-cream hover:text-navy transition-colors"
           >
             <ArrowLeft size={14} /> {t.error.backHome}
-          </a>
+          </Link>
         </div>
       </main>
     </>
