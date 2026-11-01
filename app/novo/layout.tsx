@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Bricolage_Grotesque, JetBrains_Mono } from "next/font/google";
 import "./site.css";
 
-// Tipografia PROVISÓRIA (opção A de /novo/tipos) até o Gabriel escolher.
-// Trocar a família é só trocar estas duas importações.
+// Tipografia escolhida pelo Gabriel em 31/10/2026 (opção A): Bricolage
+// Grotesque para tudo e JetBrains Mono para notação de xadrez e código.
 const main = Bricolage_Grotesque({ subsets: ["latin"], display: "swap", variable: "--font-main" });
 const mono = JetBrains_Mono({ subsets: ["latin"], display: "swap", variable: "--font-mono" });
 
