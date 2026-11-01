@@ -17,10 +17,32 @@ export type ProjectArchitecture = {
   highlights: LocalizedString[];
 };
 
+// Portas do capítulo de projetos do site novo (spec §5.5). Um projeto pode
+// estar em mais de uma porta e mostra, em cada uma, a faceta daquela área.
+export type Door = "backend" | "frontend" | "ia";
+
+export type FacetLink = "github" | "frontend" | "demo" | "docs";
+
+export type FacetScreen = {
+  src: string;
+  alt: LocalizedString;
+};
+
+export type Facet = {
+  line: LocalizedString;
+  stack: string[];
+  metrics?: ProjectMetric[];
+  links: FacetLink[];
+  screens?: FacetScreen[];
+};
+
 export type Project = {
   id: number;
   title: string;
+  // `category` serve o site atual em `/`; o site novo usa `doors`.
   category: "backend" | "ia";
+  doors?: Door[];
+  facets?: Partial<Record<Door, Facet>>;
   type: LocalizedString;
   year: string;
   description: LocalizedString;
@@ -41,6 +63,75 @@ export const projects: Project[] = [
     id: 1,
     title: "Cidade Energia",
     category: "backend",
+    doors: ["backend", "frontend", "ia"],
+    facets: {
+      frontend: {
+        line: {
+          pt: "PWA em Next.js 16 e React 19: simulador solar, trilhas com quiz, missões, mapa e o tutor Energinho. Um modo simulado com a mesma interface roda o app inteiro sem back-end.",
+          en: "Next.js 16 and React 19 PWA: solar simulator, quiz tracks, missions, map and the Energinho tutor. A mock mode with the same interface runs the whole app without a back-end.",
+        },
+        stack: ["Next.js 16", "React 19", "TypeScript", "PWA", "Vitest"],
+        metrics: [
+          {
+            label: { pt: "Testes", en: "Tests" },
+            value: { pt: "133 testes no PWA", en: "133 tests in the PWA" },
+          },
+          {
+            label: { pt: "Cliente resiliente", en: "Resilient client" },
+            value: {
+              pt: "Next.js 16 · React 19 · modo simulado sem back-end",
+              en: "Next.js 16 · React 19 · backend-free mock mode",
+            },
+          },
+          {
+            label: { pt: "Jornada completa", en: "Full journey" },
+            value: {
+              pt: "Simulador solar · trilhas com quiz · mapa · tutor",
+              en: "Solar simulator · quiz tracks · map · tutor",
+            },
+          },
+        ],
+        links: ["frontend", "demo"],
+      },
+      backend: {
+        line: {
+          pt: "API serverless em Next.js e Supabase: 22 rotas validadas com Zod, regras em funções puras, RLS em todas as tabelas e pontos calculados só no servidor.",
+          en: "Serverless API on Next.js and Supabase: 22 routes validated with Zod, rules as pure functions, RLS on every table and points computed server-side only.",
+        },
+        stack: ["Next.js", "TypeScript", "Supabase", "PostgreSQL", "Zod", "Vitest", "OpenAPI 3.1"],
+        metrics: [
+          {
+            label: { pt: "Testes da API", en: "API tests" },
+            value: { pt: "302 testes Vitest", en: "302 Vitest tests" },
+          },
+          {
+            label: { pt: "Segurança de dados", en: "Data security" },
+            value: {
+              pt: "RLS em 100% das tabelas · pontos só no servidor",
+              en: "RLS on 100% of tables · server-only scoring",
+            },
+          },
+        ],
+        links: ["github", "docs"],
+      },
+      ia: {
+        line: {
+          pt: "Tutor Energinho: RAG com Gemini e pgvector, limiar calibrado com perguntas reais e respostas só sobre energia e conta de luz.",
+          en: "Energinho tutor: RAG with Gemini and pgvector, a threshold calibrated on real questions and answers only about energy and the power bill.",
+        },
+        stack: ["Gemini", "pgvector", "PostgreSQL", "TypeScript"],
+        metrics: [
+          {
+            label: { pt: "Tutor RAG", en: "RAG tutor" },
+            value: {
+              pt: "Embeddings 768d · HNSW · limiar calibrado",
+              en: "768d embeddings · HNSW · calibrated threshold",
+            },
+          },
+        ],
+        links: ["github"],
+      },
+    },
     type: {
       pt: "App Educacional Full-Stack & Tutor RAG",
       en: "Full-Stack Educational App & RAG Tutor",
@@ -184,6 +275,17 @@ export const projects: Project[] = [
     id: 2,
     title: "AuthGuard",
     category: "backend",
+    doors: ["backend"],
+    facets: {
+      backend: {
+        line: {
+          pt: "Identidade e permissões com 1.400 req/s, p99 abaixo de 35ms e nenhuma mensagem perdida.",
+          en: "Identity and permissions at 1,400 req/s, p99 under 35ms, and no message lost.",
+        },
+        stack: ["Node.js", "TypeScript", "RabbitMQ", "Redis", "PostgreSQL", "Docker", "Jest"],
+        links: ["github", "docs"],
+      },
+    },
     type: {
       pt: "Microsserviço de Identidade & RBAC",
       en: "Identity & RBAC Microservice",
@@ -307,6 +409,25 @@ export const projects: Project[] = [
     id: 3,
     title: "RAG Serviços Públicos",
     category: "ia",
+    doors: ["ia", "backend"],
+    facets: {
+      ia: {
+        line: {
+          pt: "Respostas sobre serviços públicos que citam a fonte, com busca vetorial HNSW.",
+          en: "Answers about public services that cite their source, with HNSW vector search.",
+        },
+        stack: ["Python", "FastAPI", "pgvector", "Gemini AI"],
+        links: ["github", "docs"],
+      },
+      backend: {
+        line: {
+          pt: "Microsserviços desacoplados: FastAPI orquestra o RAG e um serviço Node.js filtra metadados, com os vetores no mesmo PostgreSQL.",
+          en: "Decoupled microservices: FastAPI orchestrates the RAG and a Node.js service filters metadata, with the vectors in the same PostgreSQL.",
+        },
+        stack: ["FastAPI", "Node.js", "TypeScript", "PostgreSQL", "pgvector", "Docker"],
+        links: ["github", "docs"],
+      },
+    },
     type: {
       pt: "Arquitetura RAG & Microsserviços",
       en: "RAG Architecture & Microservices",
@@ -462,6 +583,25 @@ export const projects: Project[] = [
     id: 4,
     title: "API Financeira Inteligente",
     category: "ia",
+    doors: ["ia", "backend"],
+    facets: {
+      ia: {
+        line: {
+          pt: "Auditoria assistida por IA: o Gemini aponta anomalias fora do caminho do lançamento, sem atrasar nenhuma transação.",
+          en: "AI-assisted auditing: Gemini flags anomalies off the posting path, without delaying any transaction.",
+        },
+        stack: ["Gemini AI", "Node.js", "TypeScript"],
+        links: ["github", "docs"],
+      },
+      backend: {
+        line: {
+          pt: "Transações ACID num ledger seguro, com auditoria assistida por IA.",
+          en: "ACID transactions on a secure ledger, with AI-assisted auditing.",
+        },
+        stack: ["Node.js", "TypeScript", "PostgreSQL", "Docker", "Jest"],
+        links: ["github", "docs"],
+      },
+    },
     type: {
       pt: "API com IA & Auditoria",
       en: "AI-Audited Financial API",
@@ -572,6 +712,17 @@ export const projects: Project[] = [
     id: 5,
     title: "Guia Maranhão",
     category: "backend",
+    doors: ["backend"],
+    facets: {
+      backend: {
+        line: {
+          pt: "Junta fontes do governo num só lugar, com geolocalização.",
+          en: "Brings government sources into one place, with geolocation.",
+        },
+        stack: ["Node.js", "Express", "MongoDB", "Mongoose", "JWT"],
+        links: ["github", "docs"],
+      },
+    },
     type: {
       pt: "API de Serviços Públicos",
       en: "Public Services API",
@@ -672,6 +823,17 @@ export const projects: Project[] = [
     id: 6,
     title: "BuscaSUS",
     category: "backend",
+    doors: ["backend"],
+    facets: {
+      backend: {
+        line: {
+          pt: "Encontra a unidade de saúde pública mais próxima e traça a rota.",
+          en: "Finds the nearest public health unit and maps the route.",
+        },
+        stack: ["Node.js", "Express", "MongoDB", "Google Maps Platform"],
+        links: ["github", "docs"],
+      },
+    },
     type: {
       pt: "API de Operações & Saúde",
       en: "Health Operations API",
