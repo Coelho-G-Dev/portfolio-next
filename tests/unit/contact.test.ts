@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { EMAIL, mailtoFor } from "@/components/redesign/Contact";
+import { EMAIL, mailtoFor } from "@/lib/contact";
 import { redesignCopy } from "@/lib/i18n/redesign";
 
 describe.each(["pt", "en"] as const)("mailto do contato (%s)", (lang) => {
   const c = redesignCopy[lang];
 
   it.each(["role", "project"] as const)("monta assunto e corpo para %s", (kind) => {
-    const url = new URL(mailtoFor(c, kind));
+    const url = new URL(mailtoFor(c.contact, kind));
     expect(url.protocol).toBe("mailto:");
     expect(url.pathname).toBe(EMAIL);
     expect(url.searchParams.get("subject")).toBe(c.contact.subject[kind]);
@@ -14,7 +14,7 @@ describe.each(["pt", "en"] as const)("mailto do contato (%s)", (lang) => {
   });
 
   it("codifica acentos, espaços e quebras de linha", () => {
-    const href = mailtoFor(c, "project");
+    const href = mailtoFor(c.contact, "project");
     const query = href.split("?")[1];
     expect(query).not.toMatch(/[\s\n]/);
     expect(query).not.toMatch(/[^\x20-\x7e]/);
@@ -23,6 +23,6 @@ describe.each(["pt", "en"] as const)("mailto do contato (%s)", (lang) => {
   });
 
   it("vaga e projeto geram assuntos diferentes", () => {
-    expect(mailtoFor(c, "role")).not.toBe(mailtoFor(c, "project"));
+    expect(mailtoFor(c.contact, "role")).not.toBe(mailtoFor(c.contact, "project"));
   });
 });

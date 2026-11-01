@@ -2,18 +2,7 @@
 
 import { useState } from "react";
 import type { RedesignCopy } from "@/lib/i18n/redesign";
-
-export const EMAIL = "gabrielbiellosousa@gmail.com";
-export const LINKEDIN_URL = "https://www.linkedin.com/in/gabriel-coelho-7184a32a3/";
-export const GITHUB_URL = "https://github.com/Coelho-G-Dev";
-
-type Kind = "role" | "project";
-
-export function mailtoFor(c: RedesignCopy, kind: Kind) {
-  const subject = encodeURIComponent(c.contact.subject[kind]);
-  const body = encodeURIComponent(c.contact.body[kind]);
-  return `mailto:${EMAIL}?subject=${subject}&body=${body}`;
-}
+import { EMAIL, GITHUB_URL, LINKEDIN_URL, mailtoFor, type ContactKind as Kind } from "@/lib/contact";
 
 export default function Contact({ c }: { c: RedesignCopy }) {
   const k = c.contact;
@@ -61,7 +50,7 @@ export default function Contact({ c }: { c: RedesignCopy }) {
               </button>
             ))}
           </fieldset>
-          <a className="rd-write__go" href={mailtoFor(c, kind)}>
+          <a className="rd-write__go" href={mailtoFor(k, kind)}>
             {k.write}
             <span className="rd-write__arrow" aria-hidden="true">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

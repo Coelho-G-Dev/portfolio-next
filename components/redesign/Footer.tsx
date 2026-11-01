@@ -1,5 +1,5 @@
 import type { RedesignCopy } from "@/lib/i18n/redesign";
-import { EMAIL, GITHUB_URL, LINKEDIN_URL } from "./Contact";
+import { EMAIL, GITHUB_URL, LINKEDIN_URL } from "@/lib/contact";
 
 export default function Footer({ c }: { c: RedesignCopy }) {
   return (
