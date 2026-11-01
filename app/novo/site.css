@@ -303,6 +303,16 @@
   white-space: nowrap;
 }
 
+/* Sobre bordo, nogueira não passa 3:1 (2,89): a borda vira nogueira escura e o
+   hover do botão de copiar usa marfim. */
+.s-chapter[data-tone="bordo"] .s-pill[data-variant="secondary"],
+.s-chapter[data-tone="bordo"] .s-email {
+  border-color: var(--c-nogueira-escura);
+}
+.s-chapter[data-tone="bordo"] .s-email__copy:hover {
+  background: var(--c-marfim);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .s-pill,
   .s-pill__dot svg {
