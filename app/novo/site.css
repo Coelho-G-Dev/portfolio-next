@@ -1,0 +1,15 @@
+/* Site novo (/novo). Tokens da paleta "Tabuleiro" (spec §5.1).
+   Os hex precisam bater com lib/palette.ts; o teste da paleta confere. */
+.site {
+  --c-ebano: #0E0F13;
+  --c-nogueira-escura: #2A2018;
+  --c-nogueira: #8A6A4A;
+  --c-bordo: #D9C3A0;
+  --c-marfim: #F4EEE3;
+  --c-ambar: #F5A524;
+
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --radius-pill: 999px;
+  /* Elevação neutra: nada de sombra colorida. */
+  --shadow: 0 12px 32px rgb(14 15 19 / 0.18);
+}
