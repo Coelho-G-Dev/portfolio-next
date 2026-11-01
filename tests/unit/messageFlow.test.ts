@@ -1,10 +1,12 @@
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 import {
+  backoffTicks,
   countByStage,
   flowReducer,
   initialFlow,
   MAX_ATTEMPTS,
+  MAX_BACKOFF,
   type FlowAction,
   type FlowState,
   type ServiceId,
@@ -47,17 +49,45 @@ describe("Derrube um serviço: máquina de estados", () => {
   });
 
   it(`com o banco fora, tenta ${MAX_ATTEMPTS} vezes e vai para a DLQ`, () => {
-    const state = run([toggle("db"), { type: "send" }, ...ticks(3 + MAX_ATTEMPTS)]);
+    const state = run([toggle("db"), { type: "send" }, ...ticks(3 + MAX_ATTEMPTS + 1 + 2)]);
     expect(state.messages[0]).toMatchObject({ stage: "dlq", attempts: MAX_ATTEMPTS });
     const kinds = state.events.map((e) => e.kind);
     expect(kinds[0]).toBe("toDlq");
     expect(kinds.filter((k) => k === "retry")).toHaveLength(MAX_ATTEMPTS - 1);
   });
 
+  it("as tentativas esperam 1 e depois 2 ticks (espera crescente)", () => {
+    expect([1, 2].map(backoffTicks)).toEqual([1, 2]);
+    expect(MAX_BACKOFF).toBe(2);
+
+    let state = run([toggle("db"), { type: "send" }]);
+    const seen: { tick: number; kind: string; delay?: number }[] = [];
+    for (let tick = 1; tick <= 12; tick++) {
+      const before = state.events[0];
+      state = flowReducer(state, { type: "tick" });
+      const e = state.events[0];
+      if (e !== before && (e.kind === "retry" || e.kind === "toDlq")) {
+        seen.push({ tick, kind: e.kind, delay: e.kind === "retry" ? e.delay : undefined });
+      }
+    }
+    expect(seen.map((s) => s.kind)).toEqual(["retry", "retry", "toDlq"]);
+    expect(seen.map((s) => s.delay).slice(0, 2)).toEqual([1, 2]);
+    // 1 tick de espera + a tentativa; depois 2 de espera + a tentativa.
+    expect(seen[1].tick - seen[0].tick).toBe(2);
+    expect(seen[2].tick - seen[1].tick).toBe(3);
+  });
+
+  it("reprocessar com o banco ainda fora volta para a DLQ, sem perder", () => {
+    const inDlq = run([toggle("db"), { type: "send" }, ...ticks(3 + MAX_ATTEMPTS + 1 + 2)]);
+    const again = run([{ type: "replay" }, ...ticks(2 + MAX_ATTEMPTS + MAX_BACKOFF + 1)], inDlq);
+    expect(again.messages[0].stage).toBe("dlq");
+    expect(countByStage(again).lost).toBe(0);
+  });
+
   it("reprocessar a DLQ com o banco de volta entrega a mensagem", () => {
-    const inDlq = run([toggle("db"), { type: "send" }, ...ticks(3 + MAX_ATTEMPTS)]);
+    const inDlq = run([toggle("db"), { type: "send" }, ...ticks(3 + MAX_ATTEMPTS + 1 + 2)]);
     const state = run([toggle("db"), { type: "replay" }, ...ticks(2)], inDlq);
-    expect(state.messages[0]).toMatchObject({ stage: "delivered", attempts: 0 });
+    expect(state.messages[0]).toMatchObject({ stage: "delivered", attempts: 0, wait: 0 });
     expect(state.events.map((e) => e.kind)).toContain("replayed");
   });
 
@@ -109,7 +139,7 @@ describe("Derrube um serviço: máquina de estados", () => {
             ...messy,
             services: { api: true, queue: true, worker: true, db: true },
           };
-          const done = run([{ type: "replay" }, ...ticks(4)], healed);
+          const done = run([{ type: "replay" }, ...ticks(4 + MAX_BACKOFF)], healed);
           const counts = countByStage(done);
           expect(counts.delivered).toBe(counts.sent);
           expect(counts.lost).toBe(0);

@@ -10,6 +10,8 @@ export type Message = {
   id: number;
   stage: Stage;
   attempts: number;
+  // Ticks que faltam até a próxima tentativa (espera crescente).
+  wait: number;
 };
 
 export type FlowEvent =
@@ -17,7 +19,7 @@ export type FlowEvent =
   | { kind: "waitingApi"; id: number }
   | { kind: "outbox"; id: number }
   | { kind: "waitingWorker"; id: number }
-  | { kind: "retry"; id: number; attempt: number; max: number }
+  | { kind: "retry"; id: number; attempt: number; max: number; delay: number }
   | { kind: "toDlq"; id: number }
   | { kind: "replayed"; id: number }
   | { kind: "delivered"; id: number };
@@ -30,6 +32,14 @@ export type FlowState = {
 };
 
 export const MAX_ATTEMPTS = 3;
+
+// Espera depois da tentativa `attempt` que falhou: 1, 2, 4… ticks.
+export function backoffTicks(attempt: number): number {
+  return 2 ** (attempt - 1);
+}
+
+// A maior espera possível antes da última tentativa.
+export const MAX_BACKOFF = backoffTicks(MAX_ATTEMPTS - 1);
 
 export const initialFlow: FlowState = {
   services: { api: true, queue: true, worker: true, db: true },
@@ -71,6 +81,7 @@ function advance(state: FlowState): FlowState {
         added.push({ kind: "waitingWorker", id: m.id });
         return m;
       case "worker": {
+        if (m.wait > 0) return { ...m, wait: m.wait - 1 };
         if (services.db) {
           added.push({ kind: "delivered", id: m.id });
           return { ...m, stage: "delivered" };
@@ -80,8 +91,9 @@ function advance(state: FlowState): FlowState {
           added.push({ kind: "toDlq", id: m.id });
           return { ...m, stage: "dlq", attempts: attempt };
         }
-        added.push({ kind: "retry", id: m.id, attempt, max: MAX_ATTEMPTS });
-        return { ...m, attempts: attempt };
+        const delay = backoffTicks(attempt);
+        added.push({ kind: "retry", id: m.id, attempt, max: MAX_ATTEMPTS, delay });
+        return { ...m, attempts: attempt, wait: delay };
       }
       default:
         return m;
@@ -98,7 +110,7 @@ export function flowReducer(state: FlowState, action: FlowAction): FlowState {
       return {
         ...state,
         nextId: id + 1,
-        messages: [...state.messages, { id, stage: "interface", attempts: 0 }],
+        messages: [...state.messages, { id, stage: "interface", attempts: 0, wait: 0 }],
         events: pushEvents(state.events, [{ kind: "sent", id }]),
       };
     }
@@ -115,7 +127,7 @@ export function flowReducer(state: FlowState, action: FlowAction): FlowState {
       return {
         ...state,
         messages: state.messages.map((m) =>
-          m.stage === "dlq" ? { ...m, stage: "queue", attempts: 0 } : m,
+          m.stage === "dlq" ? { ...m, stage: "queue", attempts: 0, wait: 0 } : m,
         ),
         events: pushEvents(
           state.events,
