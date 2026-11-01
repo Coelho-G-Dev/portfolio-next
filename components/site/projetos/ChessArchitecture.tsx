@@ -49,7 +49,6 @@ function BoardCanvas({
   reducedMotion,
   pulseIndex,
   idPrefix,
-  staticMode = false,
 }: {
   board: Board;
   lang: "pt" | "en";
@@ -58,7 +57,6 @@ function BoardCanvas({
   reducedMotion: boolean;
   pulseIndex: number;
   idPrefix: string;
-  staticMode?: boolean;
 }) {
   const byId = new Map(board.nodes.map((n) => [n.id, n]));
   const squareWord = lang === "pt" ? "casa" : "square";
@@ -138,7 +136,7 @@ function BoardCanvas({
               />
             );
           })}
-          {!reducedMotion && !staticMode && activePath && (
+          {!reducedMotion && activePath && (
             <circle
               key={pulseIndex}
               r="4.5"
@@ -164,25 +162,6 @@ function BoardCanvas({
             const labelText = node.label[lang];
             const hasSpec = Boolean(node.spec && nodeSpecs[node.spec]);
             const isSelected = hasSpec && selectedId === node.id;
-
-            if (staticMode) {
-              return (
-                <div
-                  key={node.id}
-                  className="s-board__piece"
-                  data-critical={node.critical ? "true" : undefined}
-                  style={{ gridColumn: gridCol, gridRow }}
-                >
-                  <span className="s-board__glyph" aria-hidden="true">
-                    {PIECE_GLYPH[node.piece]}
-                  </span>
-                  <span className="s-board__label">{labelText}</span>
-                  <span className="s-board__coord" aria-hidden="true">
-                    {node.square}
-                  </span>
-                </div>
-              );
-            }
 
             return (
               <button
@@ -351,6 +330,19 @@ export default function ChessArchitecture({
     </aside>
   );
 
+  if (staticMode) {
+    return (
+      <div className="s-board s-board--static" data-project-board={project.id}>
+        {project.architecture?.title[lang] && (
+          <div className="s-board__toolbar">
+            <p className="s-board__title">{project.architecture.title[lang]}</p>
+          </div>
+        )}
+        {sidePanel}
+      </div>
+    );
+  }
+
   const detailPanel = selectedNode && selectedSpec && (
     <div className="s-board__detail" data-node-detail={selectedNode.id}>
       <div className="s-board__detail-head">
@@ -370,41 +362,39 @@ export default function ChessArchitecture({
         {project.architecture?.title[lang] && (
           <p className="s-board__title">{project.architecture.title[lang]}</p>
         )}
-        {!staticMode && (
-          <div className="s-board__actions">
-            {project.architecture?.mermaid && (
-              <button
-                type="button"
-                className="s-board__btn"
-                onClick={handleCopyMermaid}
-              >
-                {b.copyMermaid}
-              </button>
-            )}
+        <div className="s-board__actions">
+          {project.architecture?.mermaid && (
             <button
               type="button"
               className="s-board__btn"
-              onClick={handleDownloadSvg}
+              onClick={handleCopyMermaid}
             >
-              {b.downloadSvg}
+              {b.copyMermaid}
             </button>
-            <button
-              ref={fullscreenBtnRef}
-              type="button"
-              className="s-board__btn"
-              onClick={() => setFullscreen(true)}
-            >
-              {b.fullscreen}
-            </button>
-            <span className="s-board__status" role="status" aria-live="polite">
-              {copyStatus === "copied"
-                ? b.copied
-                : copyStatus === "failed"
-                  ? b.copyFailed
-                  : ""}
-            </span>
-          </div>
-        )}
+          )}
+          <button
+            type="button"
+            className="s-board__btn"
+            onClick={handleDownloadSvg}
+          >
+            {b.downloadSvg}
+          </button>
+          <button
+            ref={fullscreenBtnRef}
+            type="button"
+            className="s-board__btn"
+            onClick={() => setFullscreen(true)}
+          >
+            {b.fullscreen}
+          </button>
+          <span className="s-board__status" role="status" aria-live="polite">
+            {copyStatus === "copied"
+              ? b.copied
+              : copyStatus === "failed"
+                ? b.copyFailed
+                : ""}
+          </span>
+        </div>
       </div>
 
       <p className="s-board__swipe">{b.swipe}</p>
@@ -420,56 +410,53 @@ export default function ChessArchitecture({
               reducedMotion={reducedMotion}
               pulseIndex={pulseIndex}
               idPrefix={`board-${project.id}`}
-              staticMode={staticMode}
             />
             {sidePanel}
           </div>
-          {!staticMode && detailPanel}
+          {detailPanel}
         </>
       )}
 
-      {!staticMode && (
-        <dialog
-          ref={dialogRef}
-          className="s-board__dialog"
-          aria-label={project.architecture?.title[lang] ?? project.title}
-          onClose={() => {
-            setFullscreen(false);
-            fullscreenBtnRef.current?.focus();
-          }}
-        >
-          {fullscreen && (
-            <div className="s-board__dialog-inner">
-              <div className="s-board__dialog-head">
-                <p className="s-board__title">
-                  {project.architecture?.title[lang] ?? project.title}
-                </p>
-                <button
-                  ref={closeBtnRef}
-                  type="button"
-                  className="s-board__btn"
-                  onClick={closeFullscreen}
-                >
-                  {b.close}
-                </button>
-              </div>
-              <div className="s-board__main">
-                <BoardCanvas
-                  board={board}
-                  lang={lang}
-                  selectedId={selectedId}
-                  onSelect={handleToggleNode}
-                  reducedMotion={reducedMotion}
-                  pulseIndex={pulseIndex}
-                  idPrefix={`board-dialog-${project.id}`}
-                />
-                {sidePanel}
-              </div>
-              {detailPanel}
+      <dialog
+        ref={dialogRef}
+        className="s-board__dialog"
+        aria-label={project.architecture?.title[lang] ?? project.title}
+        onClose={() => {
+          setFullscreen(false);
+          fullscreenBtnRef.current?.focus();
+        }}
+      >
+        {fullscreen && (
+          <div className="s-board__dialog-inner">
+            <div className="s-board__dialog-head">
+              <p className="s-board__title">
+                {project.architecture?.title[lang] ?? project.title}
+              </p>
+              <button
+                ref={closeBtnRef}
+                type="button"
+                className="s-board__btn"
+                onClick={closeFullscreen}
+              >
+                {b.close}
+              </button>
             </div>
-          )}
-        </dialog>
-      )}
+            <div className="s-board__main">
+              <BoardCanvas
+                board={board}
+                lang={lang}
+                selectedId={selectedId}
+                onSelect={handleToggleNode}
+                reducedMotion={reducedMotion}
+                pulseIndex={pulseIndex}
+                idPrefix={`board-dialog-${project.id}`}
+              />
+              {sidePanel}
+            </div>
+            {detailPanel}
+          </div>
+        )}
+      </dialog>
     </div>
   );
 }

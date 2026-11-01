@@ -42,14 +42,12 @@ test('"Ver projetos" leva aos projetos', async ({ page }) => {
   // Rola como uma pessoa: até a base da abertura encostar no pé da tela, onde o
   // botão aparece inteiro e nada o cobre. scrollIntoView não serve aqui: dentro
   // de um capítulo grudado (sticky), o navegador rola além e a Cortina cobre o botão.
-  await page.evaluate(() => {
-    const opening = document.querySelector<HTMLElement>('[data-chapter="abertura"]')!;
-    window.scrollTo({ top: Math.max(0, opening.offsetHeight - window.innerHeight), behavior: "instant" });
-  });
   // O botão está inteiro na tela e nada o cobre (é o elemento no ponto central).
   await expect
     .poll(() =>
       cta.evaluate((el) => {
+        const opening = document.querySelector<HTMLElement>('[data-chapter="abertura"]')!;
+        window.scrollTo({ top: Math.max(0, opening.offsetHeight - window.innerHeight), behavior: "instant" });
         const r = el.getBoundingClientRect();
         return r.bottom <= innerHeight && el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2));
       }),
