@@ -938,6 +938,8 @@ main > .s-chapter {
 }
 .s-derrube__source a {
   color: var(--c-marfim);
+  /* Sublinhado: o link não pode se distinguir do texto só pela cor. */
+  text-decoration: underline;
   text-underline-offset: 3px;
 }
 

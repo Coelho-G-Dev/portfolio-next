@@ -9,6 +9,17 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem("preferred-language", "pt"));
 });
 
+// A página usa rolagem suave (globals.css): espera a rolagem parar antes de medir.
+async function settle(page: import("@playwright/test").Page) {
+  let last = -1;
+  for (let i = 0; i < 40; i++) {
+    const y = await page.evaluate(() => window.scrollY);
+    if (y === last) return;
+    last = y;
+    await page.waitForTimeout(100);
+  }
+}
+
 test("com JavaScript, os capítulos grudam (sticky)", async ({ page }) => {
   await page.goto("/novo");
   await expect(page.locator('[data-chapter="abertura"]')).toHaveCSS("position", "sticky");
@@ -42,18 +53,27 @@ test("coberta a abertura, o vídeo do personagem pausa", async ({ page }) => {
 
 test("capítulo mais alto que a tela: o seguinte só cobre depois da base aparecer", async ({ page }) => {
   await page.goto("/novo");
-  const end = page.locator("#derrube [data-derrube-end]");
-  await end.evaluate((el) => el.scrollIntoView({ block: "end" }));
-  await page.waitForTimeout(300);
-  const endBottom = await end.evaluate((el) => el.getBoundingClientRect().bottom);
-  const nextTop = await page.locator('[data-chapter="projetos"]').evaluate((el) => el.getBoundingClientRect().top);
-  expect(nextTop).toBeGreaterThanOrEqual(endBottom - 1);
+  await page.evaluate(() => document.fonts.ready);
+  // Em qualquer momento em que a última linha do Derrube está na tela, o
+  // capítulo seguinte ainda não a cobre. Repete até o layout assentar.
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const end = document.querySelector("#derrube [data-derrube-end]")!;
+        end.scrollIntoView({ block: "end", behavior: "instant" });
+        const endBottom = end.getBoundingClientRect().bottom;
+        const nextTop = document.querySelector('[data-chapter="projetos"]')!.getBoundingClientRect().top;
+        return nextTop >= endBottom - 1;
+      }),
+    )
+    .toBe(true);
 });
 
 test("a âncora do menu deixa o título do destino visível e por cima", async ({ page }, info) => {
   await page.goto("/novo");
   if (info.project.name === "phone-390") await page.getByRole("button", { name: pt.nav.menu }).click();
   await page.locator("#s-nav-links").getByRole("link", { name: pt.nav.links[3].label, exact: true }).click();
+  await settle(page);
   const title = page.locator("#contato h2");
   await expect(title).toBeInViewport();
   const onTop = await title.evaluate((el) => {
@@ -91,20 +111,27 @@ test("um capítulo só encolhe quando o seguinte já o cobre", async ({ page }) 
 
 test("o rodapé fica por cima da abertura grudada", async ({ page }) => {
   await page.goto("/novo");
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  await page.waitForTimeout(400);
-  const onTop = await page.locator(".s-footer").evaluate((el) => {
-    const r = el.getBoundingClientRect();
-    return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2));
-  });
-  expect(onTop).toBe(true);
+  // A página ainda cresce depois do load (fontes, Derrube interativo); a cada
+  // tentativa, rola até o fim de verdade e só então confere o rodapé.
+  await page.evaluate(() => document.fonts.ready);
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" });
+        if (Math.round(document.documentElement.scrollHeight - innerHeight - scrollY) !== 0) return false;
+        const el = document.querySelector(".s-footer")!;
+        const r = el.getBoundingClientRect();
+        return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2));
+      }),
+    )
+    .toBe(true);
 });
 
 test("a âncora de Projetos chega sem o destino estar coberto", async ({ page }, info) => {
   await page.goto("/novo");
   if (info.project.name === "phone-390") await page.getByRole("button", { name: pt.nav.menu }).click();
   await page.locator("#s-nav-links").getByRole("link", { name: pt.nav.links[0].label, exact: true }).click();
-  await page.waitForTimeout(400);
+  await settle(page);
   const { onTop, scale } = await page.locator("#projetos h2").evaluate((el) => {
     const r = el.getBoundingClientRect();
     const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
