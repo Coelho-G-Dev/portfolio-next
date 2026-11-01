@@ -33,14 +33,7 @@ import {
 } from "lucide-react";
 import type { Project } from "@/data/projects";
 import { copyText } from "@/lib/clipboard";
-function escapeXml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
-}
+import { escapeXml } from "@/lib/xml";
 import { nodeSpecs, type NodeColor } from "@/data/nodeSpecs";
 
 interface Props {
