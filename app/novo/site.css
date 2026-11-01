@@ -101,29 +101,22 @@
 .s-nav__menu {
   display: none;
 }
+/* Abaixo de 720px os links recolhem atrás do botão "Menu", mas só com
+   JavaScript (classe .js no <html>): sem ele, os links ficam visíveis. */
 @media (max-width: 719px) {
   .s-nav {
     flex-wrap: wrap;
-  }
-  .s-nav__menu {
-    display: inline-flex;
-    align-items: center;
-    order: 3;
   }
   .s-nav__right {
     order: 2;
   }
   .s-nav__links {
-    display: none;
     order: 4;
     width: 100%;
   }
-  .s-nav__links[data-open] {
-    display: block;
-  }
   .s-nav__links ul {
-    flex-direction: column;
-    gap: 4px;
+    flex-wrap: wrap;
+    gap: 4px 16px;
   }
   .s-nav__links a {
     display: block;
@@ -131,6 +124,17 @@
   }
   .s-nav__status {
     display: none;
+  }
+  .js .s-nav__menu {
+    display: inline-flex;
+    align-items: center;
+    order: 3;
+  }
+  .js .s-nav__links:not([data-open]) {
+    display: none;
+  }
+  .js .s-nav__links ul {
+    flex-direction: column;
   }
 }
 
