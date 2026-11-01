@@ -1,24 +1,33 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
+import type { Contributions } from "@/lib/github";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { siteCopy } from "@/lib/i18n/site";
-import { Chapter, Section } from "./Chapter";
+import { Chapter } from "./Chapter";
 import { CortinaContext } from "./CortinaContext";
 import Derrube from "./derrube/Derrube";
+import Footer from "./Footer";
 import Hero from "./Hero";
 import { heroManifest } from "./heroAssets";
 import Nav from "./Nav";
 import Projetos from "./projetos/Projetos";
+import About from "./sobre/About";
+import Contact from "./sobre/Contact";
 import HowIWork from "./trabalho/HowIWork";
 import Services from "./trabalho/Services";
 import { SiteCopyContext } from "./SiteCopyContext";
 import { useCortina } from "./useCortina";
 
-export default function SitePage({ heroSlot }: { heroSlot?: ReactNode }) {
+export default function SitePage({
+  heroSlot,
+  contributions,
+}: {
+  heroSlot?: ReactNode;
+  contributions?: Contributions | null;
+}) {
   const { language } = useLanguage();
   const c = siteCopy[language];
-  const s = c.sections;
   const root = useRef<HTMLDivElement>(null);
   const covered = useCortina(root);
 
@@ -48,17 +57,11 @@ export default function SitePage({ heroSlot }: { heroSlot?: ReactNode }) {
               <Services />
             </Chapter>
             <Chapter id="sobre" tone="bordo">
-              <Section id="sobre" title={s.sobre.title}>
-                <p>{s.sobre.soon}</p>
-              </Section>
-              <Section id="contato" title={s.contato.title}>
-                <p>{s.contato.soon}</p>
-              </Section>
+              <About contributions={contributions} />
+              <Contact />
             </Chapter>
           </main>
-          <footer className="s-footer">
-            <h2 className="sr-only">{c.footer.title}</h2>
-          </footer>
+          <Footer />
         </div>
       </CortinaContext.Provider>
     </SiteCopyContext.Provider>
