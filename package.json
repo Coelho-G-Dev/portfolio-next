@@ -25,7 +25,9 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "hero:placeholder": "node tools/hero-placeholder.mjs",
+    "hero:build": "node tools/hero-video.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^1.3.1",

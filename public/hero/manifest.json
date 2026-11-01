@@ -1,0 +1,21 @@
+{
+  "bg": "#e7ddc9",
+  "width": 1280,
+  "height": 720,
+  "poster": "poster.webp",
+  "entrada": "entrada.mp4",
+  "olhar": "olhar.mp4",
+  "olharLoop": "olhar-loop.mp4",
+  "reactions": {
+    "hover": "hover.mp4",
+    "clique-1": "clique-1.mp4"
+  },
+  "bytes": {
+    "poster.webp": 15690,
+    "entrada.mp4": 145227,
+    "olhar.mp4": 587611,
+    "olhar-loop.mp4": 1155815,
+    "hover.mp4": 86713,
+    "clique-1.mp4": 169686
+  }
+}
