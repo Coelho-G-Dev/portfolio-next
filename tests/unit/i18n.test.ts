@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { redesignCopy } from "@/lib/i18n/redesign";
+import { siteCopy } from "@/lib/i18n/site";
 
 // Lista cada folha da árvore de textos como "caminho: tipo".
 function shape(value: unknown, path = ""): string[] {
@@ -22,13 +23,16 @@ function strings(value: unknown, path = ""): [string, string][] {
   return [];
 }
 
-describe("textos PT/EN", () => {
+describe.each([
+  ["redesign", redesignCopy],
+  ["site", siteCopy],
+] as const)("textos PT/EN (%s)", (_name, copy) => {
   it("têm exatamente as mesmas chaves, tipos e tamanhos de lista", () => {
-    expect(shape(redesignCopy.en)).toEqual(shape(redesignCopy.pt));
+    expect(shape(copy.en)).toEqual(shape(copy.pt));
   });
 
   it.each(["pt", "en"] as const)("nenhuma string vazia em %s", (lang) => {
-    const empty = strings(redesignCopy[lang])
+    const empty = strings(copy[lang])
       .filter(([, s]) => s.trim() === "")
       .map(([p]) => p);
     expect(empty).toEqual([]);
@@ -36,7 +40,7 @@ describe("textos PT/EN", () => {
 
   it("caminhos de fotos e links são os mesmos nas duas línguas", () => {
     const urls = (lang: "pt" | "en") =>
-      strings(redesignCopy[lang])
+      strings(copy[lang])
         .filter(([, s]) => /^(\/|https?:|mailto:|#)/.test(s))
         .sort(([a], [b]) => a.localeCompare(b));
     expect(urls("en")).toEqual(urls("pt"));
