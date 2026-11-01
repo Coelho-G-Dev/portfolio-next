@@ -416,8 +416,11 @@
   flex: 1;
   aspect-ratio: auto;
   min-height: 420px;
-  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 64px);
-  mask-image: linear-gradient(to right, transparent 0, #000 64px);
+  /* O fundo do vídeo clareia nas bordas: esfuma a esquerda (larga) e o topo. */
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 22%), linear-gradient(to bottom, transparent 0, #000 64px);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent 0, #000 22%), linear-gradient(to bottom, transparent 0, #000 64px);
+  mask-composite: intersect;
 }
 .s-char__poster,
 .s-char__video {
@@ -435,8 +438,10 @@
   .s-hero__char .s-char {
     aspect-ratio: 1 / 1;
     min-height: 0;
-    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 48px), transparent);
-    mask-image: linear-gradient(to bottom, #000 calc(100% - 48px), transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 40px, #000 calc(100% - 48px), transparent);
+    -webkit-mask-composite: source-over;
+    mask-image: linear-gradient(to bottom, transparent 0, #000 40px, #000 calc(100% - 48px), transparent);
+    mask-composite: add;
   }
   .s-hero__text {
     padding-top: 8px;
