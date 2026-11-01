@@ -46,13 +46,18 @@ export default function FlowPanel({
 }) {
   const nodes = NODES[mode];
   const stackAt = new Map<number, number>();
-  const onTrack = messages
+  const placed = messages
     .map((m) => ({ m, col: column(mode, m) }))
     .filter(
       (t): t is { m: SimMessage; col: number } => t.col !== null && t.col >= 0,
-    )
-    // Só as 12 fichas mais recentes ficam no trilho: a fila "enche" sem poluir.
-    .slice(-12);
+    );
+  // No trilho: as fichas ainda em trânsito (até 12, as mais recentes) e só a
+  // última finalizada (entregue ou perdida), para a transição de saída. Uma
+  // finalizada nunca conta no empilhamento das ativas.
+  const isDone = (m: SimMessage) => m.stage === "delivered" || m.stage === "lost";
+  const active = placed.filter((t) => !isDone(t.m)).slice(-12);
+  const lastDone = placed.filter((t) => isDone(t.m)).slice(-1);
+  const onTrack = [...lastDone, ...active];
   const inDlq = messages.filter((m) => m.stage === "dlq");
 
   return (
@@ -97,8 +102,9 @@ export default function FlowPanel({
 
         <div className="s-flow__track" aria-hidden="true">
           {onTrack.map(({ m, col }) => {
-            const stack = stackAt.get(col) ?? 0;
-            stackAt.set(col, stack + 1);
+            const done = isDone(m);
+            const stack = done ? 0 : (stackAt.get(col) ?? 0);
+            if (!done) stackAt.set(col, stack + 1);
             return (
               <span
                 key={m.id}

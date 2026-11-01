@@ -538,6 +538,15 @@ main > .s-chapter {
   }
 }
 
+/* Anéis de foco com contraste: âmbar sobre o capítulo escuro, ébano dentro
+   da tela marfim do app. */
+[data-chapter="derrube"] :focus-visible {
+  outline-color: var(--c-ambar);
+}
+[data-chapter="derrube"] .s-app :focus-visible {
+  outline-color: var(--c-ebano);
+}
+
 /* ---------- Derrube um serviço (spec §5.4) ----------
    Fundo nogueira escura: texto marfim/bordo, âmbar só em destaque, bordas
    em bordo (9,3:1). Nogueira não aparece aqui. */
@@ -640,7 +649,8 @@ main > .s-chapter {
   background: transparent;
 }
 .s-flow__node[data-down] .s-flow__name {
-  opacity: 0.4;
+  /* 0,55 de marfim sobre ébano ainda passa 4,5:1. */
+  opacity: 0.55;
 }
 .s-flow__state,
 .s-flow__toggle {
@@ -989,7 +999,8 @@ main > .s-chapter {
     left: 0;
     width: 100%;
     height: calc(100% / var(--n, 5));
-    transform: translateY(calc(var(--col) * 100% + var(--stack) * -20px));
+    /* Empilha pouco, para caber na linha de 64px: as bordas mostram quantas são. */
+    transform: translateY(calc(var(--col) * 100% + var(--stack) * -4px)) translateX(calc(var(--stack) * -6px));
   }
   .s-flow__token[data-stage="lost"] {
     transform: translateY(calc(var(--col) * 100%)) translateX(24px);
