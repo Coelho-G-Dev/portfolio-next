@@ -2003,6 +2003,201 @@ main > .s-chapter {
   box-shadow: var(--shadow);
 }
 
+/* ==========================================================================
+   Capítulo Trabalho: Como eu trabalho & O que eu resolvo (Tone Marfim)
+   ========================================================================== */
+
+/* Como eu trabalho */
+.s-how {
+  margin-top: clamp(24px, 4vw, 40px);
+}
+.s-how__steps {
+  display: grid;
+  gap: clamp(48px, 6vw, 72px);
+}
+.s-how__step {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+}
+.s-how__narrative {
+  display: flex;
+  gap: 18px;
+  align-items: baseline;
+}
+.s-how__num {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--c-nogueira-escura);
+  opacity: 0.85;
+}
+.s-how__text {
+  margin: 0;
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  line-height: 1.55;
+  color: var(--c-ebano);
+}
+.s-how__lead {
+  color: var(--c-nogueira-escura);
+  font-weight: 800;
+}
+.s-evidence-card {
+  margin: 0;
+  padding: clamp(16px, 2.5vw, 24px);
+  border: 1.5px solid rgba(138, 106, 74, 0.35);
+  border-radius: 18px;
+  background: #FAF6F0;
+  box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.06);
+}
+.s-evidence-code {
+  margin: 0;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--c-ebano);
+  overflow-x: auto;
+  white-space: pre;
+}
+.s-evidence-code--diagram {
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+.s-evidence-caption {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(138, 106, 74, 0.2);
+  font-size: 0.82rem;
+  color: var(--c-nogueira-escura);
+}
+.s-evidence-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+}
+.s-evidence-metric {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 6px;
+}
+.s-evidence-metric__val {
+  margin: 0;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--c-nogueira-escura);
+}
+.s-evidence-metric__label {
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: var(--c-nogueira-escura);
+}
+.s-evidence-card--link {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* O que eu resolvo */
+.s-services {
+  margin-top: clamp(24px, 4vw, 40px);
+}
+.s-services__table-wrap {
+  border: 1.5px solid rgba(138, 106, 74, 0.35);
+  border-radius: 20px;
+  background: #FAF6F0;
+  overflow: hidden;
+  box-shadow: 0 6px 20px -4px rgba(0, 0, 0, 0.06);
+}
+.s-services__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.s-services__table th {
+  padding: 16px 20px;
+  border-bottom: 1.5px solid rgba(138, 106, 74, 0.3);
+  background: rgba(138, 106, 74, 0.08);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--c-nogueira-escura);
+}
+.s-services__table td {
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(138, 106, 74, 0.15);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--c-ebano);
+  vertical-align: middle;
+}
+.s-services__table tbody tr:last-child td {
+  border-bottom: none;
+}
+.s-services__table tbody tr:hover {
+  background: rgba(245, 165, 36, 0.06);
+}
+.s-services__cell-problem strong {
+  color: var(--c-ebano);
+  font-size: 1rem;
+}
+.s-services__cell-delivery {
+  color: var(--c-nogueira-escura);
+  font-weight: 600;
+}
+.s-services__stack-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid rgba(42, 32, 24, 0.4);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.75rem;
+  color: var(--c-nogueira-escura);
+  background: rgba(42, 32, 24, 0.06);
+}
+.s-services__proof-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--c-nogueira-escura);
+  text-decoration: none;
+  transition: color 200ms var(--ease-out), transform 200ms var(--ease-out);
+}
+.s-services__proof-link:hover,
+.s-services__proof-link:focus-visible {
+  color: var(--c-ebano);
+  transform: translateX(3px);
+  text-decoration: underline;
+}
+.s-services__cards {
+  display: none;
+}
+.s-services__roles-banner {
+  margin-top: clamp(28px, 4vw, 44px);
+  padding: clamp(18px, 3vw, 24px);
+  border: 1.5px solid rgba(42, 32, 24, 0.3);
+  border-radius: 18px;
+  background: rgba(42, 32, 24, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.s-services__roles-text {
+  margin: 0;
+  font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+  font-weight: 600;
+  color: var(--c-nogueira-escura);
+}
+
 @media (max-width: 719px) {
   /* Destaque (Cidade Energia) no celular */
   .s-featured {
@@ -2247,6 +2442,64 @@ main > .s-chapter {
   .s-board__detail {
     padding: 12px 10px;
     border-radius: 12px;
+  }
+
+  /* Como eu trabalho no celular */
+  .s-how__step {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .s-evidence-metrics {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* O que eu resolvo no celular */
+  .s-services__table-wrap {
+    display: none;
+  }
+  .s-services__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .s-services__card {
+    padding: 16px;
+    border: 1.5px solid rgba(138, 106, 74, 0.3);
+    border-radius: 16px;
+    background: #FAF6F0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .s-services__card-problem {
+    margin: 0;
+    font-size: 1.05rem;
+    color: var(--c-ebano);
+  }
+  .s-services__card-delivery {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--c-nogueira-escura);
+    line-height: 1.45;
+  }
+  .s-services__card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(138, 106, 74, 0.15);
+  }
+  .s-services__roles-banner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .s-services__roles-banner .s-pill {
+    width: 100%;
+    justify-content: center;
   }
 }
 

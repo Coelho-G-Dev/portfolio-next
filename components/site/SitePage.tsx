@@ -10,6 +10,8 @@ import Hero from "./Hero";
 import { heroManifest } from "./heroAssets";
 import Nav from "./Nav";
 import Projetos from "./projetos/Projetos";
+import HowIWork from "./trabalho/HowIWork";
+import Services from "./trabalho/Services";
 import { SiteCopyContext } from "./SiteCopyContext";
 import { useCortina } from "./useCortina";
 
@@ -42,12 +44,8 @@ export default function SitePage({ heroSlot }: { heroSlot?: ReactNode }) {
               <Projetos />
             </Chapter>
             <Chapter id="trabalho" tone="marfim">
-              <Section id="como-trabalho" title={s.comoTrabalho.title}>
-                <p>{s.comoTrabalho.soon}</p>
-              </Section>
-              <Section id="o-que-resolvo" title={s.oQueResolvo.title}>
-                <p>{s.oQueResolvo.soon}</p>
-              </Section>
+              <HowIWork />
+              <Services />
             </Chapter>
             <Chapter id="sobre" tone="bordo">
               <Section id="sobre" title={s.sobre.title}>
