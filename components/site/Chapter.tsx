@@ -1,12 +1,24 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 export type ChapterTone = "marfim" | "nogueiraEscura" | "ebano" | "bordo";
+export type ChapterId = "abertura" | "derrube" | "projetos" | "trabalho" | "sobre";
 
 // Um capítulo é o cartão que a Cortina sobrepõe (spec §5.3). Ele agrupa uma
-// ou mais seções; cada seção tem o seu h2.
-export function Chapter({ tone, children }: { tone: ChapterTone; children: ReactNode }) {
+// ou mais seções; cada seção tem o seu h2. O id vai só em data-chapter, para
+// não colidir com o id das seções.
+export function Chapter({
+  id,
+  tone,
+  style,
+  children,
+}: {
+  id: ChapterId;
+  tone: ChapterTone;
+  style?: CSSProperties;
+  children: ReactNode;
+}) {
   return (
-    <div className="s-chapter" data-tone={tone}>
+    <div className="s-chapter" data-chapter={id} data-tone={tone} style={style}>
       {children}
     </div>
   );

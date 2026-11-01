@@ -12,6 +12,7 @@
   --radius-pill: 999px;
   /* Elevação neutra: nada de sombra colorida. */
   --shadow: 0 12px 32px rgb(14 15 19 / 0.18);
+  --shadow-up: 0 -12px 32px rgb(14 15 19 / 0.18);
 }
 
 /* ---------- Base ---------- */
@@ -138,9 +139,38 @@
   }
 }
 
-/* ---------- Capítulos ---------- */
+/* ---------- Capítulos e Cortina (spec §5.3) ---------- */
 .s-chapter {
+  position: relative;
   padding: clamp(64px, 10vw, 128px) clamp(16px, 4vw, 48px);
+  /* --scale e --shade vêm de useCortina; só transform e opacity animam. */
+  transform: scale(var(--scale, 1));
+  /* Encolhe a partir da base: a emenda com o próximo cartão nunca abre. */
+  transform-origin: 50% 100%;
+}
+/* Atrás dos cartões que encolhem aparece ébano, não o marfim da página. */
+.s-cortina {
+  background: var(--c-ebano);
+}
+/* Escurece com uma camada por cima, nunca com filter. */
+.s-chapter::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--c-ebano);
+  opacity: var(--shade, 0);
+  pointer-events: none;
+}
+/* Só gruda com JavaScript e depois da medição: sem JS, nenhum capítulo cobre
+   texto não lido. */
+.js .s-chapter[data-stick] {
+  position: sticky;
+  top: var(--stick-top, 0px);
+}
+main > .s-chapter {
+  border-radius: 28px 28px 0 0;
+  box-shadow: var(--shadow-up);
 }
 .s-chapter[data-tone="marfim"] {
   background: var(--c-marfim);
@@ -370,7 +400,9 @@
 }
 
 /* ---------- Abertura (spec §5.2) ---------- */
-.s-opening {
+.s-chapter[data-chapter="abertura"] {
+  min-height: 100svh;
+  padding: 0;
   color: var(--c-ebano);
 }
 .s-hero {

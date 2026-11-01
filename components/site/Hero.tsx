@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { mailtoFor } from "@/lib/contact";
 import Character from "./Character";
+import { useChapterCovered } from "./CortinaContext";
 import EmailPill from "./EmailPill";
 import Pill from "./Pill";
 import { useSiteCopy } from "./SiteCopyContext";
@@ -13,13 +14,16 @@ export default function Hero() {
   const c = useSiteCopy();
   const h = c.hero;
   const ref = useRef<HTMLElement>(null);
-  const [paused, setPaused] = useState(false);
+  const [offscreen, setOffscreen] = useState(false);
+  // Coberta pela Cortina, a abertura continua "na tela" para o navegador.
+  const covered = useChapterCovered("abertura");
+  const paused = offscreen || covered;
 
   // O personagem pausa quando menos de 10% da abertura está à vista.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const io = new IntersectionObserver(([entry]) => setPaused(entry.intersectionRatio < 0.1), {
+    const io = new IntersectionObserver(([entry]) => setOffscreen(entry.intersectionRatio < 0.1), {
       threshold: [0, 0.1, 0.2],
     });
     io.observe(el);

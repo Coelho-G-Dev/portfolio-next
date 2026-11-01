@@ -38,7 +38,11 @@ test("os links do menu levam à seção certa", async ({ page }, info) => {
 });
 
 test('"Ver projetos" leva aos projetos', async ({ page }) => {
-  await page.locator("#inicio").getByRole("link", { name: pt.hero.seeWork }).click();
+  const cta = page.locator("#inicio").getByRole("link", { name: pt.hero.seeWork });
+  // Rola como uma pessoa: até o botão aparecer no pé da tela. Centralizá-lo
+  // levaria a rolagem além da base da abertura, onde a Cortina já a cobre.
+  await cta.evaluate((el) => el.scrollIntoView({ block: "end" }));
+  await cta.click();
   await expect(page.locator("#projetos h2").first()).toBeInViewport();
 });
 
