@@ -88,23 +88,29 @@ test("desktop: o mouse move o Olhar e dois cliques rápidos tocam uma só reaç�
   const olhar = char.locator('video[data-clip="olhar"]');
   await expect(olhar).toHaveAttribute("data-active", "true", { timeout: 10_000 });
 
-  const time = () => olhar.evaluate((v: HTMLVideoElement) => v.currentTime);
-  await page.mouse.move(2, 300);
+  // O scrub é medido com o cursor na faixa do menu (y = 20), fora do
+  // personagem, para não disparar o hover. A pose neutra fica na metade.
+  const time = () => olhar.evaluate((v: HTMLVideoElement) => v.currentTime / v.duration);
+  await page.mouse.move(2, 20);
   await page.waitForTimeout(800);
-  const left = await time();
-  await page.mouse.move(1430, 300);
+  expect(await time()).toBeLessThan(0.15);
+  await page.mouse.move(1430, 20);
   await page.waitForTimeout(800);
-  const right = await time();
-  expect(right - left).toBeGreaterThan(1);
+  expect(await time()).toBeGreaterThan(0.85);
 
+  // Entrar no personagem toca o hover; depois de ele voltar ao Olhar, dois
+  // cliques seguidos tocam exatamente uma reação de clique.
   const box = (await char.boundingBox())!;
   const x = box.x + box.width * 0.68;
   const y = box.y + box.height * 0.5;
+  await page.mouse.move(x, y);
+  await expect(char.locator('video[data-active][data-clip="hover"]')).toHaveCount(1, { timeout: 5_000 });
+  await expect(olhar).toHaveAttribute("data-active", "true", { timeout: 8_000 });
   await page.mouse.click(x, y);
   await page.mouse.click(x, y);
   await page.waitForTimeout(900);
   await expect(char.locator("video[data-active]")).toHaveCount(1);
-  await expect(char.locator("video[data-active]")).toHaveAttribute("data-clip", /hover|clique/);
+  await expect(char.locator("video[data-active]")).toHaveAttribute("data-clip", /^clique/);
 });
 
 test("celular: um toque no personagem mostra uma reação", async ({ page }, info) => {
