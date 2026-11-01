@@ -12,7 +12,7 @@ export default function Nav() {
   return (
     <div className="s-nav">
       <a className="s-nav__brand" href="#inicio" aria-label={c.homeAria}>
-        <span aria-hidden="true">♞</span> {c.brand}
+        <span aria-hidden="true">♚</span> {c.brand}
       </a>
 
       {/* Abaixo de 720px, os links ficam atrás do botão "Menu". */}

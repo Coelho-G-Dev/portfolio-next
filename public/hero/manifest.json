@@ -8,7 +8,9 @@
   "olharLoop": "olhar-loop.mp4",
   "reactions": {
     "hover": "hover.mp4",
-    "clique-1": "clique-1.mp4"
+    "clique-1": "clique-1.mp4",
+    "clique-2": "clique-2.mp4",
+    "clique-3": "clique-3.mp4"
   },
   "bytes": {
     "poster.webp": 15690,
@@ -16,6 +18,8 @@
     "olhar.mp4": 587611,
     "olhar-loop.mp4": 1155815,
     "hover.mp4": 86713,
-    "clique-1.mp4": 169686
+    "clique-1.mp4": 156401,
+    "clique-2.mp4": 148715,
+    "clique-3.mp4": 107189
   }
 }

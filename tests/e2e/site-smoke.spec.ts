@@ -39,10 +39,25 @@ test("os links do menu levam à seção certa", async ({ page }, info) => {
 
 test('"Ver projetos" leva aos projetos', async ({ page }) => {
   const cta = page.locator("#inicio").getByRole("link", { name: pt.hero.seeWork });
-  // Rola como uma pessoa: até o botão aparecer no pé da tela. Centralizá-lo
-  // levaria a rolagem além da base da abertura, onde a Cortina já a cobre.
-  await cta.evaluate((el) => el.scrollIntoView({ block: "end" }));
-  await cta.click();
+  // Rola como uma pessoa: até a base da abertura encostar no pé da tela, onde o
+  // botão aparece inteiro e nada o cobre. scrollIntoView não serve aqui: dentro
+  // de um capítulo grudado (sticky), o navegador rola além e a Cortina cobre o botão.
+  await page.evaluate(() => {
+    const opening = document.querySelector<HTMLElement>('[data-chapter="abertura"]')!;
+    window.scrollTo({ top: Math.max(0, opening.offsetHeight - window.innerHeight), behavior: "instant" });
+  });
+  // O botão está inteiro na tela e nada o cobre (é o elemento no ponto central).
+  await expect
+    .poll(() =>
+      cta.evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        return r.bottom <= innerHeight && el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2));
+      }),
+    )
+    .toBe(true);
+  // Clique direto no elemento: a rolagem automática do Playwright antes do clique
+  // erra dentro de capítulos grudados e levaria a Cortina para cima do botão.
+  await cta.evaluate((el) => (el as HTMLElement).click());
   await expect(page.locator("#projetos h2").first()).toBeInViewport();
 });
 
