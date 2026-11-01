@@ -39,6 +39,7 @@ export default function Doors({
               onClick={() => onSelectDoor(door)}
             >
               <span className="s-door__frame" aria-hidden="true">
+                <span className="s-door__interior" />
                 <span className="s-door__leaf" data-leaf="left">
                   <span className="s-door__inlay" />
                   <span className="s-door__handle" />

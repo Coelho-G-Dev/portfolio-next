@@ -46,7 +46,7 @@ export default function Projetos({ lang: langProp }: { lang?: "pt" | "en" }) {
 
   useEffect(() => {
     if (activeDoor) {
-      headingRef.current?.focus();
+      headingRef.current?.focus({ preventScroll: true });
     }
   }, [activeDoor]);
 

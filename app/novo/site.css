@@ -1509,13 +1509,26 @@ main > .s-chapter {
 /* Portas fechadas */
 .s-doors {
   margin-top: clamp(36px, 5vw, 56px);
-  transition:
-    transform 600ms var(--ease-out),
-    opacity 450ms var(--ease-out);
+  animation: s-doors-enter 300ms var(--ease-out) both;
 }
-.s-doors[data-opening="true"] {
-  transform: scale(1.04);
-  opacity: 0.92;
+@keyframes s-doors-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.s-doors[data-opening="true"] .s-door:not([data-open="true"]) {
+  opacity: 0.28;
+  transform: scale(0.97);
+  filter: blur(0.5px);
+  pointer-events: none;
+}
+.s-doors[data-opening="true"] .s-door[data-open="true"] {
+  transform: scale(1.02);
 }
 .s-doors__lead {
   margin: 0 0 20px;
@@ -1543,7 +1556,10 @@ main > .s-chapter {
   font: inherit;
   text-align: left;
   cursor: pointer;
-  transition: transform 240ms var(--ease-out);
+  transition:
+    transform 350ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 350ms var(--ease-out),
+    filter 350ms var(--ease-out);
 }
 .s-door:hover,
 .s-door:focus-visible {
@@ -1575,14 +1591,32 @@ main > .s-chapter {
     0 20px 40px -12px rgb(0 0 0 / 0.8),
     0 0 24px -4px rgb(245 165 36 / 0.28);
 }
+.s-door__interior {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px 16px 6px 6px;
+  background:
+    radial-gradient(circle at 50% 50%, rgb(245 165 36 / 0.1) 0%, transparent 70%),
+    linear-gradient(180deg, #171412 0%, #0E0F13 100%);
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out);
+  z-index: 0;
+}
+.s-door[data-open="true"] .s-door__interior {
+  opacity: 1;
+  background:
+    radial-gradient(circle at 50% 45%, rgb(245 165 36 / 0.45) 0%, rgb(245 165 36 / 0.15) 35%, transparent 75%),
+    linear-gradient(180deg, #1e1914 0%, #0E0F13 100%);
+}
 .s-door__leaf {
   position: relative;
   display: block;
+  z-index: 1;
   border: 1px solid rgb(138 106 74 / 0.35);
   background:
     radial-gradient(ellipse at 50% 0%, rgb(138 106 74 / 0.18) 0%, transparent 70%),
     linear-gradient(180deg, #241D17 0%, #16120E 45%, #0F0E12 100%);
-  transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 450ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .s-door__leaf[data-leaf="left"] {
   border-radius: 12px 2px 2px 4px;
@@ -1593,10 +1627,10 @@ main > .s-chapter {
   transform-origin: 100% 50%;
 }
 .s-door[data-open="true"] .s-door__leaf[data-leaf="left"] {
-  transform: rotateY(-105deg);
+  transform: rotateY(-112deg);
 }
 .s-door[data-open="true"] .s-door__leaf[data-leaf="right"] {
-  transform: rotateY(105deg);
+  transform: rotateY(112deg);
 }
 .s-door__inlay {
   position: absolute;
@@ -1667,7 +1701,7 @@ main > .s-chapter {
 }
 .s-door[data-open="true"] .s-door__plate {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.9);
+  transform: translate(-50%, -50%) scale(0.92);
 }
 .s-door__teaser {
   color: var(--c-bordo);
@@ -1687,6 +1721,20 @@ main > .s-chapter {
   border: 1.5px solid var(--c-nogueira);
   border-radius: 24px;
   background: rgb(42 32 24 / 0.35);
+  box-shadow:
+    0 20px 48px -12px rgb(0 0 0 / 0.6),
+    0 0 32px -8px rgb(245 165 36 / 0.12);
+  animation: s-door-panel-enter 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes s-door-panel-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 .s-doors-static {
   display: flex;
@@ -1800,39 +1848,182 @@ main > .s-chapter {
 }
 
 @media (max-width: 719px) {
+  /* Destaque (Cidade Energia) no celular */
+  .s-featured {
+    margin-top: 18px;
+    padding: 18px 14px;
+    border-radius: 18px;
+  }
+  .s-featured__title {
+    font-size: 1.5rem;
+  }
+  .s-featured__line {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    margin-bottom: 16px;
+  }
+  .s-featured__metrics {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .s-featured__metric {
+    padding: 10px 14px;
+    border-radius: 12px;
+  }
+  .s-featured__links {
+    gap: 8px;
+  }
+  .s-featured__links .s-pill {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Portas no celular: proporção ergonômica de portal compacto */
+  .s-doors {
+    margin-top: 28px;
+  }
+  .s-doors__lead {
+    margin-bottom: 14px;
+    font-size: 0.78rem;
+  }
   .s-doors__row {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 14px;
+  }
+  .s-door {
+    gap: 8px;
   }
   .s-door__frame {
-    height: 230px;
+    height: 140px;
+    padding: 6px;
+    border-radius: 14px 14px 6px 6px;
+  }
+  .s-door__interior {
+    border-radius: 12px 12px 4px 4px;
   }
   .s-door__handle {
-    height: 40px;
+    height: 28px;
+    width: 2.5px;
   }
+  .s-door__inlay {
+    inset: 8px 6px;
+  }
+  .s-door__plate {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+  }
+  .s-door__teaser {
+    font-size: 0.82rem;
+    line-height: 1.35;
+    margin: 0;
+  }
+
+  /* Painel aberto no celular */
   .s-door-panel {
-    padding: 16px 10px;
+    margin-top: 24px;
+    padding: 16px 12px;
     border-radius: 16px;
   }
+  .s-door-panel__head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding-bottom: 14px;
+  }
+  .s-door-panel__title {
+    font-size: 1.4rem;
+  }
+  .s-door-panel__teaser {
+    font-size: 0.88rem;
+  }
+  .s-door-panel__back {
+    width: 100%;
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+  }
+  .s-door-panel__list {
+    gap: 18px;
+    margin-top: 16px;
+  }
+
+  /* Card de projeto no celular */
   .s-project-card {
-    padding: 14px 10px;
+    padding: 16px 12px;
     border-radius: 14px;
   }
+  .s-project-card__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+  .s-project-card__title {
+    font-size: 1.25rem;
+  }
+  .s-project-card__year {
+    font-size: 0.75rem;
+  }
+  .s-project-card__line {
+    font-size: 0.92rem;
+    line-height: 1.45;
+    margin-bottom: 14px;
+  }
+  .s-project-card__stack {
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .s-project-card__stack li {
+    padding: 3px 8px;
+    font-size: 0.72rem;
+  }
+  .s-project-card__metrics {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .s-project-card__metric {
+    padding: 8px 12px;
+  }
+  .s-project-card__links {
+    gap: 8px;
+  }
+  .s-project-card__links .s-pill {
+    width: 100%;
+    justify-content: center;
+  }
+  .s-project-card__screens {
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .s-project-card__screen {
+    width: calc(50% - 5px);
+    border-radius: 14px;
+  }
+
+  /* Tabuleiro no celular */
   .s-board {
     padding: 12px 8px;
     border-radius: 14px;
   }
   .s-board__toolbar {
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-  .s-board__btn {
-    min-height: 32px;
-    padding: 0 10px;
-    font-size: 0.75rem;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
   }
   .s-board__status {
+    width: 100%;
     font-size: 0.75rem;
+  }
+  .s-board__btn {
+    flex: 1 1 auto;
+    min-height: 34px;
+    padding: 0 10px;
+    font-size: 0.75rem;
+    justify-content: center;
   }
   .s-board__frame {
     min-width: 440px;
@@ -1872,7 +2063,12 @@ main > .s-chapter {
   }
   .s-board__legend {
     grid-template-columns: repeat(2, 1fr);
-    gap: 6px 12px;
+    gap: 6px 10px;
+    font-size: 0.72rem;
+  }
+  .s-board__detail {
+    padding: 12px 10px;
+    border-radius: 12px;
   }
 }
 
@@ -1882,15 +2078,21 @@ main > .s-chapter {
   }
   .s-doors,
   .s-doors[data-opening="true"],
+  .s-doors[data-opening="true"] .s-door,
+  .s-doors[data-opening="true"] .s-door[data-open="true"],
   .s-door,
   .s-door:hover,
   .s-door:focus-visible,
+  .s-door__interior,
   .s-door__leaf,
   .s-door[data-open="true"] .s-door__leaf[data-leaf="left"],
   .s-door[data-open="true"] .s-door__leaf[data-leaf="right"],
+  .s-door-panel,
   .s-door-panel__back,
   .s-door-panel__back:hover {
     transform: none;
+    filter: none;
+    animation: none;
     transition: opacity 150ms linear;
   }
   .s-doors[data-opening="true"] {
