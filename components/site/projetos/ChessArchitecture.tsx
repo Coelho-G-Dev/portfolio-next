@@ -397,7 +397,10 @@ export default function ChessArchitecture({
         </div>
       </div>
 
-      <p className="s-board__swipe">{b.swipe}</p>
+      <p className="s-board__swipe">
+        <span aria-hidden="true">↔</span>
+        <span>{b.swipe}</span>
+      </p>
 
       {!fullscreen && (
         <>

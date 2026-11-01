@@ -1,4 +1,5 @@
 import type { Door } from "@/data/projects";
+import { Arrow } from "../Pill";
 import { useSiteCopy } from "../SiteCopyContext";
 
 export const DOOR_ORDER: Door[] = ["backend", "frontend", "ia"];
@@ -46,7 +47,16 @@ export default function Doors({
                   <span className="s-door__inlay" />
                   <span className="s-door__handle" />
                 </span>
-                <span className="s-door__plate">{copy.name}</span>
+                <span
+                  className="s-door__plate s-pill"
+                  data-variant="primary"
+                  data-surface="dark"
+                >
+                  <span className="s-pill__label">{copy.name}</span>
+                  <span className="s-pill__dot">
+                    <Arrow />
+                  </span>
+                </span>
               </span>
               <span className="s-door__teaser">{copy.teaser}</span>
             </button>

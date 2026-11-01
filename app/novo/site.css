@@ -1392,7 +1392,18 @@ main > .s-chapter {
     grid-template-columns: 1fr;
   }
   .s-board__swipe {
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+    padding: 6px 12px;
+    border: 1px solid rgb(245 165 36 / 0.35);
+    border-radius: var(--radius-pill);
+    background: rgb(245 165 36 / 0.08);
+    color: var(--c-ambar);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.75rem;
+    font-weight: 600;
   }
 }
 
@@ -1542,40 +1553,43 @@ main > .s-chapter {
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  height: 280px;
-  padding: 10px;
-  border: 2px solid var(--c-nogueira);
-  border-radius: 20px 20px 8px 8px;
-  background: var(--c-ebano);
-  box-shadow: var(--shadow);
+  gap: 2px;
+  height: 300px;
+  padding: 8px;
+  border: 1.5px solid rgb(138 106 74 / 0.4);
+  border-radius: 18px 18px 8px 8px;
+  background: linear-gradient(180deg, #171412 0%, #0E0F13 100%);
+  box-shadow:
+    0 16px 36px -12px rgb(0 0 0 / 0.7),
+    inset 0 1px 0 rgb(255 255 255 / 0.05);
   perspective: 1200px;
   overflow: hidden;
+  transition:
+    border-color 240ms var(--ease-out),
+    box-shadow 240ms var(--ease-out);
 }
 .s-door:hover .s-door__frame,
 .s-door:focus-visible .s-door__frame {
   border-color: var(--c-ambar);
+  box-shadow:
+    0 20px 40px -12px rgb(0 0 0 / 0.8),
+    0 0 24px -4px rgb(245 165 36 / 0.28);
 }
 .s-door__leaf {
   position: relative;
   display: block;
-  border: 1px solid var(--c-nogueira);
+  border: 1px solid rgb(138 106 74 / 0.35);
   background:
-    repeating-linear-gradient(
-      90deg,
-      rgb(14 15 19 / 0) 0px,
-      rgb(14 15 19 / 0) 10px,
-      rgb(14 15 19 / 0.14) 11px,
-      rgb(14 15 19 / 0) 13px
-    ),
-    linear-gradient(180deg, var(--c-nogueira) 0%, var(--c-nogueira-escura) 100%);
-  transition: transform 600ms var(--ease-out);
+    radial-gradient(ellipse at 50% 0%, rgb(138 106 74 / 0.18) 0%, transparent 70%),
+    linear-gradient(180deg, #241D17 0%, #16120E 45%, #0F0E12 100%);
+  transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .s-door__leaf[data-leaf="left"] {
-  border-radius: 12px 0 0 4px;
+  border-radius: 12px 2px 2px 4px;
   transform-origin: 0% 50%;
 }
 .s-door__leaf[data-leaf="right"] {
-  border-radius: 0 12px 4px 0;
+  border-radius: 2px 12px 4px 2px;
   transform-origin: 100% 50%;
 }
 .s-door[data-open="true"] .s-door__leaf[data-leaf="left"] {
@@ -1586,18 +1600,31 @@ main > .s-chapter {
 }
 .s-door__inlay {
   position: absolute;
-  inset: 18px 14px;
-  border: 1px solid rgb(217 195 160 / 0.35);
+  inset: 14px 10px;
+  border: 1px solid rgb(217 195 160 / 0.16);
   border-radius: 6px;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.02) 0%, rgb(0 0 0 / 0.25) 100%);
+  box-shadow:
+    inset 0 1px 3px rgb(0 0 0 / 0.45),
+    0 1px 0 rgb(255 255 255 / 0.03);
+  transition: border-color 240ms var(--ease-out);
+}
+.s-door:hover .s-door__inlay,
+.s-door:focus-visible .s-door__inlay {
+  border-color: rgb(245 165 36 / 0.35);
 }
 .s-door__handle {
   position: absolute;
-  top: 56%;
-  width: 10px;
-  height: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 52px;
   border-radius: 999px;
-  background: var(--c-ambar);
-  box-shadow: 0 2px 6px rgb(14 15 19 / 0.5);
+  background: linear-gradient(180deg, #F5A524 0%, #D48810 50%, #8A560B 100%);
+  box-shadow:
+    0 0 8px rgb(245 165 36 / 0.4),
+    0 2px 4px rgb(14 15 19 / 0.6);
+  transition: box-shadow 240ms var(--ease-out);
 }
 .s-door__leaf[data-leaf="left"] .s-door__handle {
   right: 8px;
@@ -1605,25 +1632,42 @@ main > .s-chapter {
 .s-door__leaf[data-leaf="right"] .s-door__handle {
   left: 8px;
 }
+.s-door:hover .s-door__handle,
+.s-door:focus-visible .s-door__handle {
+  box-shadow:
+    0 0 12px rgb(245 165 36 / 0.7),
+    0 2px 6px rgb(14 15 19 / 0.7);
+}
 .s-door__plate {
   position: absolute;
-  top: 36%;
+  top: 42%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 6px 18px;
-  border: 1.5px solid var(--c-ebano);
-  border-radius: 8px;
-  background: var(--c-ambar);
-  color: var(--c-ebano);
-  font-weight: 800;
-  font-size: 1.05rem;
-  letter-spacing: -0.01em;
+  z-index: 3;
+  pointer-events: none;
   white-space: nowrap;
-  box-shadow: 0 6px 16px rgb(14 15 19 / 0.45);
-  transition: opacity 250ms var(--ease-out);
+  box-shadow:
+    0 10px 24px -4px rgb(14 15 19 / 0.65),
+    0 0 0 1px rgb(255 255 255 / 0.12);
+  transition:
+    transform 220ms var(--ease-out),
+    box-shadow 220ms var(--ease-out),
+    opacity 240ms var(--ease-out);
+}
+.s-door:hover .s-door__plate,
+.s-door:focus-visible .s-door__plate {
+  transform: translate(-50%, calc(-50% - 3px));
+  box-shadow:
+    0 14px 28px -4px rgb(14 15 19 / 0.75),
+    0 0 16px -2px rgb(245 165 36 / 0.45);
+}
+.s-door:hover .s-door__plate .s-pill__dot svg,
+.s-door:focus-visible .s-door__plate .s-pill__dot svg {
+  transform: rotate(-45deg);
 }
 .s-door[data-open="true"] .s-door__plate {
   opacity: 0;
+  transform: translate(-50%, -50%) scale(0.9);
 }
 .s-door__teaser {
   color: var(--c-bordo);
@@ -1758,9 +1802,77 @@ main > .s-chapter {
 @media (max-width: 719px) {
   .s-doors__row {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
   .s-door__frame {
-    height: 220px;
+    height: 230px;
+  }
+  .s-door__handle {
+    height: 40px;
+  }
+  .s-door-panel {
+    padding: 16px 10px;
+    border-radius: 16px;
+  }
+  .s-project-card {
+    padding: 14px 10px;
+    border-radius: 14px;
+  }
+  .s-board {
+    padding: 12px 8px;
+    border-radius: 14px;
+  }
+  .s-board__toolbar {
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .s-board__btn {
+    min-height: 32px;
+    padding: 0 10px;
+    font-size: 0.75rem;
+  }
+  .s-board__status {
+    font-size: 0.75rem;
+  }
+  .s-board__frame {
+    min-width: 440px;
+    padding: 0 0 16px 16px;
+  }
+  .s-board__grid,
+  .s-board__edges,
+  .s-board__pieces {
+    bottom: 16px;
+    left: 16px;
+  }
+  .s-board__edges {
+    width: calc(100% - 16px);
+    height: calc(100% - 16px);
+  }
+  .s-board__files {
+    left: 16px;
+    font-size: 0.65rem;
+  }
+  .s-board__ranks {
+    bottom: 16px;
+    font-size: 0.65rem;
+  }
+  .s-board__piece {
+    margin: 2px;
+    padding: 2px 1px;
+    border-radius: 6px;
+  }
+  .s-board__glyph {
+    font-size: 1.05rem;
+  }
+  .s-board__label {
+    font-size: 0.62rem;
+  }
+  .s-board__coord {
+    font-size: 0.55rem;
+  }
+  .s-board__legend {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px 12px;
   }
 }
 
