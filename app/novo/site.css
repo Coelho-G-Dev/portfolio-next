@@ -1506,7 +1506,16 @@ main > .s-chapter {
   gap: 12px;
 }
 
-/* Portas fechadas */
+/* Transição do portal e portas fechadas (Arco Romano da Referência) */
+[data-portal] {
+  view-transition-name: s-portal-door;
+}
+::view-transition-old(s-portal-door),
+::view-transition-new(s-portal-door) {
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .s-doors {
   margin-top: clamp(36px, 5vw, 56px);
   animation: s-doors-enter 300ms var(--ease-out) both;
@@ -1522,7 +1531,7 @@ main > .s-chapter {
   }
 }
 .s-doors[data-opening="true"] .s-door:not([data-open="true"]) {
-  opacity: 0.28;
+  opacity: 0.25;
   transform: scale(0.97);
   filter: blur(0.5px);
   pointer-events: none;
@@ -1531,24 +1540,25 @@ main > .s-chapter {
   transform: scale(1.02);
 }
 .s-doors__lead {
-  margin: 0 0 20px;
+  margin: 0 0 24px;
   color: var(--c-bordo);
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 .s-doors__row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  gap: clamp(16px, 3vw, 28px);
 }
 .s-door {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 14px;
+  gap: 16px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -1563,23 +1573,35 @@ main > .s-chapter {
 }
 .s-door:hover,
 .s-door:focus-visible {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
 }
+.s-door:focus-visible {
+  outline: none;
+}
+.s-door:focus-visible .s-door__frame {
+  outline: 2px solid var(--c-ambar);
+  outline-offset: 4px;
+}
+
+/* Moldura Arqueada do Portal (Arco Romano / Portal com Relevo) */
 .s-door__frame {
   position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px;
-  height: 300px;
-  padding: 8px;
-  border: 1.5px solid rgb(138 106 74 / 0.4);
-  border-radius: 18px 18px 8px 8px;
-  background: linear-gradient(180deg, #171412 0%, #0E0F13 100%);
+  display: block;
+  height: clamp(340px, 42vw, 420px);
+  padding: 10px 10px 0 10px;
+  /* Topo em arco semicircular perfeito e laterais retas */
+  border-radius: min(180px, 45vw) min(180px, 45vw) 4px 4px;
+  border: 2px solid rgba(138, 106, 74, 0.45);
+  background:
+    linear-gradient(180deg, #1f1915 0%, #15110e 55%, #0d0c0f 100%);
   box-shadow:
-    0 16px 36px -12px rgb(0 0 0 / 0.7),
-    inset 0 1px 0 rgb(255 255 255 / 0.05);
+    0 22px 48px -10px rgba(0, 0, 0, 0.85),
+    inset 0 3px 6px rgba(245, 165, 36, 0.15),
+    inset 0 -1px 0 rgba(138, 106, 74, 0.3),
+    inset 1px 0 2px rgba(255, 255, 255, 0.05),
+    inset -1px 0 2px rgba(0, 0, 0, 0.5);
   perspective: 1200px;
-  overflow: hidden;
+  overflow: visible;
   transition:
     border-color 240ms var(--ease-out),
     box-shadow 240ms var(--ease-out);
@@ -1588,16 +1610,37 @@ main > .s-chapter {
 .s-door:focus-visible .s-door__frame {
   border-color: var(--c-ambar);
   box-shadow:
-    0 20px 40px -12px rgb(0 0 0 / 0.8),
-    0 0 24px -4px rgb(245 165 36 / 0.28);
+    0 26px 54px -10px rgba(0, 0, 0, 0.92),
+    0 0 32px -4px rgba(245, 165, 36, 0.35),
+    inset 0 3px 8px rgba(245, 165, 36, 0.25);
 }
+
+/* Sombra de chão sob a porta */
+.s-door__floor-shadow {
+  position: absolute;
+  bottom: -14px;
+  left: 6%;
+  right: 6%;
+  height: 22px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 55%, transparent 75%);
+  pointer-events: none;
+  z-index: -1;
+  transition: transform 350ms var(--ease-out), opacity 350ms var(--ease-out);
+}
+.s-door:hover .s-door__floor-shadow,
+.s-door:focus-visible .s-door__floor-shadow {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* Interior da câmara (luz âmbar que se revela ao abrir) */
 .s-door__interior {
   position: absolute;
-  inset: 0;
-  border-radius: 16px 16px 6px 6px;
+  inset: 10px 10px 0 10px;
+  border-radius: min(170px, 42vw) min(170px, 42vw) 0 0;
   background:
-    radial-gradient(circle at 50% 50%, rgb(245 165 36 / 0.1) 0%, transparent 70%),
-    linear-gradient(180deg, #171412 0%, #0E0F13 100%);
+    radial-gradient(ellipse at 50% 65%, rgba(245, 165, 36, 0.2) 0%, rgba(245, 165, 36, 0.05) 45%, transparent 75%),
+    linear-gradient(180deg, #140f0c 0%, #09090c 100%);
   opacity: 0;
   transition: opacity 300ms var(--ease-out);
   z-index: 0;
@@ -1605,109 +1648,215 @@ main > .s-chapter {
 .s-door[data-open="true"] .s-door__interior {
   opacity: 1;
   background:
-    radial-gradient(circle at 50% 45%, rgb(245 165 36 / 0.45) 0%, rgb(245 165 36 / 0.15) 35%, transparent 75%),
-    linear-gradient(180deg, #1e1914 0%, #0E0F13 100%);
+    radial-gradient(ellipse at 50% 55%, rgba(245, 165, 36, 0.6) 0%, rgba(245, 165, 36, 0.25) 35%, rgba(14, 15, 19, 0.92) 75%),
+    linear-gradient(180deg, #221a13 0%, #0b0a0e 100%);
 }
+
+/* Folha arqueada da porta (Articulação à esquerda) */
 .s-door__leaf {
   position: relative;
   display: block;
+  width: 100%;
+  height: 100%;
   z-index: 1;
-  border: 1px solid rgb(138 106 74 / 0.35);
+  border-radius: min(170px, 42vw) min(170px, 42vw) 0 0;
   background:
-    radial-gradient(ellipse at 50% 0%, rgb(138 106 74 / 0.18) 0%, transparent 70%),
-    linear-gradient(180deg, #241D17 0%, #16120E 45%, #0F0E12 100%);
-  transition: transform 450ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.s-door__leaf[data-leaf="left"] {
-  border-radius: 12px 2px 2px 4px;
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 16px),
+    radial-gradient(circle at 45% 20%, rgba(138, 106, 74, 0.25) 0%, transparent 70%),
+    linear-gradient(180deg, #2c221b 0%, #1c1511 40%, #100f13 100%);
+  border: 1px solid rgba(138, 106, 74, 0.4);
+  border-bottom: 2px solid rgba(14, 15, 19, 0.9);
+  box-shadow:
+    inset 1px 1px 2px rgba(255, 255, 255, 0.08),
+    inset -1px 0 2px rgba(0, 0, 0, 0.6),
+    2px 0 6px rgba(0, 0, 0, 0.4);
   transform-origin: 0% 50%;
+  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 500ms var(--ease-out);
 }
-.s-door__leaf[data-leaf="right"] {
-  border-radius: 2px 12px 4px 2px;
-  transform-origin: 100% 50%;
+.s-door[data-open="true"] .s-door__leaf {
+  transform: rotateY(-82deg) scaleY(0.98);
+  box-shadow: -10px 10px 24px rgba(0, 0, 0, 0.7);
 }
-.s-door[data-open="true"] .s-door__leaf[data-leaf="left"] {
-  transform: rotateY(-112deg);
-}
-.s-door[data-open="true"] .s-door__leaf[data-leaf="right"] {
-  transform: rotateY(112deg);
-}
+
+/* Relevo interno arqueado (Inlay / Entalhe) */
 .s-door__inlay {
   position: absolute;
-  inset: 14px 10px;
-  border: 1px solid rgb(217 195 160 / 0.16);
-  border-radius: 6px;
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.02) 0%, rgb(0 0 0 / 0.25) 100%);
+  inset: 12px 12px 8px 12px;
+  border-radius: min(158px, 39vw) min(158px, 39vw) 0 0;
+  border: 1.5px solid rgba(217, 195, 160, 0.2);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.3) 100%);
   box-shadow:
-    inset 0 1px 3px rgb(0 0 0 / 0.45),
-    0 1px 0 rgb(255 255 255 / 0.03);
+    inset 0 2px 6px rgba(0, 0, 0, 0.6),
+    0 1px 0 rgba(255, 255, 255, 0.04);
   transition: border-color 240ms var(--ease-out);
 }
 .s-door:hover .s-door__inlay,
 .s-door:focus-visible .s-door__inlay {
-  border-color: rgb(245 165 36 / 0.35);
+  border-color: rgba(245, 165, 36, 0.38);
 }
+
+/* Placa retangular de latão no terço superior */
+.s-door__plaque {
+  position: absolute;
+  top: 36%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 14px;
+  min-width: 100px;
+  max-width: 86%;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #FAD77B 0%, #D48810 45%, #F7C85C 75%, #A86508 100%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.65),
+    0 1px 2px rgba(0, 0, 0, 0.8),
+    inset 0 1px 1px rgba(255, 255, 255, 0.7),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  z-index: 2;
+  transition:
+    transform 220ms var(--ease-out),
+    box-shadow 220ms var(--ease-out),
+    opacity 200ms var(--ease-out);
+}
+.s-door:hover .s-door__plaque,
+.s-door:focus-visible .s-door__plaque {
+  transform: translate(-50%, calc(-50% - 2px));
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.75),
+    0 0 14px -1px rgba(245, 165, 36, 0.55);
+}
+.s-door[data-open="true"] .s-door__plaque {
+  opacity: 0.2;
+}
+.s-door__plaque-text {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1a140f;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.s-door__plaque-screw {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #7a4a06;
+  box-shadow:
+    inset 0 1px 1px rgba(0, 0, 0, 0.7),
+    0 0.5px 0.5px rgba(255, 255, 255, 0.4);
+  flex-shrink: 0;
+}
+
+/* Puxador vertical de latão polido */
 .s-door__handle {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 52px;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #F5A524 0%, #D48810 50%, #8A560B 100%);
+  top: 54%;
+  right: 14px;
+  width: 5px;
+  height: 54px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #FAD77B 0%, #D48810 50%, #8A560B 100%);
   box-shadow:
-    0 0 8px rgb(245 165 36 / 0.4),
-    0 2px 4px rgb(14 15 19 / 0.6);
+    0 0 10px rgba(245, 165, 36, 0.4),
+    2px 2px 4px rgba(0, 0, 0, 0.7),
+    inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  z-index: 2;
   transition: box-shadow 240ms var(--ease-out);
 }
-.s-door__leaf[data-leaf="left"] .s-door__handle {
-  right: 8px;
+.s-door__handle::before,
+.s-door__handle::after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  width: 9px;
+  height: 4px;
+  border-radius: 2px;
+  background: #B8760E;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
-.s-door__leaf[data-leaf="right"] .s-door__handle {
-  left: 8px;
+.s-door__handle::before {
+  top: 4px;
+}
+.s-door__handle::after {
+  bottom: 4px;
 }
 .s-door:hover .s-door__handle,
 .s-door:focus-visible .s-door__handle {
   box-shadow:
-    0 0 12px rgb(245 165 36 / 0.7),
-    0 2px 6px rgb(14 15 19 / 0.7);
+    0 0 14px rgba(245, 165, 36, 0.75),
+    2px 2px 6px rgba(0, 0, 0, 0.8),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8);
 }
-.s-door__plate {
+
+/* Fechadura / espelho de latão */
+.s-door__keyhole {
   position: absolute;
-  top: 42%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 3;
-  pointer-events: none;
-  white-space: nowrap;
-  box-shadow:
-    0 10px 24px -4px rgb(14 15 19 / 0.65),
-    0 0 0 1px rgb(255 255 255 / 0.12);
-  transition:
-    transform 220ms var(--ease-out),
-    box-shadow 220ms var(--ease-out),
-    opacity 240ms var(--ease-out);
+  top: calc(54% + 66px);
+  right: 14px;
+  width: 9px;
+  height: 14px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #FAD77B 0%, #B8760E 100%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
 }
-.s-door:hover .s-door__plate,
-.s-door:focus-visible .s-door__plate {
-  transform: translate(-50%, calc(-50% - 3px));
-  box-shadow:
-    0 14px 28px -4px rgb(14 15 19 / 0.75),
-    0 0 16px -2px rgb(245 165 36 / 0.45);
+.s-door__keyhole::after {
+  content: "";
+  width: 2px;
+  height: 6px;
+  background: #14100c;
+  border-radius: 1px;
 }
-.s-door:hover .s-door__plate .s-pill__dot svg,
-.s-door:focus-visible .s-door__plate .s-pill__dot svg {
-  transform: rotate(-45deg);
+
+/* Metadados abaixo da porta */
+.s-door__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 6px;
 }
-.s-door[data-open="true"] .s-door__plate {
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.92);
+.s-door__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.s-door__title {
+  color: var(--c-marfim);
+  font-size: 1.15rem;
+  font-weight: 700;
+  transition: color 200ms var(--ease-out);
+}
+.s-door__indicator {
+  color: var(--c-ambar);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  transition: transform 200ms var(--ease-out);
+}
+.s-door:hover .s-door__indicator,
+.s-door:focus-visible .s-door__indicator {
+  transform: translateX(3px);
 }
 .s-door__teaser {
   color: var(--c-bordo);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   line-height: 1.45;
-  transition: opacity 200ms var(--ease-out);
+  transition: color 200ms var(--ease-out);
 }
 .s-door:hover .s-door__teaser,
 .s-door:focus-visible .s-door__teaser {
@@ -1762,24 +1911,31 @@ main > .s-chapter {
 }
 .s-door-panel__back {
   min-height: 44px;
-  padding: 0 18px;
-  border: 1.5px solid var(--c-bordo);
+  padding: 0 20px;
+  border: 1.5px solid rgba(245, 165, 36, 0.45);
   border-radius: var(--radius-pill);
-  background: transparent;
+  background: rgba(245, 165, 36, 0.08);
   color: var(--c-marfim);
   font: inherit;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   cursor: pointer;
   transition:
     transform 200ms var(--ease-out),
     background-color 200ms var(--ease-out),
-    color 200ms var(--ease-out);
+    border-color 200ms var(--ease-out),
+    color 200ms var(--ease-out),
+    box-shadow 200ms var(--ease-out);
 }
-.s-door-panel__back:hover {
-  background: var(--c-marfim);
-  border-color: var(--c-marfim);
-  color: var(--c-ebano);
-  transform: translateY(-2px);
+.s-door-panel__back:hover,
+.s-door-panel__back:focus-visible {
+  background: var(--c-ambar);
+  border-color: var(--c-ambar);
+  color: #120e0c;
+  transform: translateX(-3px);
+  box-shadow: 0 0 16px rgba(245, 165, 36, 0.4);
 }
 .s-door-panel__list {
   display: flex;
@@ -1879,44 +2035,66 @@ main > .s-chapter {
     justify-content: center;
   }
 
-  /* Portas no celular: proporção ergonômica de portal compacto */
+  /* Portas no celular: proporção ergonômica de portal arqueado */
   .s-doors {
     margin-top: 28px;
   }
   .s-doors__lead {
-    margin-bottom: 14px;
-    font-size: 0.78rem;
+    margin-bottom: 16px;
+    font-size: 0.8rem;
   }
   .s-doors__row {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 28px;
   }
   .s-door {
-    gap: 8px;
+    gap: 12px;
+    max-width: 320px;
+    margin: 0 auto;
+    width: 100%;
   }
   .s-door__frame {
-    height: 140px;
-    padding: 6px;
-    border-radius: 14px 14px 6px 6px;
+    height: 300px;
+    padding: 8px 8px 0 8px;
+    border-radius: 150px 150px 4px 4px;
   }
-  .s-door__interior {
-    border-radius: 12px 12px 4px 4px;
-  }
-  .s-door__handle {
-    height: 28px;
-    width: 2.5px;
+  .s-door__interior,
+  .s-door__leaf {
+    border-radius: 142px 142px 0 0;
   }
   .s-door__inlay {
-    inset: 8px 6px;
+    inset: 10px 10px 6px 10px;
+    border-radius: 132px 132px 0 0;
   }
-  .s-door__plate {
-    padding: 6px 14px;
-    font-size: 0.85rem;
+  .s-door__plaque {
+    top: 36%;
+    padding: 5px 12px;
+    min-width: 90px;
+  }
+  .s-door__plaque-text {
+    font-size: 0.68rem;
+  }
+  .s-door__handle {
+    top: 54%;
+    right: 12px;
+    height: 44px;
+    width: 4px;
+  }
+  .s-door__keyhole {
+    top: calc(54% + 54px);
+    right: 12px;
+    width: 8px;
+    height: 12px;
+  }
+  .s-door__meta {
+    padding-top: 4px;
+  }
+  .s-door__title {
+    font-size: 1.1rem;
   }
   .s-door__teaser {
-    font-size: 0.82rem;
-    line-height: 1.35;
-    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.4;
   }
 
   /* Painel aberto no celular */

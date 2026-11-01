@@ -16,7 +16,9 @@
   "type": "commonjs",
   "main": "postcss.config.js",
   "directories": {
-    "lib": "lib"
+    "doc": "docs",
+    "lib": "lib",
+    "test": "tests"
   },
   "scripts": {
     "dev": "next dev",

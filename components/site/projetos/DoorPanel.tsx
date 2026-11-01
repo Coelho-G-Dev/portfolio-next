@@ -36,6 +36,7 @@ export default function DoorPanel({
       id={`door-panel-${door}`}
       className="s-door-panel"
       data-door-panel={door}
+      data-portal={!staticMode ? "true" : undefined}
     >
       <div className="s-door-panel__head">
         <div>

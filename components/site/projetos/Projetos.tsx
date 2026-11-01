@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Door } from "@/data/projects";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { runPortal } from "@/lib/portalTransition";
 import { Section } from "../Chapter";
 import { useSiteCopy } from "../SiteCopyContext";
 import DoorPanel from "./DoorPanel";
@@ -10,6 +11,7 @@ import Doors, { DOOR_ORDER } from "./Doors";
 import Featured from "./Featured";
 
 const OPEN_DELAY_MS = 450;
+const CLOSE_RESET_MS = 500;
 
 function isReducedMotion(): boolean {
   return (
@@ -26,11 +28,13 @@ export default function Projetos({ lang: langProp }: { lang?: "pt" | "en" }) {
 
   const [mounted, setMounted] = useState(false);
   const [openingDoor, setOpeningDoor] = useState<Door | null>(null);
+  const [closingDoor, setClosingDoor] = useState<Door | null>(null);
   const [activeDoor, setActiveDoor] = useState<Door | null>(null);
   const [returnFocusDoor, setReturnFocusDoor] = useState<Door | null>(null);
 
   const headingRef = useRef<HTMLHeadingElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const doorElRefs = useRef<Record<Door, HTMLButtonElement | null>>({
     backend: null,
     frontend: null,
@@ -41,6 +45,7 @@ export default function Projetos({ lang: langProp }: { lang?: "pt" | "en" }) {
     setMounted(true);
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
     };
   }, []);
 
@@ -70,6 +75,13 @@ export default function Projetos({ lang: langProp }: { lang?: "pt" | "en" }) {
         timerRef.current = null;
       }
       setOpeningDoor(null);
+      if (activeDoor) {
+        setClosingDoor(activeDoor);
+        if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = setTimeout(() => {
+          setClosingDoor(null);
+        }, CLOSE_RESET_MS);
+      }
       setActiveDoor(null);
       if (targetDoor) {
         setReturnFocusDoor(targetDoor);
@@ -81,20 +93,40 @@ export default function Projetos({ lang: langProp }: { lang?: "pt" | "en" }) {
 
   const handleSelectDoor = (door: Door) => {
     if (timerRef.current) clearTimeout(timerRef.current);
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    setClosingDoor(null);
     const delay = isReducedMotion() ? 150 : OPEN_DELAY_MS;
     setOpeningDoor(door);
     timerRef.current = setTimeout(() => {
       timerRef.current = null;
-      setOpeningDoor(null);
-      setActiveDoor(door);
+      runPortal(
+        () => {
+          setOpeningDoor(null);
+          setActiveDoor(door);
+        },
+        { reduced: isReducedMotion() },
+      );
     }, delay);
   };
 
   const handleBack = () => {
     const prev = activeDoor;
-    setActiveDoor(null);
-    setOpeningDoor(null);
-    if (prev) setReturnFocusDoor(prev);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    if (prev) {
+      setClosingDoor(prev);
+      setReturnFocusDoor(prev);
+      closeTimerRef.current = setTimeout(() => {
+        setClosingDoor(null);
+      }, CLOSE_RESET_MS);
+    }
+    runPortal(
+      () => {
+        setActiveDoor(null);
+        setOpeningDoor(null);
+      },
+      { reduced: isReducedMotion() },
+    );
   };
 
   const doorRefs: Record<Door, (el: HTMLButtonElement | null) => void> = {
@@ -134,6 +166,7 @@ export default function Projetos({ lang: langProp }: { lang?: "pt" | "en" }) {
       ) : (
         <Doors
           openingDoor={openingDoor}
+          closingDoor={closingDoor}
           onSelectDoor={handleSelectDoor}
           doorRefs={doorRefs}
         />

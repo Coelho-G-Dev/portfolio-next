@@ -144,6 +144,40 @@ describe("Portas e capítulo de projetos", () => {
     expect(screen.getByRole("button", { name: "Back to doors" })).toBeInTheDocument();
   });
 
+  it("a porta que abre e o painel aberto carregam o mesmo marcador de portal, e a porta volta a carregá-lo ao fechar", () => {
+    const { container } = render(tree());
+    const backBtn = screen.getByRole("button", {
+      name: siteCopy.pt.projetos.open("Back-end"),
+    });
+    // Nenhuma porta é portal antes do clique.
+    expect(container.querySelectorAll("[data-portal]")).toHaveLength(0);
+
+    fireEvent.click(backBtn);
+    // Durante o giro das folhas, só a porta clicada é o portal.
+    const portals = container.querySelectorAll("[data-portal]");
+    expect(portals).toHaveLength(1);
+    expect(portals[0]).toHaveAttribute("data-door", "backend");
+
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+    // Aberto: o portal é o painel (um só elemento com o marcador).
+    const open = container.querySelectorAll("[data-portal]");
+    expect(open).toHaveLength(1);
+    expect(open[0]).toHaveAttribute("data-door-panel", "backend");
+
+    fireEvent.click(screen.getByRole("button", { name: "Voltar às portas" }));
+    // Ao fechar, o painel encolhe de volta para a mesma porta.
+    const back = container.querySelectorAll("[data-portal]");
+    expect(back).toHaveLength(1);
+    expect(back[0]).toHaveAttribute("data-door", "backend");
+  });
+
+  it("sem JavaScript, nenhum painel estático é portal (nomes de transição repetidos cancelariam a animação)", () => {
+    const html = renderToString(tree(siteCopy.pt, "pt"));
+    expect(html).not.toContain("data-portal");
+  });
+
   it("sem JavaScript (renderToString), mostra os três painéis abertos, os tabuleiros estáticos e nenhum aria-expanded", () => {
     const html = renderToString(tree(siteCopy.pt, "pt"));
     expect(html).not.toContain("aria-expanded");
