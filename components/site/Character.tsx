@@ -28,6 +28,9 @@ export default function Character({ paused }: { paused: boolean }) {
   const [state, dispatch] = useReducer(charReducer, initialChar);
   const [mode, setMode] = useState<Mode>("pending");
   const [lazy, setLazy] = useState(false);
+  // O src dos vídeos imediatos entra num segundo render: medido no Chrome, um
+  // <video> que já nasce com src pelo React baixa o arquivo duas vezes.
+  const [eager, setEager] = useState(false);
   const [failed, setFailed] = useState(false);
   const [hidden, setHidden] = useState(false);
 
@@ -64,6 +67,10 @@ export default function Character({ paused }: { paused: boolean }) {
     else if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) setMode("desktop");
     else setMode("touch");
   }, []);
+
+  useEffect(() => {
+    if (mode === "desktop" || mode === "touch") setEager(true);
+  }, [mode]);
 
   // Aba oculta pausa tudo.
   useEffect(() => {
@@ -113,7 +120,8 @@ export default function Character({ paused }: { paused: boolean }) {
   useEffect(() => {
     if (!live || failed) return;
     const el = elementFor(activeKey);
-    if (!el) return;
+    // Sem src ainda (vídeo imediato ou reação a carregar): espera o próximo render.
+    if (!el || !el.getAttribute("src")) return;
     if (!running) {
       el.pause();
       return;
@@ -127,7 +135,7 @@ export default function Character({ paused }: { paused: boolean }) {
     }
     // No desktop, o Olhar não toca: o scrub move currentTime.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeKey, running]);
+  }, [activeKey, running, eager, lazy]);
 
   // Fim da Entrada e das reações.
   const onEnded = (key: string) => () => {
@@ -250,12 +258,12 @@ export default function Character({ paused }: { paused: boolean }) {
       />
       {live && !failed && (
         <>
-          <video ref={entradaRef} {...videoProps("entrada", url(manifest.entrada))} />
+          <video ref={entradaRef} {...videoProps("entrada", eager ? url(manifest.entrada) : null)} />
           {/* Cada modo usa só um dos dois: o Olhar (scrub) ou o vaivém (toque). */}
           {mode === "desktop" ? (
             <video
               ref={olharRef}
-              {...videoProps("olhar", url(manifest.olhar))}
+              {...videoProps("olhar", eager ? url(manifest.olhar) : null)}
               // Já espera na pose neutra (meio do clipe): a troca da Entrada
               // para o Olhar não pode mostrar a cabeça virada.
               onLoadedMetadata={(e) => {
@@ -263,7 +271,7 @@ export default function Character({ paused }: { paused: boolean }) {
               }}
             />
           ) : (
-            <video ref={loopRef} {...videoProps("loop", url(manifest.olharLoop))} />
+            <video ref={loopRef} {...videoProps("loop", eager ? url(manifest.olharLoop) : null)} />
           )}
           {REACTIONS.map(([key, file]) => (
             <video
