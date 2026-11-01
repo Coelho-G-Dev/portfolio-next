@@ -324,3 +324,13 @@
     transform: none;
   }
 }
+
+/* ---------- Texto digitado ---------- */
+/* O resto ainda não digitado reserva o espaço: nenhum deslocamento (CLS). */
+.s-typed__rest {
+  visibility: hidden;
+}
+/* Com JS, esconde até a digitação começar, para não piscar o texto inteiro. */
+.js .s-typed:not([data-ready]) {
+  visibility: hidden;
+}
