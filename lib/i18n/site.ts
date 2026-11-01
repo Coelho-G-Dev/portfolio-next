@@ -1,3 +1,4 @@
+import type { Door, FacetLink } from "@/data/projects";
 import type { Locale } from "./translations";
 import type { MailCopy } from "@/lib/contact";
 import type { AppStatus } from "@/lib/derrubeApp";
@@ -13,6 +14,8 @@ type NavLink = { href: string; label: string };
 type SectionCopy = { title: string; soon: string };
 
 type NodeId = "interface" | ServiceId;
+
+type DoorCopy = { name: string; teaser: string };
 
 // Segundos até a próxima tentativa: cada tick da simulação dura 0,75 s.
 const seconds = (delay: number, locale: string) =>
@@ -108,9 +111,51 @@ const pt = {
     noJs:
       "Com fila, quando uma peça cai, o e-mail espera, tenta de novo com espera crescente e, depois de três falhas, vai para a DLQ, de onde é reprocessado. Sem fila, a mesma queda perde o e-mail.",
   },
-  // Capítulos provisórios: cada um ganha conteúdo nos planos 3 e 4.
+  projetos: {
+    title: "Sistemas que construí",
+    featured: {
+      badge: redesignCopy.pt.work.winner,
+      line: redesignCopy.pt.work.projects["Cidade Energia"].line,
+      fullStack: "Front e back feitos por mim",
+    },
+    doorsTitle: "Escolha uma porta",
+    doors: {
+      backend: {
+        name: "Back-end",
+        teaser: "APIs, filas e dados que não se perdem.",
+      },
+      frontend: {
+        name: "Front-end",
+        teaser: "Interfaces e PWAs que conversam bem com a API.",
+      },
+      ia: {
+        name: "IA",
+        teaser: "RAG que responde com fontes.",
+      },
+    } as Record<Door, DoorCopy>,
+    open: (name: string) => `Abrir a porta ${name}`,
+    back: "Voltar às portas",
+    links: {
+      github: redesignCopy.pt.work.code,
+      frontend: redesignCopy.pt.work.frontend,
+      demo: redesignCopy.pt.work.demo,
+      docs: redesignCopy.pt.work.docs,
+    } as Record<FacetLink, string>,
+    board: {
+      legendTitle: "Peça e papel",
+      notationTitle: "Fluxo da partida",
+      copyMermaid: "Copiar Mermaid",
+      copied: "Mermaid copiado",
+      copyFailed: "Não deu para copiar",
+      downloadSvg: "Baixar SVG",
+      fullscreen: "Tela cheia",
+      close: "Fechar",
+      swipe: "Deslize o tabuleiro para o lado",
+      lost: "Peças perdidas: 0",
+    },
+  },
+  // Capítulos provisórios: cada um ganha conteúdo no plano 4.
   sections: {
-    projetos: { title: redesignCopy.pt.work.title, soon: "Em construção." },
     comoTrabalho: { title: redesignCopy.pt.how.title, soon: "Em construção." },
     oQueResolvo: { title: redesignCopy.pt.services.title, soon: "Em construção." },
     sobre: { title: redesignCopy.pt.about.title, soon: "Em construção." },
@@ -208,8 +253,50 @@ const en: typeof pt = {
     noJs:
       "With a queue, when a piece goes down the email waits, retries with growing delays and, after three failures, goes to the DLQ, from where it is replayed. Without a queue, the same failure loses the email.",
   },
+  projetos: {
+    title: "Systems I built",
+    featured: {
+      badge: redesignCopy.en.work.winner,
+      line: redesignCopy.en.work.projects["Cidade Energia"].line,
+      fullStack: "Front and back built by me",
+    },
+    doorsTitle: "Pick a door",
+    doors: {
+      backend: {
+        name: "Back-end",
+        teaser: "APIs, queues and data that never get lost.",
+      },
+      frontend: {
+        name: "Front-end",
+        teaser: "Interfaces and PWAs that talk cleanly to the API.",
+      },
+      ia: {
+        name: "AI",
+        teaser: "RAG that answers with sources.",
+      },
+    },
+    open: (name: string) => `Open the ${name} door`,
+    back: "Back to doors",
+    links: {
+      github: redesignCopy.en.work.code,
+      frontend: redesignCopy.en.work.frontend,
+      demo: redesignCopy.en.work.demo,
+      docs: redesignCopy.en.work.docs,
+    },
+    board: {
+      legendTitle: "Piece and role",
+      notationTitle: "Move notation",
+      copyMermaid: "Copy Mermaid",
+      copied: "Mermaid copied",
+      copyFailed: "Couldn't copy",
+      downloadSvg: "Download SVG",
+      fullscreen: "Fullscreen",
+      close: "Close",
+      swipe: "Swipe the board sideways",
+      lost: "Pieces lost: 0",
+    },
+  },
   sections: {
-    projetos: { title: redesignCopy.en.work.title, soon: "Coming soon." },
     comoTrabalho: { title: redesignCopy.en.how.title, soon: "Coming soon." },
     oQueResolvo: { title: redesignCopy.en.services.title, soon: "Coming soon." },
     sobre: { title: redesignCopy.en.about.title, soon: "Coming soon." },

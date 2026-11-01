@@ -75,3 +75,15 @@ describe("eventos do Derrube no site novo", () => {
     expect(text).toContain("1,5 s");
   });
 });
+
+describe("textos do capítulo de projetos no site novo", () => {
+  it.each(["pt", "en"] as const)("open(name) inclui o nome da porta em %s", (lang) => {
+    const label = siteCopy[lang].projetos.open("Back-end");
+    expect(label).toContain("Back-end");
+  });
+
+  it("tem as três portas com nome e teaser nas duas línguas", () => {
+    expect(Object.keys(siteCopy.pt.projetos.doors).sort()).toEqual(["backend", "frontend", "ia"]);
+    expect(Object.keys(siteCopy.en.projetos.doors).sort()).toEqual(["backend", "frontend", "ia"]);
+  });
+});
