@@ -9,6 +9,7 @@ import Derrube from "./derrube/Derrube";
 import Hero from "./Hero";
 import { heroManifest } from "./heroAssets";
 import Nav from "./Nav";
+import Projetos from "./projetos/Projetos";
 import { SiteCopyContext } from "./SiteCopyContext";
 import { useCortina } from "./useCortina";
 
@@ -38,9 +39,7 @@ export default function SitePage({ heroSlot }: { heroSlot?: ReactNode }) {
               <Derrube />
             </Chapter>
             <Chapter id="projetos" tone="ebano">
-              <Section id="projetos" title={s.projetos.title}>
-                <p>{s.projetos.soon}</p>
-              </Section>
+              <Projetos />
             </Chapter>
             <Chapter id="trabalho" tone="marfim">
               <Section id="como-trabalho" title={s.comoTrabalho.title}>
