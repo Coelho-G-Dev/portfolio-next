@@ -173,3 +173,144 @@
   background: var(--c-ebano);
   color: var(--c-marfim);
 }
+
+/* ---------- Pílulas (spec §5.1) ---------- */
+.s-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 4px 22px;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  transition:
+    transform 200ms var(--ease-out),
+    background-color 200ms var(--ease-out),
+    color 200ms var(--ease-out);
+}
+.s-pill[data-variant="primary"] {
+  padding-right: 4px;
+}
+.s-pill__dot {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.s-pill__dot svg {
+  transition: transform 200ms var(--ease-out);
+}
+.s-pill:hover {
+  transform: translateY(-2px);
+}
+.s-pill:hover .s-pill__dot svg {
+  transform: rotate(-45deg);
+}
+.s-pill:active {
+  transform: scale(0.97);
+}
+
+/* Sobre claro: pílula ébano, círculo âmbar, seta ébano. */
+.s-pill[data-variant="primary"][data-surface="light"] {
+  background: var(--c-ebano);
+  color: var(--c-marfim);
+}
+.s-pill[data-variant="primary"][data-surface="light"] .s-pill__dot {
+  background: var(--c-ambar);
+  color: var(--c-ebano);
+}
+/* Sobre escuro: pílula marfim, círculo ébano, seta âmbar. */
+.s-pill[data-variant="primary"][data-surface="dark"] {
+  background: var(--c-marfim);
+  color: var(--c-ebano);
+}
+.s-pill[data-variant="primary"][data-surface="dark"] .s-pill__dot {
+  background: var(--c-ebano);
+  color: var(--c-ambar);
+}
+.s-pill[data-variant="secondary"] {
+  border-color: var(--c-nogueira);
+  background: transparent;
+  color: inherit;
+}
+.s-pill[data-variant="secondary"][data-surface="light"]:hover {
+  background: var(--c-ebano);
+  border-color: var(--c-ebano);
+  color: var(--c-marfim);
+}
+.s-pill[data-variant="secondary"][data-surface="dark"]:hover {
+  background: var(--c-marfim);
+  border-color: var(--c-marfim);
+  color: var(--c-ebano);
+}
+.site [data-surface="light"]:focus-visible,
+.site [data-surface="light"] :focus-visible {
+  outline-color: var(--c-ebano);
+}
+.site [data-surface="dark"]:focus-visible,
+.site [data-surface="dark"] :focus-visible {
+  outline-color: var(--c-ambar);
+}
+
+/* ---------- Pílula de e-mail ---------- */
+.s-email {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 48px;
+  padding: 4px 4px 4px 20px;
+  border: 1.5px solid var(--c-nogueira);
+  border-radius: var(--radius-pill);
+}
+.s-email__address {
+  font-weight: 600;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.s-email__address:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.s-email__copy {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 200ms var(--ease-out);
+}
+.s-email[data-surface="light"] .s-email__copy:hover {
+  background: var(--c-bordo);
+}
+.s-email[data-surface="dark"] .s-email__copy:hover {
+  background: var(--c-nogueira-escura);
+}
+.s-email__msg {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 20px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .s-pill,
+  .s-pill__dot svg {
+    transition: none;
+  }
+  .s-pill:hover,
+  .s-pill:active,
+  .s-pill:hover .s-pill__dot svg {
+    transform: none;
+  }
+}
