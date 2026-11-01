@@ -145,8 +145,12 @@
   padding: clamp(64px, 10vw, 128px) clamp(16px, 4vw, 48px);
   /* --scale e --shade vêm de useCortina; só transform e opacity animam. */
   transform: scale(var(--scale, 1));
-  /* Encolhe a partir da base: a emenda com o próximo cartão nunca abre. */
-  transform-origin: 50% 100%;
+  /* Todo capítulo ocupa ao menos uma tela (altura estável em svh): o seguinte
+     só entra quando este já preenche a janela, e a cobertura é real. */
+  min-height: 100svh;
+  /* Encolhe a partir do topo: com altura ≥ tela, a base encolhida fica sempre
+     abaixo do topo do próximo cartão (sem fresta) e o topo não abre faixa. */
+  transform-origin: 50% 0;
 }
 /* Atrás dos cartões que encolhem aparece ébano, não o marfim da página. */
 .s-cortina {
@@ -188,6 +192,12 @@ main > .s-chapter {
   background: var(--c-bordo);
   color: var(--c-nogueira-escura);
 }
+/* A âncora para no topo do cartão (antes do padding): sem isso, o navegador
+   rola o padding além do ponto em que o capítulo já grudou e puxa o próximo
+   cartão para dentro da janela. */
+.s-chapter > .s-section:first-child {
+  scroll-margin-top: clamp(64px, 10vw, 128px);
+}
 .s-section + .s-section {
   margin-top: clamp(48px, 8vw, 96px);
 }
@@ -199,6 +209,10 @@ main > .s-chapter {
 }
 
 .s-footer {
+  /* Posicionado para pintar por cima da abertura, que fica grudada até o fim
+     de .s-cortina. */
+  position: relative;
+  z-index: 1;
   padding: 48px clamp(16px, 4vw, 48px);
   background: var(--c-ebano);
   color: var(--c-marfim);

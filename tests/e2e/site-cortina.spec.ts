@@ -64,6 +64,57 @@ test("a âncora do menu deixa o título do destino visível e por cima", async (
   expect(onTop).toBe(true);
 });
 
+test("cobrindo a abertura, o topo da tela continua sendo a abertura (sem faixa vazia)", async ({ page }, info) => {
+  test.skip(info.project.name === "phone-390", "no celular não há escala");
+  await page.goto("/novo");
+  await page.mouse.wheel(0, 450);
+  await page.waitForTimeout(500);
+  const topHit = await page.evaluate(() => !!document.elementFromPoint(innerWidth / 2, 4)?.closest('[data-chapter="abertura"]'));
+  expect(topHit).toBe(true);
+});
+
+test("um capítulo só encolhe quando o seguinte já o cobre", async ({ page }) => {
+  await page.goto("/novo");
+  await page.locator('[data-chapter="derrube"]').evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY));
+  await page.waitForTimeout(400);
+  const derrube = page.locator('[data-chapter="derrube"]');
+  const { scale, nextTop, vh } = await derrube.evaluate((el) => ({
+    scale: Number(getComputedStyle(el).getPropertyValue("--scale") || 1),
+    nextTop: document.querySelector('[data-chapter="projetos"]')!.getBoundingClientRect().top,
+    vh: innerHeight,
+  }));
+  // Todo capítulo ocupa ao menos a tela: com o Derrube no topo, o seguinte
+  // ainda não entrou e nada encolheu.
+  expect(nextTop).toBeGreaterThanOrEqual(vh - 1);
+  expect(scale).toBeCloseTo(1, 3);
+});
+
+test("o rodapé fica por cima da abertura grudada", async ({ page }) => {
+  await page.goto("/novo");
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await page.waitForTimeout(400);
+  const onTop = await page.locator(".s-footer").evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2));
+  });
+  expect(onTop).toBe(true);
+});
+
+test("a âncora de Projetos chega sem o destino estar coberto", async ({ page }, info) => {
+  await page.goto("/novo");
+  if (info.project.name === "phone-390") await page.getByRole("button", { name: pt.nav.menu }).click();
+  await page.locator("#s-nav-links").getByRole("link", { name: pt.nav.links[0].label, exact: true }).click();
+  await page.waitForTimeout(400);
+  const { onTop, scale } = await page.locator("#projetos h2").evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    const chapter = el.closest("[data-chapter]")!;
+    return { onTop: !!hit?.closest("#projetos"), scale: Number(getComputedStyle(chapter).getPropertyValue("--scale") || 1) };
+  });
+  expect(onTop).toBe(true);
+  expect(scale).toBeCloseTo(1, 3);
+});
+
 test.describe("sem JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 
