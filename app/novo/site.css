@@ -537,3 +537,475 @@ main > .s-chapter {
     transform: none;
   }
 }
+
+/* ---------- Derrube um serviço (spec §5.4) ----------
+   Fundo nogueira escura: texto marfim/bordo, âmbar só em destaque, bordas
+   em bordo (9,3:1). Nogueira não aparece aqui. */
+.s-derrube__lead {
+  max-width: 58ch;
+  margin: 0 0 32px;
+  color: var(--c-bordo);
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+}
+.s-derrube__modes {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border: 1.5px solid var(--c-bordo);
+  border-radius: var(--radius-pill);
+}
+.s-derrube__mode {
+  min-height: 40px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--c-marfim);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 200ms var(--ease-out),
+    color 200ms var(--ease-out);
+}
+.s-derrube__mode[aria-pressed="true"] {
+  background: var(--c-ambar);
+  color: var(--c-ebano);
+}
+.s-derrube__note {
+  margin: 12px 0 28px;
+  color: var(--c-bordo);
+}
+.s-derrube__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  grid-template-areas:
+    "flow app"
+    "bottom app";
+  grid-template-rows: auto 1fr;
+  gap: 24px 32px;
+  align-items: start;
+}
+.s-derrube__grid > .s-flow {
+  grid-area: flow;
+}
+.s-derrube__grid > .s-app {
+  grid-area: app;
+}
+.s-derrube__grid > .s-derrube__bottom {
+  grid-area: bottom;
+}
+
+/* Fluxo técnico */
+.s-flow {
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--c-ebano);
+  color: var(--c-marfim);
+}
+.s-flow__lane {
+  position: relative;
+}
+.s-flow__nodes {
+  display: grid;
+  grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.s-flow__nodes--static {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-bottom: 24px;
+}
+.s-flow__node {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 112px;
+  padding: 12px;
+  border: 1.5px solid var(--c-bordo);
+  border-radius: 14px;
+  background: var(--c-nogueira-escura);
+}
+.s-flow__name {
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+/* Peça desligada "apaga": nome e caixa quase somem, o interruptor não. */
+.s-flow__node[data-down] {
+  border-style: dashed;
+  background: transparent;
+}
+.s-flow__node[data-down] .s-flow__name {
+  opacity: 0.4;
+}
+.s-flow__state,
+.s-flow__toggle {
+  margin-top: auto;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.7rem;
+}
+.s-flow__state {
+  color: var(--c-bordo);
+}
+.s-flow__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  min-height: 32px;
+  padding: 0 8px 0 5px;
+  white-space: nowrap;
+  border: 1.5px solid var(--c-bordo);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--c-marfim);
+  cursor: pointer;
+}
+.s-flow__switch {
+  position: relative;
+  width: 26px;
+  height: 16px;
+  border-radius: var(--radius-pill);
+  background: var(--c-ambar);
+}
+.s-flow__switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 12px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--c-ebano);
+  transition: transform 200ms var(--ease-out);
+}
+.s-flow__toggle[aria-pressed="false"] .s-flow__switch {
+  background: var(--c-nogueira-escura);
+  box-shadow: inset 0 0 0 1.5px var(--c-bordo);
+}
+.s-flow__toggle[aria-pressed="false"] .s-flow__switch::after {
+  background: var(--c-bordo);
+  transform: translateX(-10px);
+}
+
+/* Trilho das fichas: cada ficha ocupa uma coluna e anda por transform. */
+.s-flow__track {
+  position: relative;
+  height: 40px;
+  margin-top: 12px;
+}
+.s-flow__token {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: calc(100% / var(--n, 5));
+  /* Fichas no mesmo estágio se empilham na diagonal: todas continuam legíveis. */
+  transform: translateX(calc(var(--col) * 100% + var(--stack) * 24px)) translateY(calc(var(--stack) * -4px));
+  transition:
+    transform 400ms var(--ease-out),
+    opacity 400ms var(--ease-out);
+}
+.s-flow__chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--c-ambar);
+  color: var(--c-ebano);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+/* Entregue: chega ao banco e some. Perdida: cai e some. */
+.s-flow__token[data-stage="delivered"] {
+  opacity: 0;
+  transition:
+    transform 400ms var(--ease-out),
+    opacity 400ms var(--ease-out) 500ms;
+}
+.s-flow__token[data-stage="lost"] {
+  opacity: 0;
+  transform: translateX(calc(var(--col) * 100%)) translateY(28px);
+}
+.s-flow__dlq {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  border: 1.5px dashed var(--c-bordo);
+  border-radius: 12px;
+}
+.s-flow__dlq[data-full] {
+  border-style: solid;
+  border-color: var(--c-ambar);
+}
+.s-flow__dlq-name {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.s-flow__dlq-tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.s-flow__chip--dlq {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--c-ambar);
+  color: var(--c-ambar);
+}
+
+/* Tela do AuthGuard: um app de verdade, em marfim. */
+.s-app {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--c-marfim);
+  color: var(--c-ebano);
+  box-shadow: var(--shadow);
+}
+.s-app__brand {
+  margin: 0;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.s-app__heading {
+  margin: 4px 0 16px;
+  font-size: 1.5rem;
+  letter-spacing: -0.01em;
+}
+.s-app__label {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.s-app__input {
+  margin-top: 4px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1.5px solid var(--c-nogueira);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--c-ebano);
+  font: inherit;
+}
+.s-app__submit {
+  margin-top: 16px;
+  min-height: 48px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--c-ebano);
+  color: var(--c-marfim);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 200ms var(--ease-out);
+}
+.s-app__submit:hover {
+  transform: translateY(-2px);
+}
+.s-app__submit:active {
+  transform: scale(0.97);
+}
+.s-app__status {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 3.2em;
+  margin: 16px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--c-bordo);
+  color: var(--c-nogueira-escura);
+  font-size: 0.95rem;
+}
+.s-app__status svg {
+  flex: none;
+  margin-top: 3px;
+}
+.s-app__status[data-status="error"] {
+  box-shadow: inset 4px 0 0 var(--c-ebano);
+  color: var(--c-ebano);
+  font-weight: 700;
+}
+.s-app__fake {
+  margin: 12px 0 0;
+  color: var(--c-nogueira-escura);
+  font-size: 0.8rem;
+}
+
+/* Ações, placar e log */
+.s-derrube__bottom {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    "actions score"
+    "log log";
+  gap: 24px 32px;
+  align-items: start;
+}
+.s-derrube__actions {
+  grid-area: actions;
+}
+.s-derrube__score {
+  grid-area: score;
+  justify-self: end;
+}
+.s-derrube__log {
+  grid-area: log;
+}
+.s-derrube__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.s-derrube__action {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1.5px solid var(--c-bordo);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--c-marfim);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.s-derrube__action:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.s-derrube__score {
+  display: flex;
+  gap: 24px;
+  margin: 0;
+}
+.s-derrube__score dt {
+  color: var(--c-bordo);
+  font-size: 0.8rem;
+}
+.s-derrube__score dd {
+  margin: 0;
+  color: var(--c-marfim);
+  font-size: 2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.s-derrube__log-title {
+  margin: 0 0 6px;
+  color: var(--c-bordo);
+  font-size: 0.8rem;
+}
+.s-derrube__log ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--c-bordo);
+}
+.s-derrube__log li:first-child {
+  color: var(--c-marfim);
+}
+.s-derrube__source,
+.s-derrube__nojs {
+  max-width: 64ch;
+  margin: 32px 0 0;
+  color: var(--c-bordo);
+  font-size: 0.9rem;
+}
+.s-derrube__nojs {
+  font-size: 1rem;
+}
+.s-derrube__source a {
+  color: var(--c-marfim);
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 899px) {
+  .s-derrube__grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "flow"
+      "app"
+      "bottom";
+    grid-template-rows: none;
+  }
+}
+@media (max-width: 519px) {
+  .s-derrube__bottom {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "actions"
+      "score"
+      "log";
+  }
+  .s-derrube__score {
+    justify-self: start;
+  }
+}
+/* No celular, o fluxo fica na vertical: nós em linhas, fichas à direita. */
+@media (max-width: 719px) {
+  .s-flow {
+    padding: 16px;
+  }
+  .s-flow__nodes {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 64px;
+    padding-right: 64px;
+  }
+  .s-flow__nodes--static {
+    padding-right: 0;
+    grid-auto-rows: auto;
+  }
+  .s-flow__node {
+    flex-direction: row;
+    align-items: center;
+    min-height: 0;
+  }
+  .s-flow__state,
+  .s-flow__toggle {
+    margin: 0 0 0 auto;
+  }
+  .s-flow__track {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 56px;
+    height: 100%;
+    margin: 0;
+  }
+  .s-flow__token {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% / var(--n, 5));
+    transform: translateY(calc(var(--col) * 100% + var(--stack) * -20px));
+  }
+  .s-flow__token[data-stage="lost"] {
+    transform: translateY(calc(var(--col) * 100%)) translateX(24px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .s-flow__token,
+  .s-flow__token[data-stage="delivered"],
+  .s-derrube__mode,
+  .s-flow__switch::after,
+  .s-app__submit {
+    transition: none;
+  }
+  .s-app__submit:hover,
+  .s-app__submit:active {
+    transform: none;
+  }
+}

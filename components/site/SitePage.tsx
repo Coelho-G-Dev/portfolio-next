@@ -5,6 +5,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { siteCopy } from "@/lib/i18n/site";
 import { Chapter, Section } from "./Chapter";
 import { CortinaContext } from "./CortinaContext";
+import Derrube from "./derrube/Derrube";
 import Hero from "./Hero";
 import { heroManifest } from "./heroAssets";
 import Nav from "./Nav";
@@ -34,9 +35,7 @@ export default function SitePage({ heroSlot }: { heroSlot?: ReactNode }) {
           <main id="main-content">
             {/* Capítulos e fundos na ordem da spec §5.3. */}
             <Chapter id="derrube" tone="nogueiraEscura">
-              <Section id="derrube" title={c.derrube.title}>
-                <p data-derrube-end>{c.derrube.sentence}</p>
-              </Section>
+              <Derrube />
             </Chapter>
             <Chapter id="projetos" tone="ebano">
               <Section id="projetos" title={s.projetos.title}>
