@@ -4,3 +4,17 @@ node_modules
 *.log
 *.tsbuildinfo
 .temp_html
+
+# Saída das ferramentas de design (screenshots, folha de direção)
+.taste-skill/
+
+# Saída dos testes ponta a ponta
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Brutos de imagem e vídeo (não vão para o deploy)
+/assets-src/
+/.superpowers/
+/.impeccable/
