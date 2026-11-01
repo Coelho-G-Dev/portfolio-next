@@ -1,5 +1,8 @@
 import type { Locale } from "./translations";
 import type { MailCopy } from "@/lib/contact";
+import type { AppStatus } from "@/lib/derrubeApp";
+import type { DirectEvent, DirectService } from "@/lib/directFlow";
+import type { FlowEvent, ServiceId } from "@/lib/messageFlow";
 import { redesignCopy } from "./redesign";
 
 // Textos do site novo (/novo). A estrutura PT e EN precisa ser idêntica:
@@ -8,6 +11,12 @@ import { redesignCopy } from "./redesign";
 type NavLink = { href: string; label: string };
 
 type SectionCopy = { title: string; soon: string };
+
+type NodeId = "interface" | ServiceId;
+
+// Segundos até a próxima tentativa: cada tick da simulação dura 0,75 s.
+const seconds = (delay: number, locale: string) =>
+  (delay * 0.75).toLocaleString(locale, { maximumFractionDigits: 2 });
 
 const pt = {
   nav: {
@@ -40,9 +49,67 @@ const pt = {
     subject: redesignCopy.pt.contact.subject,
     body: redesignCopy.pt.contact.body,
   } as MailCopy,
-  // Capítulos provisórios: cada um ganha conteúdo nos planos 2 a 4.
+  derrube: {
+    title: redesignCopy.pt.breakService.title,
+    sentence:
+      "Crie uma conta no AuthGuard e derrube qualquer peça do caminho. Veja o que acontece com o e-mail de boas-vindas.",
+    modeLegend: "Arquitetura",
+    modes: { queue: "Com fila (AuthGuard)", direct: "Sem fila" },
+    modeNote: {
+      queue: "Com fila: o que cai espera, tenta de novo e, no pior caso, vai para a DLQ. Nada se perde.",
+      direct: "Sem fila: o que cai no meio do caminho se perde.",
+    },
+    nodes: { interface: "Interface", api: "API", queue: "Fila (RabbitMQ)", worker: "Worker", db: "Banco" } as Record<
+      NodeId,
+      string
+    >,
+    toggleAria: (name: string, up: boolean) => `${name}: ${up ? "no ar, desligar" : "fora do ar, religar"}`,
+    up: "no ar",
+    down: "fora do ar",
+    send: "Criar conta",
+    replay: "Reprocessar DLQ",
+    reset: "Recomeçar",
+    dlq: "DLQ",
+    score: { sent: "Enviadas", delivered: "Entregues", lost: "Perdidas" },
+    logTitle: "O que aconteceu",
+    emptyLog: "Crie uma conta para começar.",
+    event: (e: FlowEvent | DirectEvent): string => {
+      const peca: Record<DirectService, string> = { api: "API", worker: "Worker", db: "Banco" };
+      switch (e.kind) {
+        case "sent": return `E-mail #${e.id} enviado.`;
+        case "waitingApi": return `API fora do ar. E-mail #${e.id} aguardando para reenviar.`;
+        case "outbox": return `Fila fora do ar. E-mail #${e.id} guardado no outbox da API.`;
+        case "waitingWorker": return `Worker fora do ar. E-mail #${e.id} aguardando na fila.`;
+        case "retry":
+          return `Banco fora do ar. Tentativa ${e.attempt} de ${e.max} para o e-mail #${e.id}. Nova tentativa em ${seconds(e.delay, "pt-BR")} s.`;
+        case "toDlq": return `Tentativas esgotadas. E-mail #${e.id} movido para a DLQ.`;
+        case "replayed": return `E-mail #${e.id} reprocessado da DLQ.`;
+        case "delivered": return `E-mail #${e.id} entregue.`;
+        case "lost": return `${peca[e.service]} fora do ar. E-mail #${e.id} perdido.`;
+      }
+    },
+    app: {
+      title: "AuthGuard",
+      heading: "Criar conta",
+      nameLabel: "Nome",
+      emailLabel: "E-mail",
+      person: { name: "Ana Souza", email: "ana.souza@exemplo.com" },
+      fake: "Dados fictícios. Nada é enviado.",
+      status: {
+        idle: "Preencha e crie a conta.",
+        connecting: "Conectando ao servidor…",
+        processing: "Conta criada. E-mail de boas-vindas: processando…",
+        delivered: "Conta criada. E-mail de boas-vindas: entregue.",
+        error: "Algo deu errado. Tente de novo mais tarde.",
+      } as Record<AppStatus, string>,
+    },
+    note: redesignCopy.pt.breakService.note,
+    noteLink: redesignCopy.pt.breakService.noteLink,
+    noJs:
+      "Com fila, quando uma peça cai, o e-mail espera, tenta de novo com espera crescente e, depois de três falhas, vai para a DLQ, de onde é reprocessado. Sem fila, a mesma queda perde o e-mail.",
+  },
+  // Capítulos provisórios: cada um ganha conteúdo nos planos 3 e 4.
   sections: {
-    derrube: { title: redesignCopy.pt.breakService.title, soon: "Em construção." },
     projetos: { title: redesignCopy.pt.work.title, soon: "Em construção." },
     comoTrabalho: { title: redesignCopy.pt.how.title, soon: "Em construção." },
     oQueResolvo: { title: redesignCopy.pt.services.title, soon: "Em construção." },
@@ -85,8 +152,63 @@ const en: typeof pt = {
     subject: redesignCopy.en.contact.subject,
     body: redesignCopy.en.contact.body,
   },
+  derrube: {
+    title: redesignCopy.en.breakService.title,
+    sentence:
+      "Create an account on AuthGuard and take down any piece on the way. Watch what happens to the welcome email.",
+    modeLegend: "Architecture",
+    modes: { queue: "With a queue (AuthGuard)", direct: "No queue" },
+    modeNote: {
+      queue: "With a queue: whatever goes down waits, retries and, at worst, goes to the DLQ. Nothing is lost.",
+      direct: "No queue: whatever goes down on the way is lost.",
+    },
+    nodes: { interface: "Interface", api: "API", queue: "Queue (RabbitMQ)", worker: "Worker", db: "Database" },
+    toggleAria: (name: string, up: boolean) => `${name}: ${up ? "up, switch off" : "down, switch on"}`,
+    up: "up",
+    down: "down",
+    send: "Create account",
+    replay: "Replay DLQ",
+    reset: "Start over",
+    dlq: "DLQ",
+    score: { sent: "Sent", delivered: "Delivered", lost: "Lost" },
+    logTitle: "What happened",
+    emptyLog: "Create an account to begin.",
+    event: (e: FlowEvent | DirectEvent): string => {
+      const piece: Record<DirectService, string> = { api: "API", worker: "Worker", db: "Database" };
+      switch (e.kind) {
+        case "sent": return `Email #${e.id} sent.`;
+        case "waitingApi": return `API down. Email #${e.id} waiting to resend.`;
+        case "outbox": return `Queue down. Email #${e.id} kept in the API outbox.`;
+        case "waitingWorker": return `Worker down. Email #${e.id} waiting in the queue.`;
+        case "retry":
+          return `Database down. Attempt ${e.attempt} of ${e.max} for email #${e.id}. Next try in ${seconds(e.delay, "en")} s.`;
+        case "toDlq": return `Attempts exhausted. Email #${e.id} moved to the DLQ.`;
+        case "replayed": return `Email #${e.id} replayed from the DLQ.`;
+        case "delivered": return `Email #${e.id} delivered.`;
+        case "lost": return `${piece[e.service]} down. Email #${e.id} lost.`;
+      }
+    },
+    app: {
+      title: "AuthGuard",
+      heading: "Create account",
+      nameLabel: "Name",
+      emailLabel: "Email",
+      person: { name: "Ana Souza", email: "ana.souza@example.com" },
+      fake: "Fictitious data. Nothing is sent.",
+      status: {
+        idle: "Fill in and create the account.",
+        connecting: "Connecting to the server…",
+        processing: "Account created. Welcome email: processing…",
+        delivered: "Account created. Welcome email: delivered.",
+        error: "Something went wrong. Please try again later.",
+      },
+    },
+    note: redesignCopy.en.breakService.note,
+    noteLink: redesignCopy.en.breakService.noteLink,
+    noJs:
+      "With a queue, when a piece goes down the email waits, retries with growing delays and, after three failures, goes to the DLQ, from where it is replayed. Without a queue, the same failure loses the email.",
+  },
   sections: {
-    derrube: { title: redesignCopy.en.breakService.title, soon: "Coming soon." },
     projetos: { title: redesignCopy.en.work.title, soon: "Coming soon." },
     comoTrabalho: { title: redesignCopy.en.how.title, soon: "Coming soon." },
     oQueResolvo: { title: redesignCopy.en.services.title, soon: "Coming soon." },

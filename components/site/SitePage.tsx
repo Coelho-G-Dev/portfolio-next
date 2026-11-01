@@ -34,8 +34,8 @@ export default function SitePage({ heroSlot }: { heroSlot?: ReactNode }) {
           <main id="main-content">
             {/* Capítulos e fundos na ordem da spec §5.3. */}
             <Chapter id="derrube" tone="nogueiraEscura">
-              <Section id="derrube" title={s.derrube.title}>
-                <p data-derrube-end>{s.derrube.soon}</p>
+              <Section id="derrube" title={c.derrube.title}>
+                <p data-derrube-end>{c.derrube.sentence}</p>
               </Section>
             </Chapter>
             <Chapter id="projetos" tone="ebano">
