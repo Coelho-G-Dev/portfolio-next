@@ -50,6 +50,14 @@ export default function Character({ paused }: { paused: boolean }) {
     setFailed(true);
   };
 
+  // AbortError só significa que pausamos antes do play() resolver (rolagem,
+  // aba oculta, troca de clipe): não é falha. Autoplay bloqueado é.
+  const play = (el: HTMLVideoElement) =>
+    el.play().catch((err: unknown) => {
+      if ((err as { name?: string })?.name === "AbortError") return;
+      fail(err);
+    });
+
   // Modo: movimento reduzido → só o poster; mouse fino → scrub; toque → vaivém.
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) setMode("reduced");
@@ -112,10 +120,10 @@ export default function Character({ paused }: { paused: boolean }) {
     }
     if (state.phase === "intro" || state.phase === "reaction") {
       if (state.phase === "reaction") el.currentTime = 0;
-      el.play().catch(fail);
+      play(el);
     } else if (mode === "touch") {
       el.loop = true;
-      el.play().catch(fail);
+      play(el);
     }
     // No desktop, o Olhar não toca: o scrub move currentTime.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -151,9 +159,13 @@ export default function Character({ paused }: { paused: boolean }) {
         const goal = s.phase === "centering" ? NEUTRAL : s.target;
         pos = approach(pos, goal, dt);
         if (s.phase === "centering" && Math.abs(pos - NEUTRAL) < 0.01) {
+          // Só reage com o quadro neutro já na tela: espera o seek terminar.
           pos = NEUTRAL;
-          if (!el.seeking) el.currentTime = NEUTRAL * el.duration;
-          dispatch({ type: "centered" });
+          const neutralTime = NEUTRAL * el.duration;
+          if (!el.seeking) {
+            if (Math.abs(el.currentTime - neutralTime) > FRAME / 2) el.currentTime = neutralTime;
+            else dispatch({ type: "centered" });
+          }
         } else if (!el.seeking && Math.abs(el.currentTime - pos * el.duration) > FRAME / 2) {
           el.currentTime = pos * el.duration;
         }
@@ -166,12 +178,16 @@ export default function Character({ paused }: { paused: boolean }) {
 
   // Toque: espera o vaivém passar pela pose neutra (0 ou metade) e só então reage.
   useEffect(() => {
-    if (mode !== "touch" || state.phase !== "centering") return;
+    if (mode !== "touch" || state.phase !== "centering" || !running) return;
     const el = loopRef.current;
     if (!el) return;
     let prev = el.currentTime;
     let frame = 0;
     const tick = () => {
+      if (!(el.duration > 0)) {
+        frame = requestAnimationFrame(tick);
+        return;
+      }
       const t = el.currentTime;
       const half = el.duration / 2;
       const wrapped = t < prev;
@@ -187,7 +203,7 @@ export default function Character({ paused }: { paused: boolean }) {
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [mode, state.phase]);
+  }, [mode, state.phase, running]);
 
   // A primeira interação também libera o carregamento das reações, para um
   // clique antes do fim do carregamento não tocar um vídeo sem src.
@@ -236,7 +252,15 @@ export default function Character({ paused }: { paused: boolean }) {
           <video ref={entradaRef} {...videoProps("entrada", url(manifest.entrada))} />
           {/* Cada modo usa só um dos dois: o Olhar (scrub) ou o vaivém (toque). */}
           {mode === "desktop" ? (
-            <video ref={olharRef} {...videoProps("olhar", url(manifest.olhar))} />
+            <video
+              ref={olharRef}
+              {...videoProps("olhar", url(manifest.olhar))}
+              // Já espera na pose neutra (meio do clipe): a troca da Entrada
+              // para o Olhar não pode mostrar a cabeça virada.
+              onLoadedMetadata={(e) => {
+                e.currentTarget.currentTime = NEUTRAL * e.currentTarget.duration;
+              }}
+            />
           ) : (
             <video ref={loopRef} {...videoProps("loop", url(manifest.olharLoop))} />
           )}
