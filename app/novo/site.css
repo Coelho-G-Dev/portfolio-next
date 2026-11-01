@@ -368,3 +368,121 @@
     transition: none;
   }
 }
+
+/* ---------- Abertura (spec §5.2) ---------- */
+.s-opening {
+  color: var(--c-ebano);
+}
+.s-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: center;
+  min-height: calc(100svh - 80px);
+}
+.s-hero__text {
+  padding: 32px clamp(16px, 4vw, 48px) 64px;
+}
+.s-hero__label {
+  margin: 0 0 12px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.875rem;
+}
+.s-hero__name {
+  margin: 0 0 24px;
+  font-size: clamp(3.25rem, 7.5vw, 7rem);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+.s-hero__intro {
+  max-width: 32ch;
+  margin: 0 0 36px;
+  font-size: clamp(1.125rem, 1.6vw, 1.4rem);
+  line-height: 1.45;
+}
+.s-hero__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: 560px;
+}
+/* O personagem sangra até a borda direita. As laterais se fundem ao fundo da
+   página, porque o fundo do vídeo tem um leve degradê. */
+.s-hero__char {
+  align-self: stretch;
+  display: flex;
+}
+.s-hero__char .s-char {
+  flex: 1;
+  aspect-ratio: auto;
+  min-height: 420px;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 64px);
+  mask-image: linear-gradient(to right, transparent 0, #000 64px);
+}
+.s-char__poster,
+.s-char__video {
+  object-position: 68% center;
+}
+
+@media (max-width: 899px) {
+  .s-hero {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .s-hero__char {
+    order: -1;
+  }
+  .s-hero__char .s-char {
+    aspect-ratio: 1 / 1;
+    min-height: 0;
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 48px), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 48px), transparent);
+  }
+  .s-hero__text {
+    padding-top: 8px;
+  }
+}
+
+/* Entrada da página: só com JavaScript e sem movimento reduzido. Sem JS, nada
+   disto roda e o texto aparece pronto. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .s-hero__label {
+    animation: s-unblur 600ms var(--ease-out) both;
+  }
+  .js .s-hero__name {
+    animation: s-rise 700ms var(--ease-out) 80ms both;
+  }
+  .js .s-hero__pills {
+    animation: s-rise-small 500ms var(--ease-out) 400ms both;
+  }
+}
+@keyframes s-unblur {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+@keyframes s-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes s-rise-small {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

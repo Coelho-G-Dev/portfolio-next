@@ -22,7 +22,7 @@ describe.each(["pt", "en"] as const)("hierarquia de títulos do site novo (%s)",
   async function setup() {
     localStorage.setItem("preferred-language", lang);
     const view = renderPage();
-    await screen.findByText(siteCopy[lang].hero.intro);
+    await screen.findByText(siteCopy[lang].hero.intro, { selector: ".sr-only" });
     return view;
   }
 
@@ -67,8 +67,8 @@ describe.each(["pt", "en"] as const)("hierarquia de títulos do site novo (%s)",
 it("o botão de idioma troca a apresentação PT → EN", async () => {
   localStorage.setItem("preferred-language", "pt");
   renderPage();
-  await screen.findByText(siteCopy.pt.hero.intro);
+  await screen.findByText(siteCopy.pt.hero.intro, { selector: ".sr-only" });
   await userEvent.click(screen.getByRole("button", { name: siteCopy.pt.nav.langSwitchAria }));
-  expect(screen.getByText(siteCopy.en.hero.intro)).toBeInTheDocument();
+  expect(screen.getByText(siteCopy.en.hero.intro, { selector: ".sr-only" })).toBeInTheDocument();
   expect(screen.getByRole("heading", { level: 1 })).toHaveAccessibleName("Gabriel Coelho");
 });

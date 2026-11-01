@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { siteCopy } from "@/lib/i18n/site";
 import { Chapter, Section } from "./Chapter";
+import Hero from "./Hero";
+import { heroManifest } from "./heroAssets";
 import Nav from "./Nav";
 import { SiteCopyContext } from "./SiteCopyContext";
 
@@ -14,13 +16,11 @@ export default function SitePage({ heroSlot }: { heroSlot?: ReactNode }) {
 
   return (
     <SiteCopyContext.Provider value={c}>
-      <Nav />
-      {heroSlot ?? (
-        <header id="inicio" className="s-hero">
-          <h1>{c.hero.name}</h1>
-          <p>{c.hero.intro}</p>
-        </header>
-      )}
+      {/* Menu e abertura dividem o fundo do vídeo do personagem. */}
+      <div className="s-opening" style={{ backgroundColor: heroManifest.bg }}>
+        <Nav />
+        {heroSlot ?? <Hero />}
+      </div>
       <main id="main-content">
         {/* Capítulos e fundos na ordem da spec §5.3. */}
         <Chapter tone="nogueiraEscura">

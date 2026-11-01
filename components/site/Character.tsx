@@ -2,16 +2,12 @@
 
 import Image from "next/image";
 import { useEffect, useReducer, useRef, useState } from "react";
-import manifestJson from "@/public/hero/manifest.json";
 import { approach, charReducer, initialChar, NEUTRAL, type CharState, type Reaction } from "@/lib/character";
-import { loadManifest } from "@/lib/heroManifest";
+import { heroManifest as manifest, heroUrl as url } from "./heroAssets";
 
 // Personagem 3D do hero (spec §5.2). Decorativo: aria-hidden, e nada depende
 // de clicar nele. O poster fica sempre por baixo; os vídeos se sobrepõem com
 // opacidade e, se qualquer um falhar, o personagem fica no poster.
-
-const manifest = loadManifest(manifestJson);
-const url = (file: string) => `/hero/${file}`;
 
 const CLICKS = (["clique-1", "clique-2", "clique-3"] as const).filter((k) => manifest.reactions[k]);
 const REACTIONS = (["hover", ...CLICKS] as Reaction[]).map((k) => [k, manifest.reactions[k] as string] as const);
@@ -52,11 +48,15 @@ export default function Character({ paused }: { paused: boolean }) {
 
   // AbortError só significa que pausamos antes do play() resolver (rolagem,
   // aba oculta, troca de clipe): não é falha. Autoplay bloqueado é.
-  const play = (el: HTMLVideoElement) =>
-    el.play().catch((err: unknown) => {
+  const play = (el: HTMLVideoElement) => {
+    const p = el.play();
+    // Navegadores antigos (e o jsdom) não devolvem Promise.
+    if (!p || typeof p.catch !== "function") return;
+    p.catch((err: unknown) => {
       if ((err as { name?: string })?.name === "AbortError") return;
       fail(err);
     });
+  };
 
   // Modo: movimento reduzido → só o poster; mouse fino → scrub; toque → vaivém.
   useEffect(() => {
@@ -220,6 +220,7 @@ export default function Character({ paused }: { paused: boolean }) {
 
   const videoProps = (key: string, src: string | null) => ({
     className: "s-char__video",
+    "data-clip": key.replace(/\.mp4$/, ""),
     "data-active": activeKey === key || undefined,
     src: src ?? undefined,
     muted: true,
