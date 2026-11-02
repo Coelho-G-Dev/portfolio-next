@@ -163,32 +163,53 @@
   color: var(--c-ebano);
 }
 
-.s-chapter[data-chapter="derrube"] {
-  background: linear-gradient(
-    180deg,
-    #FAF6F0 0%,
-    #dfcfbc 36px,
-    #937358 76px,
-    var(--c-nogueira-escura) 140px,
-    var(--c-nogueira-escura) calc(100% - 90px),
-    #1d1612 100%
-  );
+/* Camadas arquiteturais fluidas com elevação, sombra ascendente e profundidade 3D */
+main > .s-chapter {
+  position: relative;
+  margin-top: -36px;
+  border-radius: 36px 36px 0 0;
+  box-shadow: 0 -20px 48px rgba(0, 0, 0, 0.42);
+}
+
+main > .s-chapter[data-chapter="derrube"] {
+  z-index: 2;
+  background:
+    radial-gradient(ellipse 70% 320px at 50% 120px, rgba(245, 165, 36, 0.07), transparent 75%),
+    linear-gradient(
+      180deg,
+      #FAF6F0 0%,
+      #dfcfbc 36px,
+      #937358 76px,
+      var(--c-nogueira-escura) 140px,
+      var(--c-nogueira-escura) calc(100% - 90px),
+      #1d1612 100%
+    );
   color: var(--c-marfim);
 }
 
-.s-chapter[data-chapter="projetos"] {
-  background: linear-gradient(
-    180deg,
-    #1d1612 0%,
-    #131114 60px,
-    var(--c-ebano) 130px,
-    var(--c-ebano) calc(100% - 100px),
-    #181519 100%
-  );
+main > .s-chapter[data-chapter="projetos"] {
+  z-index: 3;
+  margin-top: -40px;
+  border-radius: 40px 40px 0 0;
+  box-shadow: 0 -24px 56px rgba(0, 0, 0, 0.55);
+  background:
+    radial-gradient(ellipse 75% 360px at 50% 160px, rgba(46, 83, 229, 0.08), transparent 70%),
+    linear-gradient(
+      180deg,
+      #1d1612 0%,
+      #131114 60px,
+      var(--c-ebano) 130px,
+      var(--c-ebano) calc(100% - 100px),
+      #181519 100%
+    );
   color: var(--c-marfim);
 }
 
-.s-chapter[data-chapter="trabalho"] {
+main > .s-chapter[data-chapter="trabalho"] {
+  z-index: 4;
+  margin-top: -40px;
+  border-radius: 40px 40px 0 0;
+  box-shadow: 0 -24px 56px rgba(0, 0, 0, 0.35);
   background: linear-gradient(
     180deg,
     #181519 0%,
@@ -203,7 +224,11 @@
   color: var(--c-ebano);
 }
 
-.s-chapter[data-chapter="sobre"] {
+main > .s-chapter[data-chapter="sobre"] {
+  z-index: 5;
+  margin-top: -40px;
+  border-radius: 40px 40px 0 0;
+  box-shadow: 0 -24px 56px rgba(0, 0, 0, 0.38);
   background: linear-gradient(
     180deg,
     #e4d7c3 0%,
@@ -249,9 +274,12 @@
 }
 
 .s-footer {
-  /* Posicionado para pintar por cima da abertura */
+  /* Camada final elevada sobre o capítulo Sobre */
   position: relative;
-  z-index: 1;
+  z-index: 6;
+  margin-top: -40px;
+  border-radius: 40px 40px 0 0;
+  box-shadow: 0 -24px 56px rgba(0, 0, 0, 0.6);
   padding: clamp(56px, 7vw, 80px) clamp(16px, 4vw, 48px);
   background: linear-gradient(
     180deg,
@@ -442,6 +470,23 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform:
+    perspective(1000px)
+    rotateX(var(--char-tilt-x, 0deg))
+    rotateY(var(--char-tilt-y, 0deg))
+    translateY(var(--char-shift-y, 0px))
+    translateX(var(--char-shift-x, 0px))
+    scale(1.04);
+  transform-origin: 65% 50%;
+  will-change: transform;
+  transition: transform 90ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .s-char__poster,
+  .s-char__video {
+    transform: none !important;
+    transition: none !important;
+  }
 }
 /* Um vídeo à vista por vez. O crossfade de 120 ms disfarça a pequena diferença
    de luz entre o quadro neutro de clipes diferentes. */
@@ -518,7 +563,7 @@
   min-height: calc(100svh - 80px);
 }
 .s-hero__text {
-  padding: 32px clamp(16px, 4vw, 48px) 64px;
+  padding: 32px clamp(16px, 4vw, 48px) 80px;
 }
 .s-hero__label {
   margin: 0 0 12px;

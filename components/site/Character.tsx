@@ -35,6 +35,7 @@ export default function Character({ paused }: { paused: boolean }) {
   const [bubbleVisible, setBubbleVisible] = useState(false);
 
   const bubbleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const charRef = useRef<HTMLDivElement>(null);
   const entradaRef = useRef<HTMLVideoElement>(null);
   const olharRef = useRef<HTMLVideoElement>(null);
   const loopRef = useRef<HTMLVideoElement>(null);
@@ -157,11 +158,60 @@ export default function Character({ paused }: { paused: boolean }) {
     else if (stateRef.current.phase === "reaction") dispatch({ type: "reactionEnded" });
   };
 
+  // Acompanhamento do cursor em X e Y: olhar horizontal e inclinação/elevação vertical 3D
   useEffect(() => {
     if (mode !== "desktop") return;
-    const onMove = (e: PointerEvent) => dispatch({ type: "pointer", x: e.clientX / window.innerWidth });
-    window.addEventListener("pointermove", onMove);
-    return () => window.removeEventListener("pointermove", onMove);
+
+    let targetX = NEUTRAL;
+    let targetY = NEUTRAL;
+    let curX = NEUTRAL;
+    let curY = NEUTRAL;
+    let frame = 0;
+    let lastTime = performance.now();
+
+    const onMove = (e: PointerEvent) => {
+      const normX = e.clientX / window.innerWidth;
+      const normY = e.clientY / window.innerHeight;
+      targetX = normX;
+      targetY = normY;
+      dispatch({ type: "pointer", x: normX });
+    };
+
+    const updatePhysics = (now: number) => {
+      const dt = Math.min(now - lastTime, 64);
+      lastTime = now;
+
+      curX = approach(curX, targetX, dt, 110);
+      curY = approach(curY, targetY, dt, 110);
+
+      const devX = (curX - 0.5) * 2; // -1 (esq) a +1 (dir)
+      const devY = (curY - 0.5) * 2; // -1 (topo) a +1 (baixo)
+
+      const el = charRef.current;
+      if (el) {
+        // Quando o mouse sobe (devY < 0), o personagem eleva o olhar (rotaciona X para cima) e translada para cima
+        // Quando o mouse desce (devY > 0), o personagem inclina o olhar para baixo e translada para baixo
+        const tiltX = (devY * -6.5).toFixed(2);
+        const tiltY = (devX * 8).toFixed(2);
+        const shiftY = (devY * 14).toFixed(2);
+        const shiftX = (devX * 8).toFixed(2);
+
+        el.style.setProperty("--char-tilt-x", `${tiltX}deg`);
+        el.style.setProperty("--char-tilt-y", `${tiltY}deg`);
+        el.style.setProperty("--char-shift-y", `${shiftY}px`);
+        el.style.setProperty("--char-shift-x", `${shiftX}px`);
+      }
+
+      frame = requestAnimationFrame(updatePhysics);
+    };
+
+    window.addEventListener("pointermove", onMove, { passive: true });
+    frame = requestAnimationFrame(updatePhysics);
+
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      cancelAnimationFrame(frame);
+    };
   }, [mode]);
 
   useEffect(() => {
@@ -261,6 +311,7 @@ export default function Character({ paused }: { paused: boolean }) {
 
   return (
     <div
+      ref={charRef}
       className="s-char"
       role="button"
       tabIndex={0}
