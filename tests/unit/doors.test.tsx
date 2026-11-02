@@ -42,7 +42,7 @@ describe("Portas e capítulo de projetos", () => {
     }
   });
 
-  it("abrir Front-end foca no h3 Front-end, lista apenas o Cidade Energia como h4, e Esc ou Voltar às portas devolvem o foco à porta", () => {
+  it("abrir Front-end foca no h3 Front-end, lista Cidade Energia e BuscaSUS como h4, e Esc ou Voltar às portas devolvem o foco à porta", () => {
     render(tree());
     const frontBtn = screen.getByRole("button", {
       name: siteCopy.pt.projetos.open("Front-end"),
@@ -59,8 +59,9 @@ describe("Portas e capítulo de projetos", () => {
 
     const panel = panelHeading.closest("[data-door-panel]") as HTMLElement;
     const h4s = within(panel).getAllByRole("heading", { level: 4 });
-    expect(h4s).toHaveLength(1);
+    expect(h4s).toHaveLength(2);
     expect(h4s[0]).toHaveTextContent("Cidade Energia");
+    expect(h4s[1]).toHaveTextContent("BuscaSUS");
 
     // O destaque continua visível com a porta aberta.
     expect(screen.getByRole("heading", { level: 3, name: "Cidade Energia" })).toBeInTheDocument();

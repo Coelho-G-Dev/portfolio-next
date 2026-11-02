@@ -823,8 +823,32 @@ export const projects: Project[] = [
     id: 6,
     title: "BuscaSUS",
     category: "backend",
-    doors: ["backend"],
+    doors: ["backend", "frontend"],
     facets: {
+      frontend: {
+        line: {
+          pt: "Interface geoespacial mobile-first: busca de postos de saúde por raio de proximidade, cálculo de rotas em tempo real com Google Maps / Leaflet e estimativa de tempo até o atendimento.",
+          en: "Mobile-first geospatial interface: public health facility search by proximity radius, real-time routing with Google Maps / Leaflet, and estimated transit times.",
+        },
+        stack: ["React", "TypeScript", "Tailwind CSS", "Google Maps Platform", "Leaflet"],
+        metrics: [
+          {
+            label: { pt: "Busca por Raio", en: "Radius Search" },
+            value: {
+              pt: "Geolocalização instantânea do usuário com cálculo de rotas",
+              en: "Instant user geolocation with turn-by-turn routing",
+            },
+          },
+          {
+            label: { pt: "Interface Mobile-First", en: "Mobile-First UI" },
+            value: {
+              pt: "Navegação tátil acessível para emergências e postos de saúde",
+              en: "Accessible touch navigation for public health clinics",
+            },
+          },
+        ],
+        links: ["frontend", "github"],
+      },
       backend: {
         line: {
           pt: "Encontra a unidade de saúde pública mais próxima e traça a rota.",
@@ -845,6 +869,7 @@ export const projects: Project[] = [
     },
     tags: ["Node.js", "Express", "MongoDB", "Google Maps Platform"],
     githubLink: "https://github.com/Coelho-G-Dev/Desafio-05-Back-End",
+    frontendLink: "https://github.com/Coelho-G-Dev/Desafio-05-Front-End",
     apiDocsLink: "https://github.com/Coelho-G-Dev/Desafio-05-Back-End#documenta%C3%A7%C3%A3o-dos-endpoints",
     apiDocsLabel: {
       pt: "Docs da API",

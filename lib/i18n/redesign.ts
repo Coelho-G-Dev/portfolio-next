@@ -180,6 +180,15 @@ const pt = {
         ],
       },
       {
+        name: "Front-end & Aplicações Modernas (PWA)",
+        items: [
+          { name: "Next.js 16 & React 19", note: "PWA do Cidade Energia: simulador solar, quiz e 133 testes" },
+          { name: "React & Mapas Geoespaciais", note: "Interface do BuscaSUS: cálculo de rotas com Google Maps & Leaflet" },
+          { name: "TypeScript & Design Systems", note: "Interfaces táteis, tipagem estrita e acessibilidade WCAG AA" },
+          { name: "PWA & Modo Offline/Simulado", note: "Service workers, cache resiliente e execução cliente sem back-end" },
+        ],
+      },
+      {
         name: "Mensageria & Resiliência",
         items: [
           { name: "RabbitMQ", note: "Filas duráveis, DLQ e tolerância a falhas" },
@@ -407,6 +416,15 @@ const en: typeof pt = {
           { name: "TypeScript", note: "Strict typing and end-to-end contracts" },
           { name: "Python / FastAPI", note: "RAG, AI pipelines and async services" },
           { name: "Java / Spring Boot", note: "Layered enterprise microservices" },
+        ],
+      },
+      {
+        name: "Front-end & Modern Apps (PWA)",
+        items: [
+          { name: "Next.js 16 & React 19", note: "Cidade Energia PWA: solar simulator, quiz tracks and 133 tests" },
+          { name: "React & Geospatial Maps", note: "BuscaSUS interface: real-time routing with Google Maps & Leaflet" },
+          { name: "TypeScript & Design Systems", note: "Tactile UI, strict typing, responsive design and WCAG AA accessibility" },
+          { name: "PWA & Offline-First Mode", note: "Service workers, resilient caching and mock client mode without back-end" },
         ],
       },
       {

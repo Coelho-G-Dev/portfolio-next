@@ -49,14 +49,15 @@ describe("portas e facetas dos projetos", () => {
     }
   });
 
-  it('a porta "frontend" tem exatamente o Cidade Energia', () => {
-    expect(inDoor("frontend").map((p) => p.title)).toEqual(["Cidade Energia"]);
+  it('a porta "frontend" reúne os projetos com interface (Cidade Energia e BuscaSUS)', () => {
+    expect(inDoor("frontend").map((p) => p.title)).toEqual(["Cidade Energia", "BuscaSUS"]);
   });
 
   it("as portas seguem a spec", () => {
     const doorsOf = (title: string) => projects.find((p) => p.title === title)?.doors;
     expect(doorsOf("Cidade Energia")).toEqual(["backend", "frontend", "ia"]);
-    for (const t of ["AuthGuard", "Guia Maranhão", "BuscaSUS"]) expect(doorsOf(t), t).toEqual(["backend"]);
+    expect(doorsOf("BuscaSUS")).toEqual(["backend", "frontend"]);
+    for (const t of ["AuthGuard", "Guia Maranhão"]) expect(doorsOf(t), t).toEqual(["backend"]);
     for (const t of ["RAG Serviços Públicos", "API Financeira Inteligente"]) expect(doorsOf(t), t).toEqual(["ia", "backend"]);
   });
 

@@ -139,32 +139,96 @@
   }
 }
 
-/* ---------- Capítulos e Fluxo Contínuo ---------- */
+/* ---------- Capítulos e Atmosfera Contínua e Fluida ---------- */
 .s-chapter {
   position: relative;
-  padding: clamp(64px, 8vw, 112px) clamp(16px, 4vw, 48px);
-  min-height: 80svh;
+  padding: clamp(56px, 7vw, 104px) clamp(16px, 4vw, 48px);
+  width: 100%;
+}
+.s-chapter::after {
+  content: "";
+  opacity: var(--shade, 0);
+  pointer-events: none;
 }
 .s-cortina {
   background: var(--c-ebano);
   width: 100%;
+  overflow-x: hidden;
 }
-main > .s-chapter {
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+
+/* Transições cromáticas contínuas (zero cortes a seco, atmosfera fluida e nobre) */
+.s-chapter[data-chapter="abertura"] {
+  min-height: 100svh;
+  padding: 0;
+  color: var(--c-ebano);
 }
-.s-chapter[data-tone="marfim"] {
+
+.s-chapter[data-chapter="derrube"] {
+  background: linear-gradient(
+    180deg,
+    #FAF6F0 0%,
+    #dfcfbc 36px,
+    #937358 76px,
+    var(--c-nogueira-escura) 140px,
+    var(--c-nogueira-escura) calc(100% - 90px),
+    #1d1612 100%
+  );
+  color: var(--c-marfim);
+}
+
+.s-chapter[data-chapter="projetos"] {
+  background: linear-gradient(
+    180deg,
+    #1d1612 0%,
+    #131114 60px,
+    var(--c-ebano) 130px,
+    var(--c-ebano) calc(100% - 100px),
+    #181519 100%
+  );
+  color: var(--c-marfim);
+}
+
+.s-chapter[data-chapter="trabalho"] {
+  background: linear-gradient(
+    180deg,
+    #181519 0%,
+    #3b3027 40px,
+    #7a6552 80px,
+    #bfae98 120px,
+    #e9e0d1 160px,
+    var(--c-marfim) 210px,
+    var(--c-marfim) calc(100% - 100px),
+    #e4d7c3 100%
+  );
+  color: var(--c-ebano);
+}
+
+.s-chapter[data-chapter="sobre"] {
+  background: linear-gradient(
+    180deg,
+    #e4d7c3 0%,
+    #dfcfba 40px,
+    var(--c-bordo) 90px,
+    var(--c-bordo) calc(100% - 80px),
+    #baa280 100%
+  );
+  color: var(--c-nogueira-escura);
+}
+
+/* Fallbacks por tom declarativo caso data-chapter não esteja presente */
+.s-chapter[data-tone="marfim"]:not([data-chapter]) {
   background: var(--c-marfim);
   color: var(--c-ebano);
 }
-.s-chapter[data-tone="nogueiraEscura"] {
+.s-chapter[data-tone="nogueiraEscura"]:not([data-chapter]) {
   background: var(--c-nogueira-escura);
   color: var(--c-marfim);
 }
-.s-chapter[data-tone="ebano"] {
+.s-chapter[data-tone="ebano"]:not([data-chapter]) {
   background: var(--c-ebano);
   color: var(--c-marfim);
 }
-.s-chapter[data-tone="bordo"] {
+.s-chapter[data-tone="bordo"]:not([data-chapter]) {
   background: var(--c-bordo);
   color: var(--c-nogueira-escura);
 }
@@ -185,12 +249,17 @@ main > .s-chapter {
 }
 
 .s-footer {
-  /* Posicionado para pintar por cima da abertura, que fica grudada até o fim
-     de .s-cortina. */
+  /* Posicionado para pintar por cima da abertura */
   position: relative;
   z-index: 1;
-  padding: 48px clamp(16px, 4vw, 48px);
-  background: var(--c-ebano);
+  padding: clamp(56px, 7vw, 80px) clamp(16px, 4vw, 48px);
+  background: linear-gradient(
+    180deg,
+    #baa280 0%,
+    #786149 36px,
+    #362a20 80px,
+    var(--c-ebano) 140px
+  );
   color: var(--c-marfim);
 }
 
@@ -2309,7 +2378,17 @@ main > .s-chapter {
 .s-stack-workbench__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(16px, 3vw, 24px);
+  gap: clamp(16px, 2.5vw, 24px);
+}
+@media (min-width: 840px) {
+  .s-stack-category:last-child {
+    grid-column: span 2;
+  }
+  .s-stack-category:last-child .s-stack-category__chips {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
 }
 .s-stack-category {
   padding: 18px 20px;

@@ -129,7 +129,7 @@ test("Front-end: painel com um projeto tem métricas e pelo menos dois links", a
 
   const panel = s.locator('[data-door-panel="frontend"]');
   await expect(panel).toBeVisible();
-  await expect(panel.locator("h4")).toHaveCount(1);
+  await expect(panel.locator("h4")).toHaveCount(2);
   const metricsCount = await panel.locator(".s-project-card__metric").count();
   expect(metricsCount).toBeGreaterThanOrEqual(1);
   const linksCount = await panel.locator(".s-project-card__links a").count();
@@ -154,7 +154,7 @@ test.describe("sem JavaScript", () => {
 test.describe("com movimento reduzido", () => {
   test.use({ reducedMotion: "reduce" });
 
-  test("a folha da porta não tem transform de rotação depois de abrir", async ({
+  test("o portal não tem rotação 3D depois de abrir", async ({
     page,
   }) => {
     await openProjetos(page);
@@ -163,7 +163,7 @@ test.describe("com movimento reduzido", () => {
     await doorBtn.evaluate((el) => (el as HTMLElement).click());
 
     const transform = await doorBtn
-      .locator('.s-door__leaf[data-leaf="left"]')
+      .locator(".s-door__frame")
       .evaluate((el) => getComputedStyle(el).transform);
     expect(["none", "matrix(1, 0, 0, 1, 0, 0)"]).toContain(transform);
   });
