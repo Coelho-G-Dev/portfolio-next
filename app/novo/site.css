@@ -355,33 +355,6 @@ main > .s-chapter {
 }
 .s-chapter[data-tone="bordo"] .s-email__copy:hover {
   background: var(--c-marfim);
-
-  /* Sobre & Contato no celular */
-  .s-portraits {
-    grid-template-columns: 1fr;
-    gap: 36px;
-  }
-  .s-portrait {
-    max-width: 440px;
-  }
-  .s-contact__grid {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-  .s-contact__send {
-    width: 100%;
-    justify-content: center;
-  }
-  .s-footer__top {
-    flex-direction: column;
-    gap: 28px;
-  }
-  .s-footer__bottom {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2883,6 +2856,32 @@ main > .s-chapter {
   .s-services__roles-banner .s-pill {
     width: 100%;
     justify-content: center;
+  }
+
+  /* Sobre & Contato & Rodapé no celular */
+  .s-portraits {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .s-portrait {
+    max-width: 440px;
+  }
+  .s-contact__grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .s-contact__send {
+    width: 100%;
+    justify-content: center;
+  }
+  .s-footer__top {
+    flex-direction: column;
+    gap: 28px;
+  }
+  .s-footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
   }
 }
 
