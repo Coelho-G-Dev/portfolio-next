@@ -17,7 +17,7 @@ export default function About({ contributions }: Props) {
   return (
     <Section id="sobre" title={a.title}>
       <div className="s-about">
-        {/* Galeria de retratos em duas colunas alternadas */}
+        {/* Galeria de retratos compacta e narrativa */}
         <div className="s-portraits">
           {a.portraits.map((p) => (
             <figure key={p.src} className="s-portrait">
@@ -25,9 +25,9 @@ export default function About({ contributions }: Props) {
                 <Image
                   src={p.src}
                   alt={p.alt}
-                  width={1000}
-                  height={1250}
-                  sizes="(max-width: 719px) 85vw, (max-width: 1024px) 45vw, 420px"
+                  width={200}
+                  height={200}
+                  sizes="(max-width: 719px) 110px, 140px"
                   className="s-portrait__img"
                 />
               </div>
@@ -40,6 +40,29 @@ export default function About({ contributions }: Props) {
               </figcaption>
             </figure>
           ))}
+        </div>
+
+        {/* Bancada da Stack de Trabalho */}
+        <div className="s-stack-workbench">
+          <div className="s-stack-workbench__head">
+            <h3 className="s-stack-workbench__title">{a.stackTitle}</h3>
+            <p className="s-stack-workbench__lead">{a.stackLead}</p>
+          </div>
+          <div className="s-stack-workbench__grid">
+            {a.stackCategories.map((cat) => (
+              <div key={cat.name} className="s-stack-category">
+                <h4 className="s-stack-category__title">{cat.name}</h4>
+                <div className="s-stack-category__chips">
+                  {cat.items.map((item) => (
+                    <div key={item.name} className="s-stack-chip" tabIndex={0}>
+                      <span className="s-stack-chip__name">{item.name}</span>
+                      <span className="s-stack-chip__note">{item.note}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Azulejos de marchetaria com histórico do GitHub */}

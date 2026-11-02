@@ -29,20 +29,29 @@ describe("máquina de estados do personagem", () => {
     let s = scrub;
     for (let i = 0; i < 4; i++) {
       s = charReducer(s, { type: "click" });
-      s = charReducer(s, { type: "centered" });
       if (s.phase === "reaction") clips.push(s.clip);
       s = charReducer(s, { type: "reactionEnded" });
     }
     expect(clips).toEqual(["clique-1", "clique-2", "clique-3", "clique-1"]);
   });
 
-  it("hover e clique fora de scrub são ignorados (mesmo objeto)", () => {
-    const centering = charReducer(scrub, { type: "click" });
+  it("hover fora de scrub é ignorado (mesmo objeto)", () => {
+    const centering = charReducer(scrub, { type: "hover" });
     const reaction = charReducer(centering, { type: "centered" });
     for (const s of [initialChar, centering, reaction]) {
       expect(charReducer(s, { type: "hover" })).toBe(s);
-      expect(charReducer(s, { type: "click" })).toBe(s);
     }
+  });
+
+  it("clique sempre avança imediatamente mesmo se estiver em reação ou hover", () => {
+    const r1 = charReducer(scrub, { type: "click" });
+    expect(r1).toMatchObject({ phase: "reaction", clip: "clique-1", clicks: 1 });
+    const r2 = charReducer(r1, { type: "click" });
+    expect(r2).toMatchObject({ phase: "reaction", clip: "clique-2", clicks: 2 });
+    const r3 = charReducer(r2, { type: "click" });
+    expect(r3).toMatchObject({ phase: "reaction", clip: "clique-3", clicks: 3 });
+    const r4 = charReducer(r3, { type: "click" });
+    expect(r4).toMatchObject({ phase: "reaction", clip: "clique-1", clicks: 4 });
   });
 
   it("centered leva à reação pendente e o fim dela volta ao scrub com o alvo atualizado", () => {
@@ -52,7 +61,7 @@ describe("máquina de estados do personagem", () => {
     expect(s).toMatchObject({ phase: "scrub", target: 0.9 });
   });
 
-  it("propriedade: reação só depois de centralizar, cliques nunca diminuem e o personagem sempre volta ao scrub", () => {
+  it("propriedade: cliques nunca diminuem e o personagem sempre volta ao scrub", () => {
     const event: fc.Arbitrary<CharEvent> = fc.oneof(
       fc.constant<CharEvent>({ type: "introEnded" }),
       fc.double({ min: -1, max: 2, noNaN: true }).map((x) => ({ type: "pointer", x }) as CharEvent),
@@ -66,12 +75,11 @@ describe("máquina de estados do personagem", () => {
         let prev = initialChar;
         for (const e of events) {
           const next = charReducer(prev, e);
-          if (next.phase === "reaction" && prev.phase !== "reaction") expect(prev.phase).toBe("centering");
           expect(next.clicks).toBeGreaterThanOrEqual(prev.clicks);
           expect(next.target).toBeGreaterThanOrEqual(0);
           expect(next.target).toBeLessThanOrEqual(1);
-          if (prev.phase === "centering") {
-            const done = run([{ type: "centered" }, { type: "reactionEnded" }], prev);
+          if (prev.phase === "centering" && e.type === "centered") {
+            const done = run([{ type: "reactionEnded" }], next);
             expect(done.phase).toBe("scrub");
           }
           prev = next;

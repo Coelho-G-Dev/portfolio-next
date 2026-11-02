@@ -1,4 +1,6 @@
-import type { RefObject } from "react";
+"use client";
+
+import { useEffect, useState, type RefObject } from "react";
 import { projects, type Door, type FacetLink } from "@/data/projects";
 import { Arrow } from "../Pill";
 import { useSiteCopy } from "../SiteCopyContext";
@@ -30,6 +32,35 @@ export default function DoorPanel({
   const c = useSiteCopy().projetos;
   const doorCopy = c.doors[door];
   const list = projects.filter((p) => p.doors?.includes(door));
+
+  const [showFloating, setShowFloating] = useState(false);
+
+  // Monitora rolagem para exibir barra flutuante de navegação rápida
+  useEffect(() => {
+    if (staticMode || !onBack) return;
+
+    const handleScroll = () => {
+      // Exibe a barra suspensa quando o usuário rolar 240px abaixo do topo do painel
+      if (headingRef?.current) {
+        const top = headingRef.current.getBoundingClientRect().top;
+        setShowFloating(top < -120);
+      } else {
+        setShowFloating(window.scrollY > 400);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [staticMode, onBack, headingRef]);
+
+  const scrollToTop = () => {
+    if (headingRef?.current) {
+      headingRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   return (
     <div
@@ -151,6 +182,66 @@ export default function DoorPanel({
           );
         })}
       </div>
+
+      {/* Rodapé de fechamento no final do painel para evitar rolagem de volta com mouse */}
+      {!staticMode && onBack && (
+        <div className="s-door-panel__footer">
+          <p className="s-door-panel__footer-text">
+            {lang === "pt"
+              ? "Pronto para conferir as outras facetas de arquitetura?"
+              : "Ready to explore other architectural facets?"}
+          </p>
+          <div className="s-door-panel__footer-actions">
+            <button
+              type="button"
+              className="s-door-panel__back s-door-panel__back--large"
+              onClick={onBack}
+            >
+              <span aria-hidden="true">← </span>
+              {lang === "pt"
+                ? `Fechar ${doorCopy.name} e voltar aos portais`
+                : `Close ${doorCopy.name} and view portals`}
+            </button>
+            <button
+              type="button"
+              className="s-door-panel__scroll-top"
+              onClick={scrollToTop}
+            >
+              <span aria-hidden="true">↑ </span>
+              {lang === "pt" ? "Voltar ao topo da seção" : "Back to top"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Barra de ação flutuante para navegação rápida de usuários no desktop com mouse */}
+      {!staticMode && onBack && showFloating && (
+        <aside
+          className="s-door-floating-bar"
+          role="toolbar"
+          aria-label={lang === "pt" ? "Navegação rápida do projeto" : "Quick project navigation"}
+        >
+          <button
+            type="button"
+            className="s-door-floating-btn"
+            onClick={scrollToTop}
+            title={lang === "pt" ? "Rolar para o topo" : "Scroll to top"}
+          >
+            <span aria-hidden="true">↑</span>
+            <span>Topo</span>
+          </button>
+          <button
+            type="button"
+            className="s-door-floating-btn s-door-floating-btn--primary"
+            onClick={onBack}
+            title={lang === "pt" ? "Fechar portal e voltar à visão geral (Esc)" : "Close portal and return (Esc)"}
+          >
+            <span aria-hidden="true">←</span>
+            <span>{c.back}</span>
+            <kbd className="s-door-floating-kbd">Esc</kbd>
+          </button>
+        </aside>
+      )}
     </div>
   );
 }

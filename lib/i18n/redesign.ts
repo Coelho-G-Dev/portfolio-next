@@ -167,6 +167,44 @@ const pt = {
         text: "Carga se aumenta aos poucos, com técnica. E pensar jogadas à frente é o mesmo exercício de desenhar um sistema que vai crescer.",
       },
     ],
+    stackTitle: "Bancada de trabalho & Stack",
+    stackLead: "As ferramentas que uso para construir sistemas que não caem e não perdem mensagens.",
+    stackCategories: [
+      {
+        name: "Back-end & Arquitetura",
+        items: [
+          { name: "Node.js", note: "APIs assíncronas de alta concorrência" },
+          { name: "TypeScript", note: "Tipagem estrita e contratos de ponta a ponta" },
+          { name: "Python / FastAPI", note: "RAG, IA e microsserviços assíncronos" },
+          { name: "Java / Spring Boot", note: "Arquitetura empresarial em camadas" },
+        ],
+      },
+      {
+        name: "Mensageria & Resiliência",
+        items: [
+          { name: "RabbitMQ", note: "Filas duráveis, DLQ e tolerância a falhas" },
+          { name: "Redis", note: "Cache distribuído e rate limiting" },
+          { name: "Outbox Pattern", note: "Garantia de entrega sem perdas" },
+        ],
+      },
+      {
+        name: "Bancos & Vetores (IA)",
+        items: [
+          { name: "PostgreSQL", note: "Modelagem relacional e integridade ACID" },
+          { name: "pgvector", note: "Busca semântica e embeddings para RAG" },
+          { name: "Supabase", note: "BaaS, Auth e Row Level Security (RLS)" },
+          { name: "Prisma", note: "ORM tipado e migrações seguras" },
+        ],
+      },
+      {
+        name: "DevOps & Testes",
+        items: [
+          { name: "Docker & Compose", note: "Ambientes isolados e reprodutíveis" },
+          { name: "Vitest & Playwright", note: "TDD, testes unitários e validação E2E" },
+          { name: "Linux & CI/CD", note: "Pipelines automatizados e deploy contínuo" },
+        ],
+      },
+    ],
     tilesTitle: "Meu ano em azulejos",
     tilesText: (total: number) =>
       `Cada azulejo é uma semana de commits no GitHub: quanto mais cheio, mais código. ${total} contribuições nos últimos doze meses.`,
@@ -357,6 +395,44 @@ const en: typeof pt = {
         name: "Off screen",
         role: "Powerlifting and chess",
         text: "Load goes up gradually, with technique. And thinking moves ahead is the same exercise as designing a system that will grow.",
+      },
+    ],
+    stackTitle: "Tech Stack & Workbench",
+    stackLead: "The tools I use to build systems that stay up and never lose messages.",
+    stackCategories: [
+      {
+        name: "Back-end & Architecture",
+        items: [
+          { name: "Node.js", note: "High-throughput asynchronous APIs" },
+          { name: "TypeScript", note: "Strict typing and end-to-end contracts" },
+          { name: "Python / FastAPI", note: "RAG, AI pipelines and async services" },
+          { name: "Java / Spring Boot", note: "Layered enterprise microservices" },
+        ],
+      },
+      {
+        name: "Messaging & Resilience",
+        items: [
+          { name: "RabbitMQ", note: "Durable queues, DLQ and fault tolerance" },
+          { name: "Redis", note: "Distributed caching and rate limiting" },
+          { name: "Outbox Pattern", note: "Guaranteed at-least-once delivery" },
+        ],
+      },
+      {
+        name: "Data & Vectors (AI)",
+        items: [
+          { name: "PostgreSQL", note: "Relational modeling and ACID compliance" },
+          { name: "pgvector", note: "Vector search and embeddings for RAG" },
+          { name: "Supabase", note: "BaaS, Auth and Row Level Security (RLS)" },
+          { name: "Prisma", note: "Type-safe ORM and structured migrations" },
+        ],
+      },
+      {
+        name: "DevOps & Testing",
+        items: [
+          { name: "Docker & Compose", note: "Isolated, reproducible environments" },
+          { name: "Vitest & Playwright", note: "TDD, unit suites and E2E validation" },
+          { name: "Linux & CI/CD", note: "Automated pipelines and continuous deploy" },
+        ],
       },
     ],
     tilesTitle: "My year in tiles",

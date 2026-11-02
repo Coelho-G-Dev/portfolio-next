@@ -1,47 +1,33 @@
 "use client";
 
 import { useEffect, useState, type RefObject } from "react";
-import { chapterEffect, COVERED_AT, coverage, stickTop } from "@/lib/cortina";
 
-// Cortina (spec §5.3). Mede cada [data-chapter] e escreve --stick-top (o
-// capítulo gruda pela base se for mais alto que a tela); a cada quadro de
-// rolagem escreve --scale e --shade no capítulo de trás. Só variáveis CSS:
-// nenhum re-render por quadro. Devolve os capítulos cobertos, atualizados só
-// quando algum cruza COVERED_AT.
+// Observador de presença dos capítulos na tela.
+// Informa quais capítulos estão fora da visão para pausar vídeos e simulações
+// em segundo plano sem travar a rolagem contínua da página.
 export function useCortina(root: RefObject<HTMLElement | null>): ReadonlySet<string> {
   const [covered, setCovered] = useState<ReadonlySet<string>>(() => new Set());
 
   useEffect(() => {
     const el = root.current;
-    if (!el || typeof ResizeObserver === "undefined") return;
+    if (!el) return;
     const chapters = Array.from(el.querySelectorAll<HTMLElement>("[data-chapter]"));
     if (chapters.length === 0) return;
 
-    const compact = window.matchMedia("(max-width: 719px)");
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
     let lastKey = "";
-
-    const measure = () => {
-      const vh = window.innerHeight;
-      for (const chapter of chapters) {
-        chapter.style.setProperty("--stick-top", `${stickTop(chapter.offsetHeight, vh)}px`);
-        chapter.setAttribute("data-stick", "");
-      }
-    };
 
     const update = () => {
       frame = 0;
       const vh = window.innerHeight;
       const ids: string[] = [];
-      chapters.forEach((chapter, i) => {
-        const next = chapters[i + 1];
-        const cover = next ? coverage(next.getBoundingClientRect().top, vh) : 0;
-        const { scale, shade } = chapterEffect(cover, { compact: compact.matches, reduced: reduced.matches });
-        chapter.style.setProperty("--scale", String(scale));
-        chapter.style.setProperty("--shade", String(shade));
-        if (cover >= COVERED_AT) ids.push(chapter.dataset.chapter ?? "");
-      });
+      for (const chapter of chapters) {
+        const rect = chapter.getBoundingClientRect();
+        // Capítulo fora de vista (acima ou abaixo da tela)
+        if (rect.bottom <= 0 || rect.top >= vh) {
+          ids.push(chapter.dataset.chapter ?? "");
+        }
+      }
       const key = ids.join(",");
       if (key !== lastKey) {
         lastKey = key;
@@ -52,26 +38,14 @@ export function useCortina(root: RefObject<HTMLElement | null>): ReadonlySet<str
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
-    const onResize = () => {
-      measure();
-      schedule();
-    };
 
-    const ro = new ResizeObserver(onResize);
-    chapters.forEach((chapter) => ro.observe(chapter));
-    measure();
-    update();
     window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", onResize);
-    compact.addEventListener("change", schedule);
-    reduced.addEventListener("change", schedule);
+    window.addEventListener("resize", schedule, { passive: true });
+    schedule();
 
     return () => {
-      ro.disconnect();
       window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", onResize);
-      compact.removeEventListener("change", schedule);
-      reduced.removeEventListener("change", schedule);
+      window.removeEventListener("resize", schedule);
       if (frame) cancelAnimationFrame(frame);
     };
   }, [root]);

@@ -4,6 +4,24 @@ import { useSiteCopy } from "../SiteCopyContext";
 
 export const DOOR_ORDER: Door[] = ["backend", "frontend", "ia"];
 
+const DOOR_META: Record<Door, { glyph: string; badge: string; points: string[] }> = {
+  backend: {
+    glyph: "♜",
+    badge: "Sistemas & Resiliência",
+    points: ["APIs escaláveis", "Mensageria RabbitMQ", "Tolerância a falhas"],
+  },
+  frontend: {
+    glyph: "♞",
+    badge: "Interfaces & Performance",
+    points: ["PWA com modo offline", "Design Systems táteis", "60 FPS & Acessibilidade"],
+  },
+  ia: {
+    glyph: "♛",
+    badge: "IA Aplicada & RAG",
+    points: ["Busca vetorial pgvector", "Respostas com citação", "Modelos integrados a APIs"],
+  },
+};
+
 export default function Doors({
   openingDoor,
   closingDoor,
@@ -26,6 +44,7 @@ export default function Doors({
       <div className="s-doors__row">
         {DOOR_ORDER.map((door) => {
           const copy = c.doors[door];
+          const meta = DOOR_META[door];
           const isOpening = openingDoor === door;
           const isClosing = closingDoor === door;
           const isPortal = isOpening || isClosing;
@@ -44,32 +63,14 @@ export default function Doors({
               aria-controls={`door-panel-${door}`}
               onClick={() => onSelectDoor(door)}
             >
-              {/* Moldura Arqueada (Portal Romano) */}
+              {/* Portal Arquitetural de Alto Nível */}
               <span className="s-door__frame" aria-hidden="true">
-                {/* Câmara interna com iluminação âmbar */}
                 <span className="s-door__interior" />
-
-                {/* Folha única arqueada com acabamento em nogueira nobre */}
-                <span className="s-door__leaf" data-leaf="left">
-                  {/* Entalhe interno arqueado */}
-                  <span className="s-door__inlay" />
-
-                  {/* Placa de identificação em latão maciço */}
-                  <span className="s-door__plaque">
-                    <span className="s-door__plaque-screw" data-pos="left" />
-                    <span className="s-door__plaque-text">{copy.name}</span>
-                    <span className="s-door__plaque-screw" data-pos="right" />
-                  </span>
-
-                  {/* Puxador vertical em latão polido */}
-                  <span className="s-door__handle" />
-
-                  {/* Fechadura / espelho em latão */}
-                  <span className="s-door__keyhole" />
+                <span className="s-door__halo" />
+                <span className="s-door__glyph-wrap">
+                  <span className="s-door__glyph">{meta.glyph}</span>
                 </span>
-
-                {/* Sombra de chão sob a base da porta */}
-                <span className="s-door__floor-shadow" />
+                <span className="s-door__badge">{meta.badge}</span>
               </span>
 
               {/* Informações da porta abaixo do portal */}
@@ -81,6 +82,20 @@ export default function Doors({
                   </span>
                 </span>
                 <span className="s-door__teaser">{copy.teaser}</span>
+
+                <span className="s-door__points">
+                  {meta.points.map((pt) => (
+                    <span key={pt} className="s-door__point">
+                      <span className="s-door__point-dot" aria-hidden="true" />
+                      {pt}
+                    </span>
+                  ))}
+                </span>
+
+                <span className="s-door__cta">
+                  <span>Explorar faceta</span>
+                  <Arrow />
+                </span>
               </span>
             </button>
           );

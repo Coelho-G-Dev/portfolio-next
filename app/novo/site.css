@@ -139,42 +139,18 @@
   }
 }
 
-/* ---------- Capítulos e Cortina (spec §5.3) ---------- */
+/* ---------- Capítulos e Fluxo Contínuo ---------- */
 .s-chapter {
   position: relative;
-  padding: clamp(64px, 10vw, 128px) clamp(16px, 4vw, 48px);
-  /* --scale e --shade vêm de useCortina; só transform e opacity animam. */
-  transform: scale(var(--scale, 1));
-  /* Todo capítulo ocupa ao menos uma tela (altura estável em svh): o seguinte
-     só entra quando este já preenche a janela, e a cobertura é real. */
-  min-height: 100svh;
-  /* Encolhe a partir do topo: com altura ≥ tela, a base encolhida fica sempre
-     abaixo do topo do próximo cartão (sem fresta) e o topo não abre faixa. */
-  transform-origin: 50% 0;
+  padding: clamp(64px, 8vw, 112px) clamp(16px, 4vw, 48px);
+  min-height: 80svh;
 }
-/* Atrás dos cartões que encolhem aparece ébano, não o marfim da página. */
 .s-cortina {
   background: var(--c-ebano);
-}
-/* Escurece com uma camada por cima, nunca com filter. */
-.s-chapter::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: var(--c-ebano);
-  opacity: var(--shade, 0);
-  pointer-events: none;
-}
-/* Só gruda com JavaScript e depois da medição: sem JS, nenhum capítulo cobre
-   texto não lido. */
-.js .s-chapter[data-stick] {
-  position: sticky;
-  top: var(--stick-top, 0px);
+  width: 100%;
 }
 main > .s-chapter {
-  border-radius: 28px 28px 0 0;
-  box-shadow: var(--shadow-up);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 .s-chapter[data-tone="marfim"] {
   background: var(--c-marfim);
@@ -411,6 +387,53 @@ main > .s-chapter {
   .s-char__video {
     transition: none;
   }
+}
+
+/* Balão de fala interativo do personagem */
+.s-char__bubble {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  max-width: 380px;
+  padding: 12px 18px;
+  border-radius: 16px;
+  background: rgba(14, 15, 19, 0.94);
+  border: 1px solid var(--c-ambar);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  color: var(--c-marfim);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: s-bubble-pop 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  pointer-events: none;
+}
+@keyframes s-bubble-pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.s-char__bubble-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-ambar);
+  box-shadow: 0 0 10px var(--c-ambar);
+  flex-shrink: 0;
+}
+.s-char__bubble-text {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  font-weight: 500;
+  color: var(--c-marfim);
 }
 
 /* ---------- Abertura (spec §5.2) ---------- */
@@ -1531,9 +1554,8 @@ main > .s-chapter {
   }
 }
 .s-doors[data-opening="true"] .s-door:not([data-open="true"]) {
-  opacity: 0.25;
-  transform: scale(0.97);
-  filter: blur(0.5px);
+  opacity: 0.35;
+  transform: scale(0.98);
   pointer-events: none;
 }
 .s-doors[data-opening="true"] .s-door[data-open="true"] {
@@ -1566,14 +1588,11 @@ main > .s-chapter {
   font: inherit;
   text-align: left;
   cursor: pointer;
-  transition:
-    transform 350ms cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 350ms var(--ease-out),
-    filter 350ms var(--ease-out);
+  transition: transform 300ms var(--ease-out), opacity 300ms var(--ease-out);
 }
 .s-door:hover,
 .s-door:focus-visible {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
 }
 .s-door:focus-visible {
   outline: none;
@@ -1583,249 +1602,100 @@ main > .s-chapter {
   outline-offset: 4px;
 }
 
-/* Moldura Arqueada do Portal (Arco Romano / Portal com Relevo) */
+/* Moldura Arquitetural do Portal */
 .s-door__frame {
   position: relative;
-  display: block;
-  height: clamp(340px, 42vw, 420px);
-  padding: 10px 10px 0 10px;
-  /* Topo em arco semicircular perfeito e laterais retas */
-  border-radius: min(180px, 45vw) min(180px, 45vw) 4px 4px;
-  border: 2px solid rgba(138, 106, 74, 0.45);
-  background:
-    linear-gradient(180deg, #1f1915 0%, #15110e 55%, #0d0c0f 100%);
-  box-shadow:
-    0 22px 48px -10px rgba(0, 0, 0, 0.85),
-    inset 0 3px 6px rgba(245, 165, 36, 0.15),
-    inset 0 -1px 0 rgba(138, 106, 74, 0.3),
-    inset 1px 0 2px rgba(255, 255, 255, 0.05),
-    inset -1px 0 2px rgba(0, 0, 0, 0.5);
-  perspective: 1200px;
-  overflow: visible;
-  transition:
-    border-color 240ms var(--ease-out),
-    box-shadow 240ms var(--ease-out);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  height: clamp(260px, 32vw, 320px);
+  padding: 24px 20px;
+  border-radius: min(120px, 30vw) min(120px, 30vw) 16px 16px;
+  border: 1.5px solid rgba(138, 106, 74, 0.4);
+  background: linear-gradient(180deg, #1b1612 0%, #110e0c 55%, #0a0a0d 100%);
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.75), inset 0 2px 4px rgba(245, 165, 36, 0.12);
+  overflow: hidden;
+  transition: border-color 250ms var(--ease-out), box-shadow 250ms var(--ease-out);
 }
 .s-door:hover .s-door__frame,
 .s-door:focus-visible .s-door__frame {
   border-color: var(--c-ambar);
-  box-shadow:
-    0 26px 54px -10px rgba(0, 0, 0, 0.92),
-    0 0 32px -4px rgba(245, 165, 36, 0.35),
-    inset 0 3px 8px rgba(245, 165, 36, 0.25);
+  box-shadow: 0 20px 48px -8px rgba(0, 0, 0, 0.9), 0 0 28px rgba(245, 165, 36, 0.25);
 }
 
-/* Sombra de chão sob a porta */
-.s-door__floor-shadow {
-  position: absolute;
-  bottom: -14px;
-  left: 6%;
-  right: 6%;
-  height: 22px;
-  background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 55%, transparent 75%);
-  pointer-events: none;
-  z-index: -1;
-  transition: transform 350ms var(--ease-out), opacity 350ms var(--ease-out);
-}
-.s-door:hover .s-door__floor-shadow,
-.s-door:focus-visible .s-door__floor-shadow {
-  transform: scale(1.05);
-  opacity: 0.9;
-}
-
-/* Interior da câmara (luz âmbar que se revela ao abrir) */
 .s-door__interior {
   position: absolute;
-  inset: 10px 10px 0 10px;
-  border-radius: min(170px, 42vw) min(170px, 42vw) 0 0;
-  background:
-    radial-gradient(ellipse at 50% 65%, rgba(245, 165, 36, 0.2) 0%, rgba(245, 165, 36, 0.05) 45%, transparent 75%),
-    linear-gradient(180deg, #140f0c 0%, #09090c 100%);
-  opacity: 0;
-  transition: opacity 300ms var(--ease-out);
-  z-index: 0;
-}
-.s-door[data-open="true"] .s-door__interior {
-  opacity: 1;
-  background:
-    radial-gradient(ellipse at 50% 55%, rgba(245, 165, 36, 0.6) 0%, rgba(245, 165, 36, 0.25) 35%, rgba(14, 15, 19, 0.92) 75%),
-    linear-gradient(180deg, #221a13 0%, #0b0a0e 100%);
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, rgba(245, 165, 36, 0.12) 0%, transparent 75%);
+  pointer-events: none;
 }
 
-/* Folha arqueada da porta (Articulação à esquerda) */
-.s-door__leaf {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  border-radius: min(170px, 42vw) min(170px, 42vw) 0 0;
-  background:
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 16px),
-    radial-gradient(circle at 45% 20%, rgba(138, 106, 74, 0.25) 0%, transparent 70%),
-    linear-gradient(180deg, #2c221b 0%, #1c1511 40%, #100f13 100%);
-  border: 1px solid rgba(138, 106, 74, 0.4);
-  border-bottom: 2px solid rgba(14, 15, 19, 0.9);
-  box-shadow:
-    inset 1px 1px 2px rgba(255, 255, 255, 0.08),
-    inset -1px 0 2px rgba(0, 0, 0, 0.6),
-    2px 0 6px rgba(0, 0, 0, 0.4);
-  transform-origin: 0% 50%;
-  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 500ms var(--ease-out);
-}
-.s-door[data-open="true"] .s-door__leaf {
-  transform: rotateY(-82deg) scaleY(0.98);
-  box-shadow: -10px 10px 24px rgba(0, 0, 0, 0.7);
-}
-
-/* Relevo interno arqueado (Inlay / Entalhe) */
-.s-door__inlay {
+.s-door__halo {
   position: absolute;
-  inset: 12px 12px 8px 12px;
-  border-radius: min(158px, 39vw) min(158px, 39vw) 0 0;
-  border: 1.5px solid rgba(217, 195, 160, 0.2);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0.3) 100%);
-  box-shadow:
-    inset 0 2px 6px rgba(0, 0, 0, 0.6),
-    0 1px 0 rgba(255, 255, 255, 0.04);
-  transition: border-color 240ms var(--ease-out);
-}
-.s-door:hover .s-door__inlay,
-.s-door:focus-visible .s-door__inlay {
-  border-color: rgba(245, 165, 36, 0.38);
-}
-
-/* Placa retangular de latão no terço superior */
-.s-door__plaque {
-  position: absolute;
-  top: 36%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 165, 36, 0.2) 0%, transparent 70%);
+  pointer-events: none;
+  transition: transform 300ms var(--ease-out), background 300ms var(--ease-out);
+}
+.s-door:hover .s-door__halo,
+.s-door:focus-visible .s-door__halo {
+  transform: translate(-50%, -50%) scale(1.2);
+  background: radial-gradient(circle, rgba(245, 165, 36, 0.35) 0%, transparent 70%);
+}
+
+.s-door__glyph-wrap {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(245, 165, 36, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 6px 14px;
-  min-width: 100px;
-  max-width: 86%;
-  border-radius: 4px;
-  background: linear-gradient(135deg, #FAD77B 0%, #D48810 45%, #F7C85C 75%, #A86508 100%);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.65),
-    0 1px 2px rgba(0, 0, 0, 0.8),
-    inset 0 1px 1px rgba(255, 255, 255, 0.7),
-    inset 0 -1px 1px rgba(0, 0, 0, 0.4);
-  pointer-events: none;
-  z-index: 2;
-  transition:
-    transform 220ms var(--ease-out),
-    box-shadow 220ms var(--ease-out),
-    opacity 200ms var(--ease-out);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  transition: transform 300ms var(--ease-out), border-color 300ms var(--ease-out);
 }
-.s-door:hover .s-door__plaque,
-.s-door:focus-visible .s-door__plaque {
-  transform: translate(-50%, calc(-50% - 2px));
-  box-shadow:
-    0 6px 16px rgba(0, 0, 0, 0.75),
-    0 0 14px -1px rgba(245, 165, 36, 0.55);
+.s-door:hover .s-door__glyph-wrap,
+.s-door:focus-visible .s-door__glyph-wrap {
+  transform: scale(1.08);
+  border-color: var(--c-ambar);
 }
-.s-door[data-open="true"] .s-door__plaque {
-  opacity: 0.2;
+.s-door__glyph {
+  font-size: 2.2rem;
+  line-height: 1;
+  color: var(--c-marfim);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
 }
-.s-door__plaque-text {
+.s-door:hover .s-door__glyph {
+  color: var(--c-ambar);
+}
+
+.s-door__badge {
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  font-weight: 700;
   text-transform: uppercase;
-  color: #1a140f;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.s-door__plaque-screw {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #7a4a06;
-  box-shadow:
-    inset 0 1px 1px rgba(0, 0, 0, 0.7),
-    0 0.5px 0.5px rgba(255, 255, 255, 0.4);
-  flex-shrink: 0;
+  letter-spacing: 0.08em;
+  color: var(--c-ambar);
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: rgba(245, 165, 36, 0.1);
+  border: 1px solid rgba(245, 165, 36, 0.25);
 }
 
-/* Puxador vertical de latão polido */
-.s-door__handle {
-  position: absolute;
-  top: 54%;
-  right: 14px;
-  width: 5px;
-  height: 54px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #FAD77B 0%, #D48810 50%, #8A560B 100%);
-  box-shadow:
-    0 0 10px rgba(245, 165, 36, 0.4),
-    2px 2px 4px rgba(0, 0, 0, 0.7),
-    inset 0 1px 1px rgba(255, 255, 255, 0.6);
-  z-index: 2;
-  transition: box-shadow 240ms var(--ease-out);
-}
-.s-door__handle::before,
-.s-door__handle::after {
-  content: "";
-  position: absolute;
-  left: -2px;
-  width: 9px;
-  height: 4px;
-  border-radius: 2px;
-  background: #B8760E;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-}
-.s-door__handle::before {
-  top: 4px;
-}
-.s-door__handle::after {
-  bottom: 4px;
-}
-.s-door:hover .s-door__handle,
-.s-door:focus-visible .s-door__handle {
-  box-shadow:
-    0 0 14px rgba(245, 165, 36, 0.75),
-    2px 2px 6px rgba(0, 0, 0, 0.8),
-    inset 0 1px 1px rgba(255, 255, 255, 0.8);
-}
-
-/* Fechadura / espelho de latão */
-.s-door__keyhole {
-  position: absolute;
-  top: calc(54% + 66px);
-  right: 14px;
-  width: 9px;
-  height: 14px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #FAD77B 0%, #B8760E 100%);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-}
-.s-door__keyhole::after {
-  content: "";
-  width: 2px;
-  height: 6px;
-  background: #14100c;
-  border-radius: 1px;
-}
-
-/* Metadados abaixo da porta */
+/* Metadados e Pontos de Destaque */
 .s-door__meta {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-top: 6px;
+  gap: 10px;
 }
 .s-door__head {
   display: flex;
@@ -1835,32 +1705,172 @@ main > .s-chapter {
 }
 .s-door__title {
   color: var(--c-marfim);
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 700;
   transition: color 200ms var(--ease-out);
 }
-.s-door__indicator {
+.s-door:hover .s-door__title {
   color: var(--c-ambar);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  transition: transform 200ms var(--ease-out);
-}
-.s-door:hover .s-door__indicator,
-.s-door:focus-visible .s-door__indicator {
-  transform: translateX(3px);
 }
 .s-door__teaser {
   color: var(--c-bordo);
   font-size: 0.92rem;
-  line-height: 1.45;
-  transition: color 200ms var(--ease-out);
+  line-height: 1.5;
 }
-.s-door:hover .s-door__teaser,
-.s-door:focus-visible .s-door__teaser {
+.s-door__points {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+.s-door__point {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
   color: var(--c-marfim);
+  opacity: 0.85;
+}
+.s-door__point-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--c-ambar);
+  flex-shrink: 0;
+}
+.s-door__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--c-ambar);
+  transition: transform 200ms var(--ease-out);
+}
+.s-door:hover .s-door__cta {
+  transform: translateX(4px);
+}
+
+/* Rodapé do Painel de Projeto */
+.s-door-panel__footer {
+  margin-top: 48px;
+  padding: 32px 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(138, 106, 74, 0.3);
+  background: rgba(14, 15, 19, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+.s-door-panel__footer-text {
+  margin: 0;
+  color: var(--c-bordo);
+  font-size: 0.95rem;
+}
+.s-door-panel__footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.s-door-panel__back--large {
+  padding: 12px 24px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 999px;
+  background: var(--c-marfim);
+  color: var(--c-ebano);
+  border: 1.5px solid var(--c-nogueira-escura);
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease;
+}
+.s-door-panel__back--large:hover {
+  transform: translateY(-2px);
+  background: #fff;
+}
+.s-door-panel__scroll-top {
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--c-marfim);
+  border: 1px solid rgba(244, 238, 227, 0.3);
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+.s-door-panel__scroll-top:hover {
+  border-color: var(--c-ambar);
+  color: var(--c-ambar);
+}
+
+/* Barra de Ação Flutuante para Navegação Rápida */
+.s-door-floating-bar {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(14, 15, 19, 0.92);
+  border: 1.5px solid var(--c-ambar);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16px);
+  animation: s-float-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes s-float-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.s-door-floating-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: var(--c-marfim);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+}
+.s-door-floating-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--c-ambar);
+}
+.s-door-floating-btn--primary {
+  background: var(--c-ambar);
+  color: var(--c-ebano);
+  font-weight: 700;
+}
+.s-door-floating-btn--primary:hover {
+  background: #fdbb44;
+  color: var(--c-ebano);
+}
+.s-door-floating-kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.25);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.68rem;
+  font-weight: 700;
 }
 
 /* Painel aberto da porta */
@@ -2210,54 +2220,145 @@ main > .s-chapter {
 .s-portraits {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(32px, 5vw, 64px);
+  gap: clamp(16px, 2.5vw, 24px);
+  margin-bottom: clamp(36px, 5vw, 56px);
 }
 .s-portrait {
   margin: 0;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 110px 1fr;
   gap: 16px;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(250, 246, 240, 0.9);
+  border: 1.5px solid rgba(42, 32, 24, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  transition: transform 200ms var(--ease-out), border-color 200ms var(--ease-out);
+}
+.s-portrait:hover {
+  transform: translateY(-2px);
+  border-color: var(--c-nogueira-escura);
 }
 .s-portrait__frame {
-  border-radius: 20px;
+  width: 110px;
+  height: 110px;
+  border-radius: 14px;
   overflow: hidden;
-  background: #FAF6F0;
-  border: 1.5px solid rgba(42, 32, 24, 0.35);
-  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(42, 32, 24, 0.25);
+  flex-shrink: 0;
 }
 .s-portrait__img {
-  display: block;
   width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 5;
+  height: 100%;
   object-fit: cover;
-  transition: transform 400ms var(--ease-out);
+  transition: transform 300ms var(--ease-out);
 }
 .s-portrait:hover .s-portrait__img {
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 .s-portrait__caption {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 .s-portrait__name {
   margin: 0;
-  font-size: clamp(1.15rem, 2vw, 1.35rem);
+  font-size: 1.05rem;
+  font-weight: 700;
   color: var(--c-ebano);
 }
 .s-portrait__role {
   margin: 0;
   font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--c-nogueira-escura);
 }
 .s-portrait__text {
   margin: 0;
-  font-size: 0.98rem;
-  line-height: 1.55;
+  font-size: 0.85rem;
+  line-height: 1.45;
   color: var(--c-ebano);
+  opacity: 0.9;
+}
+
+/* Bancada de Trabalho & Stack Técnica */
+.s-stack-workbench {
+  margin-bottom: clamp(36px, 5vw, 56px);
+  padding: clamp(24px, 4vw, 36px);
+  border-radius: 24px;
+  background: rgba(250, 246, 240, 0.85);
+  border: 1.5px solid rgba(42, 32, 24, 0.25);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+.s-stack-workbench__head {
+  margin-bottom: 24px;
+}
+.s-stack-workbench__title {
+  margin: 0 0 6px;
+  font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+  font-weight: 700;
+  color: var(--c-ebano);
+}
+.s-stack-workbench__lead {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--c-nogueira-escura);
+}
+.s-stack-workbench__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(16px, 3vw, 24px);
+}
+.s-stack-category {
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(42, 32, 24, 0.15);
+}
+.s-stack-category__title {
+  margin: 0 0 12px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-nogueira-escura);
+  border-bottom: 1px dashed rgba(42, 32, 24, 0.2);
+  padding-bottom: 6px;
+}
+.s-stack-category__chips {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.s-stack-chip {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #FAF6F0;
+  border: 1px solid rgba(42, 32, 24, 0.12);
+  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+  cursor: default;
+}
+.s-stack-chip:hover,
+.s-stack-chip:focus-visible {
+  transform: translateX(4px);
+  background: #fff;
+  border-color: var(--c-nogueira-escura);
+  outline: none;
+}
+.s-stack-chip__name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--c-ebano);
+}
+.s-stack-chip__note {
+  font-size: 0.78rem;
+  color: var(--c-nogueira-escura);
+  opacity: 0.85;
 }
 
 /* Azulejos de marchetaria */
@@ -2858,13 +2959,25 @@ main > .s-chapter {
     justify-content: center;
   }
 
-  /* Sobre & Contato & Rodapé no celular */
+  /* Sobre, Stack & Contato no celular */
   .s-portraits {
     grid-template-columns: 1fr;
-    gap: 36px;
+    gap: 16px;
   }
   .s-portrait {
-    max-width: 440px;
+    grid-template-columns: 88px 1fr;
+    padding: 12px;
+  }
+  .s-portrait__frame {
+    width: 88px;
+    height: 88px;
+  }
+  .s-stack-workbench {
+    padding: 20px 16px;
+  }
+  .s-stack-workbench__grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
   .s-contact__grid {
     grid-template-columns: 1fr;

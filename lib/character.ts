@@ -1,11 +1,7 @@
 // Máquina de estados do personagem do hero (spec §5.2).
 //
-// intro ──introEnded──▶ scrub ──hover/click──▶ centering ──centered──▶ reaction
-//                         ▲                                                │
-//                         └──────────────────── reactionEnded ─────────────┘
-//
-// Uma reação só começa a partir do scrub, e antes dela o Olhar desliza até a
-// pose neutra (centering). Assim nunca há duas reações ao mesmo tempo.
+// Suporta scrub suave com o cursor e resposta imediata aos cliques do visitante,
+// ciclando dinamicamente entre clique-1, clique-2 e clique-3 sem descartar interações.
 
 export type Reaction = "hover" | "clique-1" | "clique-2" | "clique-3";
 
@@ -25,7 +21,7 @@ export type CharEvent =
 
 export const NEUTRAL = 0.5;
 
-const CLICKS: Reaction[] = ["clique-1", "clique-2", "clique-3"];
+export const CLICKS: Reaction[] = ["clique-1", "clique-2", "clique-3"];
 
 export const initialChar: CharState = { phase: "intro", target: NEUTRAL, clicks: 0 };
 
@@ -39,10 +35,18 @@ export function charReducer(s: CharState, e: CharEvent): CharState {
       return s.phase === "intro" ? { phase: "scrub", target: s.target, clicks: s.clicks } : s;
     case "hover":
       return s.phase === "scrub" ? { phase: "centering", pending: "hover", target: s.target, clicks: s.clicks } : s;
-    case "click":
-      return s.phase === "scrub"
-        ? { phase: "centering", pending: CLICKS[s.clicks % CLICKS.length], target: s.target, clicks: s.clicks + 1 }
-        : s;
+    case "click": {
+      // Avança no rodízio de cliques de forma imediata e responsiva.
+      // Mesmo se já estiver no meio de outra reação ou hover, não descarta o clique:
+      // troca diretamente para o próximo clipe (clique-1 -> clique-2 -> clique-3).
+      const nextClip = CLICKS[s.clicks % CLICKS.length];
+      return {
+        phase: "reaction",
+        clip: nextClip,
+        target: s.target,
+        clicks: s.clicks + 1,
+      };
+    }
     case "centered":
       return s.phase === "centering" ? { phase: "reaction", clip: s.pending, target: s.target, clicks: s.clicks } : s;
     case "reactionEnded":

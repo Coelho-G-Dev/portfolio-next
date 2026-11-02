@@ -46,6 +46,11 @@ const pt = {
     copyEmail: "Copiar e-mail",
     copied: "E-mail copiado",
     copyFailed: "Não deu para copiar. Use o endereço ao lado.",
+    quotes: [
+      "E aí! APIs no ar, filas rodando e zero mensagens perdidas.",
+      "Curtiu o AuthGuard lá embaixo? Tenta derrubar outro nó pra testar a fila!",
+      "Bora construir um back-end sólido juntos? Me dá um alô no contato!",
+    ],
   },
   contact: {
     subject: { role: "Vaga: ", project: "Projeto freelance: " },
@@ -193,6 +198,11 @@ const en: typeof pt = {
     copyEmail: "Copy email",
     copied: "Email copied",
     copyFailed: "Couldn't copy. Use the address next to it.",
+    quotes: [
+      "Hey! APIs up, queues humming, zero dropped messages.",
+      "Checked out AuthGuard below? Go ahead and knock down another node!",
+      "Looking to build something resilient together? Say hi down in contact!",
+    ],
   },
   contact: {
     subject: { role: "Role: ", project: "Freelance project: " },
