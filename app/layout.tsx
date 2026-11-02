@@ -1,35 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Fraunces, JetBrains_Mono } from "next/font/google";
+import { Bricolage_Grotesque, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
-import ContrastChecker from "../components/ContrastChecker";
+import "./novo/site.css";
 import ScrollRestore from "@/components/ScrollRestore";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import SkipLink from "@/components/SkipLink";
 
-const archivo = Archivo({
+const main = Bricolage_Grotesque({
   subsets: ["latin"],
-  weight: ["400", "500", "700", "900"],
   display: "swap",
-  variable: "--font-archivo",
+  variable: "--font-main",
 });
 
-const fraunces = Fraunces({
+const mono = JetBrains_Mono({
   subsets: ["latin"],
-  style: ["italic"],
-  weight: ["400", "500", "700"],
   display: "swap",
-  variable: "--font-fraunces",
+  variable: "--font-mono",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  display: "swap",
-  variable: "--font-jetbrains",
-});
+const markJs = "document.documentElement.classList.add('js')";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -54,7 +46,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#12222D",
+  themeColor: "#F4EEE3",
 };
 
 const personJsonLd = {
@@ -85,13 +77,13 @@ const personJsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${archivo.variable} ${fraunces.variable} ${jetbrainsMono.variable}`}>
-      <body className="font-display bg-navy text-cream">
+    <html lang="pt-BR" className={`${main.variable} ${mono.variable}`}>
+      <body className="site">
+        <script dangerouslySetInnerHTML={{ __html: markJs }} />
         <LanguageProvider>
           <SkipLink />
           <script
             type="application/ld+json"
-            // Escapa "<" para que nenhum valor feche a tag <script> antes da hora.
             dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }}
           />
           {children}
@@ -102,7 +94,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <SpeedInsights />
             </>
           )}
-          <ContrastChecker />
         </LanguageProvider>
       </body>
     </html>

@@ -68,6 +68,12 @@ test("troca PT ↔ EN e guarda a escolha", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName("Gabriel Coelho");
 });
 
-test("a página não é indexada", async ({ page }) => {
+test("a prévia /novo não é indexada", async ({ page }) => {
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+});
+
+test("a raiz / abre com sucesso e é indexada", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName("Gabriel Coelho");
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /index,\s*follow/);
 });

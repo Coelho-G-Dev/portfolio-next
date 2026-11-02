@@ -1,23 +1,10 @@
-import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-import Projects from "@/components/Projects";
-import Method from "@/components/Method";
-import About from "@/components/About";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
+import SitePage from "@/components/site/SitePage";
+import { getContributions } from "@/lib/github";
 
-export default function Home() {
-  return (
-    <>
-      <Header />
-      <main id="main-content">
-        <Hero />
-        <Projects />
-        <Method />
-        <About />
-        <Contact />
-      </main>
-      <Footer />
-    </>
-  );
+export const revalidate = 86400;
+
+export default async function Home() {
+  const contributions = await getContributions();
+  return <SitePage contributions={contributions} />;
 }
+

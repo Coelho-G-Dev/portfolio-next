@@ -7,7 +7,12 @@ export default function SkipLink() {
   return (
     <a
       href="#main-content"
-      className="sr-only focus:not-sr-only focus:z-50 focus:bg-navy focus:text-cream focus:p-2 focus:m-2 focus:border focus:border-cream focus:rounded"
+      className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:p-3 focus:rounded-lg focus:border focus:shadow-lg transition-all"
+      style={{
+        backgroundColor: "var(--c-ebano, #0E0F13)",
+        color: "var(--c-marfim, #F4EEE3)",
+        borderColor: "var(--c-ambar, #F5A524)",
+      }}
     >
       {t.nav.skipLink}
     </a>

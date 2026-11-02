@@ -4,9 +4,8 @@ import type { MailCopy } from "@/lib/contact";
 import type { AppStatus } from "@/lib/derrubeApp";
 import type { DirectEvent, DirectService } from "@/lib/directFlow";
 import type { FlowEvent, ServiceId } from "@/lib/messageFlow";
-import { redesignCopy } from "./redesign";
 
-// Textos do site novo (/novo). A estrutura PT e EN precisa ser idêntica:
+// Textos do site. A estrutura PT e EN precisa ser idêntica:
 // tests/unit/i18n.test.ts confere chaves, tipos e tamanhos de lista.
 
 type NavLink = { href: string; label: string };
@@ -49,11 +48,14 @@ const pt = {
     copyFailed: "Não deu para copiar. Use o endereço ao lado.",
   },
   contact: {
-    subject: redesignCopy.pt.contact.subject,
-    body: redesignCopy.pt.contact.body,
+    subject: { role: "Vaga: ", project: "Projeto freelance: " },
+    body: {
+      role: "Olá, Gabriel.\n\nSobre a vaga:\nEmpresa:\nModelo (remoto/presencial):\n",
+      project: "Olá, Gabriel.\n\nO que preciso construir:\nPrazo:\nOrçamento aproximado:\n",
+    },
   } as MailCopy,
   derrube: {
-    title: redesignCopy.pt.breakService.title,
+    title: "Derrube um serviço",
     sentence:
       "Crie uma conta no AuthGuard e derrube qualquer peça do caminho. Veja o que acontece com o e-mail de boas-vindas.",
     modeLegend: "Arquitetura",
@@ -106,16 +108,16 @@ const pt = {
         error: "Algo deu errado. Tente de novo mais tarde.",
       } as Record<AppStatus, string>,
     },
-    note: redesignCopy.pt.breakService.note,
-    noteLink: redesignCopy.pt.breakService.noteLink,
+    note: "Simulação do fluxo do AuthGuard (RabbitMQ + Dead-Letter Queue).",
+    noteLink: "Ver o código",
     noJs:
       "Com fila, quando uma peça cai, o e-mail espera, tenta de novo com espera crescente e, depois de três falhas, vai para a DLQ, de onde é reprocessado. Sem fila, a mesma queda perde o e-mail.",
   },
   projetos: {
     title: "Sistemas que construí",
     featured: {
-      badge: redesignCopy.pt.work.winner,
-      line: redesignCopy.pt.work.projects["Cidade Energia"].line,
+      badge: "Campeão · Hackathon Equatorial 2026",
+      line: "Campeão do Hackathon Equatorial: a conta de luz vira a primeira aula de energia em escolas públicas de São Luís.",
       fullStack: "Front e back feitos por mim",
     },
     doorsTitle: "Escolha uma porta",
@@ -136,10 +138,10 @@ const pt = {
     open: (name: string) => `Abrir a porta ${name}`,
     back: "Voltar às portas",
     links: {
-      github: redesignCopy.pt.work.code,
-      frontend: redesignCopy.pt.work.frontend,
-      demo: redesignCopy.pt.work.demo,
-      docs: redesignCopy.pt.work.docs,
+      github: "Código",
+      frontend: "Front-end",
+      demo: "Demo",
+      docs: "Documentação da API",
     } as Record<FacetLink, string>,
     board: {
       legendTitle: "Peça e papel",
@@ -154,12 +156,11 @@ const pt = {
       lost: "Peças perdidas: 0",
     },
   },
-  // Capítulos provisórios: cada um ganha conteúdo no plano 4.
   sections: {
-    comoTrabalho: { title: redesignCopy.pt.how.title, soon: "Em construção." },
-    oQueResolvo: { title: redesignCopy.pt.services.title, soon: "Em construção." },
-    sobre: { title: redesignCopy.pt.about.title, soon: "Em construção." },
-    contato: { title: redesignCopy.pt.contact.title, soon: "Em construção." },
+    comoTrabalho: { title: "Como eu trabalho", soon: "Em construção." },
+    oQueResolvo: { title: "O que eu resolvo", soon: "Em construção." },
+    sobre: { title: "Sobre mim", soon: "Em construção." },
+    contato: { title: "Vamos conversar", soon: "Em construção." },
   } as Record<string, SectionCopy>,
   footer: {
     title: "Rodapé",
@@ -194,11 +195,14 @@ const en: typeof pt = {
     copyFailed: "Couldn't copy. Use the address next to it.",
   },
   contact: {
-    subject: redesignCopy.en.contact.subject,
-    body: redesignCopy.en.contact.body,
+    subject: { role: "Role: ", project: "Freelance project: " },
+    body: {
+      role: "Hi Gabriel,\n\nAbout the role:\nCompany:\nRemote or on-site:\n",
+      project: "Hi Gabriel,\n\nWhat I need built:\nTimeline:\nRough budget:\n",
+    },
   },
   derrube: {
-    title: redesignCopy.en.breakService.title,
+    title: "Take down a service",
     sentence:
       "Create an account on AuthGuard and take down any piece on the way. Watch what happens to the welcome email.",
     modeLegend: "Architecture",
@@ -213,7 +217,7 @@ const en: typeof pt = {
     down: "down",
     send: "Create account",
     replay: "Replay DLQ",
-    reset: "Start over",
+    reset: "Reset",
     dlq: "DLQ",
     score: { sent: "Sent", delivered: "Delivered", lost: "Lost" },
     logTitle: "What happened",
@@ -248,16 +252,16 @@ const en: typeof pt = {
         error: "Something went wrong. Please try again later.",
       },
     },
-    note: redesignCopy.en.breakService.note,
-    noteLink: redesignCopy.en.breakService.noteLink,
+    note: "A simulation of AuthGuard's flow (RabbitMQ + Dead-Letter Queue).",
+    noteLink: "See the code",
     noJs:
       "With a queue, when a piece goes down the email waits, retries with growing delays and, after three failures, goes to the DLQ, from where it is replayed. Without a queue, the same failure loses the email.",
   },
   projetos: {
     title: "Systems I built",
     featured: {
-      badge: redesignCopy.en.work.winner,
-      line: redesignCopy.en.work.projects["Cidade Energia"].line,
+      badge: "Winner · Equatorial Hackathon 2026",
+      line: "Equatorial Hackathon winner: the electricity bill becomes the first energy lesson in São Luís public schools.",
       fullStack: "Front and back built by me",
     },
     doorsTitle: "Pick a door",
@@ -278,10 +282,10 @@ const en: typeof pt = {
     open: (name: string) => `Open the ${name} door`,
     back: "Back to doors",
     links: {
-      github: redesignCopy.en.work.code,
-      frontend: redesignCopy.en.work.frontend,
-      demo: redesignCopy.en.work.demo,
-      docs: redesignCopy.en.work.docs,
+      github: "Code",
+      frontend: "Front-end",
+      demo: "Demo",
+      docs: "API docs",
     },
     board: {
       legendTitle: "Piece and role",
@@ -297,10 +301,10 @@ const en: typeof pt = {
     },
   },
   sections: {
-    comoTrabalho: { title: redesignCopy.en.how.title, soon: "Coming soon." },
-    oQueResolvo: { title: redesignCopy.en.services.title, soon: "Coming soon." },
-    sobre: { title: redesignCopy.en.about.title, soon: "Coming soon." },
-    contato: { title: redesignCopy.en.contact.title, soon: "Coming soon." },
+    comoTrabalho: { title: "How I work", soon: "Coming soon." },
+    oQueResolvo: { title: "What I can fix for you", soon: "Coming soon." },
+    sobre: { title: "About me", soon: "Coming soon." },
+    contato: { title: "Let's talk", soon: "Coming soon." },
   },
   footer: {
     title: "Footer",

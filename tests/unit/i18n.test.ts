@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { redesignCopy } from "@/lib/i18n/redesign";
 import { siteCopy } from "@/lib/i18n/site";
 import type { DirectEvent } from "@/lib/directFlow";
 import type { FlowEvent } from "@/lib/messageFlow";
@@ -25,16 +24,13 @@ function strings(value: unknown, path = ""): [string, string][] {
   return [];
 }
 
-describe.each([
-  ["redesign", redesignCopy],
-  ["site", siteCopy],
-] as const)("textos PT/EN (%s)", (_name, copy) => {
+describe("textos PT/EN (site)", () => {
   it("têm exatamente as mesmas chaves, tipos e tamanhos de lista", () => {
-    expect(shape(copy.en)).toEqual(shape(copy.pt));
+    expect(shape(siteCopy.en)).toEqual(shape(siteCopy.pt));
   });
 
   it.each(["pt", "en"] as const)("nenhuma string vazia em %s", (lang) => {
-    const empty = strings(copy[lang])
+    const empty = strings(siteCopy[lang])
       .filter(([, s]) => s.trim() === "")
       .map(([p]) => p);
     expect(empty).toEqual([]);
@@ -42,14 +38,14 @@ describe.each([
 
   it("caminhos de fotos e links são os mesmos nas duas línguas", () => {
     const urls = (lang: "pt" | "en") =>
-      strings(copy[lang])
+      strings(siteCopy[lang])
         .filter(([, s]) => /^(\/|https?:|mailto:|#)/.test(s))
         .sort(([a], [b]) => a.localeCompare(b));
     expect(urls("en")).toEqual(urls("pt"));
   });
 });
 
-describe("eventos do Derrube no site novo", () => {
+describe("eventos do Derrube no site", () => {
   const events: (FlowEvent | DirectEvent)[] = [
     { kind: "sent", id: 1 },
     { kind: "waitingApi", id: 1 },
@@ -76,7 +72,7 @@ describe("eventos do Derrube no site novo", () => {
   });
 });
 
-describe("textos do capítulo de projetos no site novo", () => {
+describe("textos do capítulo de projetos no site", () => {
   it.each(["pt", "en"] as const)("open(name) inclui o nome da porta em %s", (lang) => {
     const label = siteCopy[lang].projetos.open("Back-end");
     expect(label).toContain("Back-end");
