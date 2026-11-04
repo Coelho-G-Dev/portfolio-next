@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { EMAIL, GITHUB_URL, LINKEDIN_URL, mailtoFor, type ContactKind as Kind } from "@/lib/contact";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import { redesignCopy } from "@/lib/i18n/redesign";
+import { siteCopy } from "@/lib/i18n/site";
 import { Section } from "../Chapter";
 import { Arrow } from "../Pill";
 
 export default function Contact() {
   const { language } = useLanguage();
-  const c = redesignCopy[language];
+  const c = siteCopy[language];
   const k = c.contact;
   const [kind, setKind] = useState<Kind>("role");
 

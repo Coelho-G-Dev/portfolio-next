@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { Contributions } from "@/lib/github";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import { redesignCopy } from "@/lib/i18n/redesign";
+import { siteCopy } from "@/lib/i18n/site";
 import { Section } from "../Chapter";
 import Tiles from "./Tiles";
 
@@ -11,7 +11,7 @@ type Props = {
 
 export default function About({ contributions }: Props) {
   const { language } = useLanguage();
-  const c = redesignCopy[language];
+  const c = siteCopy[language];
   const a = c.about;
 
   return (

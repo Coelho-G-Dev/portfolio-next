@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { EMAIL, mailtoFor } from "@/lib/contact";
-import { redesignCopy } from "@/lib/i18n/redesign";
+import { siteCopy } from "@/lib/i18n/site";
 
 describe.each(["pt", "en"] as const)("mailto do contato (%s)", (lang) => {
-  const c = redesignCopy[lang];
+  const c = siteCopy[lang];
 
   it.each(["role", "project"] as const)("monta assunto e corpo para %s", (kind) => {
     const url = new URL(mailtoFor(c.contact, kind));

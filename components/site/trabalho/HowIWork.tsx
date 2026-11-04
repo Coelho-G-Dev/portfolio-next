@@ -1,6 +1,6 @@
 import { projects } from "@/data/projects";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import { redesignCopy } from "@/lib/i18n/redesign";
+import { siteCopy } from "@/lib/i18n/site";
 import { Section } from "../Chapter";
 import { Arrow } from "../Pill";
 
@@ -26,7 +26,7 @@ const CONTRACT = `"/api/tutor": {
 
 export default function HowIWork() {
   const { language } = useLanguage();
-  const c = redesignCopy[language];
+  const c = siteCopy[language];
   const h = c.how;
   const authguard = projects.find((p) => p.title === "AuthGuard");
 

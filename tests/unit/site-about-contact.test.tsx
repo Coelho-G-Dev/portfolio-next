@@ -5,7 +5,7 @@ import About from "@/components/site/sobre/About";
 import Contact from "@/components/site/sobre/Contact";
 import Footer from "@/components/site/Footer";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
-import { redesignCopy } from "@/lib/i18n/redesign";
+import { siteCopy } from "@/lib/i18n/site";
 import { EMAIL, mailtoFor } from "@/lib/contact";
 
 function wrap(ui: React.ReactNode, lang: "pt" | "en" = "pt") {
@@ -16,7 +16,7 @@ function wrap(ui: React.ReactNode, lang: "pt" | "en" = "pt") {
 describe("Sobre e Retratos", () => {
   it("renderiza os 4 retratos com nomes e descrições", () => {
     wrap(<About />);
-    const pt = redesignCopy.pt.about;
+    const pt = siteCopy.pt.about;
     for (const p of pt.portraits) {
       expect(screen.getByText(p.name)).toBeInTheDocument();
       expect(screen.getByText(p.role)).toBeInTheDocument();
@@ -32,12 +32,12 @@ describe("Sobre e Retratos", () => {
       ],
     };
     wrap(<About contributions={mockContributions} />);
-    expect(screen.getByRole("img", { name: redesignCopy.pt.about.tilesText(350) })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: siteCopy.pt.about.tilesText(350) })).toBeInTheDocument();
   });
 
   it("mostra o texto de fallback quando não há dados do GitHub", () => {
     wrap(<About contributions={null} />);
-    expect(screen.getByText(redesignCopy.pt.about.tilesFallback)).toBeInTheDocument();
+    expect(screen.getByText(siteCopy.pt.about.tilesFallback)).toBeInTheDocument();
   });
 });
 
@@ -45,14 +45,14 @@ describe("Contato", () => {
   it("renderiza o e-mail, redes e badges de presença", () => {
     wrap(<Contact />);
     expect(screen.getByText(EMAIL)).toBeInTheDocument();
-    expect(screen.getByText(redesignCopy.pt.contact.location)).toBeInTheDocument();
-    expect(screen.getByText(redesignCopy.pt.contact.reply)).toBeInTheDocument();
+    expect(screen.getByText(siteCopy.pt.contact.location)).toBeInTheDocument();
+    expect(screen.getByText(siteCopy.pt.contact.reply)).toBeInTheDocument();
   });
 
   it("permite alternar entre vaga e projeto, atualizando o link mailto", async () => {
     const user = userEvent.setup();
     wrap(<Contact />);
-    const c = redesignCopy.pt.contact;
+    const c = siteCopy.pt.contact;
 
     const roleBtn = screen.getByRole("button", { name: c.kinds.role });
     const projBtn = screen.getByRole("button", { name: c.kinds.project });
@@ -74,9 +74,14 @@ describe("Contato", () => {
 describe("Footer", () => {
   it("renderiza o h2 do rodapé e os links legais", () => {
     wrap(<Footer />);
-    const f = redesignCopy.pt.footer;
+    const f = siteCopy.pt.footer;
     expect(screen.getByRole("heading", { level: 2, name: f.title })).toBeInTheDocument();
     expect(screen.getByText(f.rights)).toBeInTheDocument();
     expect(screen.getByText(f.built)).toBeInTheDocument();
+  });
+
+  it("não mostra aviso de prévia no site publicado", () => {
+    wrap(<Footer />);
+    expect(screen.queryByText(/Prévia|não indexada|preview/i)).not.toBeInTheDocument();
   });
 });

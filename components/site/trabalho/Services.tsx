@@ -1,11 +1,11 @@
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import { redesignCopy } from "@/lib/i18n/redesign";
+import { siteCopy } from "@/lib/i18n/site";
 import { Section } from "../Chapter";
 import { Arrow } from "../Pill";
 
 export default function Services() {
   const { language } = useLanguage();
-  const c = redesignCopy[language];
+  const c = siteCopy[language];
   const s = c.services;
 
   return (

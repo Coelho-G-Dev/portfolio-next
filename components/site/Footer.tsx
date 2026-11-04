@@ -1,11 +1,11 @@
 import { EMAIL, GITHUB_URL, LINKEDIN_URL } from "@/lib/contact";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import { redesignCopy } from "@/lib/i18n/redesign";
+import { siteCopy } from "@/lib/i18n/site";
 import { Arrow } from "./Pill";
 
 export default function Footer() {
   const { language } = useLanguage();
-  const c = redesignCopy[language];
+  const c = siteCopy[language];
   const f = c.footer;
 
   return (
@@ -46,7 +46,6 @@ export default function Footer() {
         <div className="s-footer__bottom">
           <div className="s-footer__legal">
             <span>{f.rights}</span>
-            <span>{f.preview}</span>
             <span>{f.built}</span>
           </div>
           <div className="s-footer__watermark" aria-hidden="true">
