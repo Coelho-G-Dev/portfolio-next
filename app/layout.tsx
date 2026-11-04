@@ -53,7 +53,7 @@ const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Gabriel Coelho",
-  jobTitle: "Desenvolvedor Back-End",
+  jobTitle: "Desenvolvedor Full-stack",
   url: SITE_URL,
   address: { "@type": "PostalAddress", addressLocality: "São Luís", addressRegion: "MA", addressCountry: "BR" },
   sameAs: [

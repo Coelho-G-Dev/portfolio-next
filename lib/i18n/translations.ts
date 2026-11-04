@@ -2,7 +2,7 @@ export type Locale = "pt" | "en";
 
 export const translations = {
   pt: {
-    pageTitle: "Gabriel Coelho | Desenvolvedor Back-End",
+    pageTitle: "Gabriel Coelho | Desenvolvedor Full-stack",
     nav: {
       work: "TRABALHO",
       method: "MÉTODO",
@@ -187,7 +187,7 @@ export const translations = {
     },
   },
   en: {
-    pageTitle: "Gabriel Coelho | Back-End Developer",
+    pageTitle: "Gabriel Coelho | Full-stack Developer",
     nav: {
       work: "WORK",
       method: "METHOD",
