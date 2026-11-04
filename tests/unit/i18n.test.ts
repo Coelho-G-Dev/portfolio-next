@@ -45,6 +45,35 @@ describe("textos PT/EN (site)", () => {
   });
 });
 
+describe("textos não têm termos sem prova", () => {
+  // Itens sem projeto que comprove e expressões genéricas que já saíram do site.
+  const banned =
+    /\bJava\b|Spring|Outbox|Linux|CI\/CD|alta concorrência|high-concurrency|empresarial|enterprise|táteis|tactile|resili|60 FPS|Prévia|preview/i;
+
+  it.each(["pt", "en"] as const)("nenhuma string fora do Derrube usa termo proibido em %s", (lang) => {
+    const hits = strings(siteCopy[lang])
+      .filter(([path]) => !path.startsWith("derrube."))
+      .filter(([, s]) => banned.test(s))
+      .map(([path, s]) => `${path}: ${s}`);
+    expect(hits).toEqual([]);
+  });
+
+  it.each(["pt", "en"] as const)("a Bancada não lista ferramenta sem projeto em %s", (lang) => {
+    const names = siteCopy[lang].about.stackCategories.flatMap((cat) => cat.items.map((i) => i.name));
+    expect(names.filter((n) => /Java|Spring|Outbox|Linux/.test(n))).toEqual([]);
+  });
+
+  it.each(["pt", "en"] as const)("títulos da Bancada e selos das portas não empilham '&' em %s", (lang) => {
+    const c = siteCopy[lang];
+    const titles = [
+      c.about.stackTitle,
+      ...c.about.stackCategories.map((cat) => cat.name),
+      ...Object.values(c.projetos.doorMeta).map((m) => m.badge),
+    ];
+    expect(titles.filter((t) => t.includes("&"))).toEqual([]);
+  });
+});
+
 describe("eventos do Derrube no site", () => {
   const events: (FlowEvent | DirectEvent)[] = [
     { kind: "sent", id: 1 },

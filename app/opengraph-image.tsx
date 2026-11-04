@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Gabriel Coelho | Desenvolvedor Back-End";
+export const alt = "Gabriel Coelho | Desenvolvedor Full-stack";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -16,9 +16,9 @@ export default function OGImage() {
           flexDirection: "column",
           justifyContent: "center",
           padding: "80px",
-          backgroundColor: "#12222D",
+          backgroundColor: "#0E0F13",
           backgroundImage:
-            "radial-gradient(circle, rgba(242,234,220,0.08) 2px, transparent 2px)",
+            "radial-gradient(circle, rgba(244,238,227,0.06) 2px, transparent 2px)",
           backgroundSize: "36px 36px",
         }}
       >
@@ -27,18 +27,18 @@ export default function OGImage() {
             display: "flex",
             alignItems: "center",
             gap: 12,
-            color: "#EAF35B",
+            color: "#F5A524",
             fontSize: 22,
             letterSpacing: 4,
             marginBottom: 32,
           }}
         >
-          <div style={{ width: 8, height: 8, borderRadius: 999, background: "#EAF35B" }} />
-          SÃO LUÍS · BRASIL · BACKEND, APIS E SISTEMAS
+          <div style={{ width: 8, height: 8, borderRadius: 999, background: "#F5A524" }} />
+          SÃO LUÍS · BRASIL · FULL-STACK
         </div>
-        <div style={{ display: "flex", flexDirection: "column", color: "#F2EADC", fontSize: 96, fontWeight: 900, lineHeight: 1 }}>
-          <span>Back-end com</span>
-          <span style={{ color: "#EAF35B", fontStyle: "italic", fontWeight: 400 }}>presença.</span>
+        <div style={{ display: "flex", flexDirection: "column", color: "#F4EEE3", fontSize: 96, fontWeight: 900, lineHeight: 1 }}>
+          <span>Da tela ao banco,</span>
+          <span style={{ color: "#F5A524", fontWeight: 400 }}>sem perder mensagem.</span>
         </div>
       </div>
     ),

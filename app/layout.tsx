@@ -25,21 +25,21 @@ const markJs = "document.documentElement.classList.add('js')";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Gabriel Coelho | Desenvolvedor Back-End",
+  title: "Gabriel Coelho | Desenvolvedor Full-stack",
   description:
-    "Gabriel Coelho, desenvolvedor back-end focado em sistemas resilientes, APIs escaláveis e IA. Experiência com Node.js, TypeScript, Python, FastAPI, Docker, RabbitMQ e PostgreSQL.",
+    "Gabriel Coelho, desenvolvedor full-stack em São Luís, MA. Next.js e React na interface; Node.js, Python, RabbitMQ e PostgreSQL no back-end. Campeão do Hackathon Equatorial 2026.",
   robots: { index: true, follow: true },
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Gabriel Coelho | Desenvolvedor Back-End",
-    description: "Sistemas que sobrevivem à primeira versão.",
+    title: "Gabriel Coelho | Desenvolvedor Full-stack",
+    description: "Da tela ao banco, com back-ends que não perdem mensagem.",
     type: "website",
     locale: "pt_BR",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Gabriel Coelho | Desenvolvedor Back-End",
-    description: "Sistemas que sobrevivem à primeira versão.",
+    title: "Gabriel Coelho | Desenvolvedor Full-stack",
+    description: "Da tela ao banco, com back-ends que não perdem mensagem.",
   },
 };
 
