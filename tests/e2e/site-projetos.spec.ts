@@ -32,7 +32,7 @@ async function tabTo(page: Page, name: string, back = false, limit = 100) {
 }
 
 async function openProjetos(page: Page) {
-  await page.goto("/novo");
+  await page.goto("/");
   await page
     .locator('[data-chapter="projetos"]')
     .evaluate((el) =>
@@ -50,7 +50,7 @@ async function openProjetos(page: Page) {
 test('"Ver projetos" leva ao h2 e o destaque do Cidade Energia está visível sem abrir porta', async ({
   page,
 }) => {
-  await page.goto("/novo");
+  await page.goto("/");
   const cta = page.locator("#inicio").getByRole("link", { name: pt.hero.seeWork });
   await expect
     .poll(() =>
@@ -142,7 +142,7 @@ test.describe("sem JavaScript", () => {
   test("os três painéis estão visíveis e nenhum botão de porta existe", async ({
     page,
   }) => {
-    await page.goto("/novo");
+    await page.goto("/");
     const s = page.locator("#projetos");
     await expect(s.locator('[data-door-panel="backend"]')).toBeVisible();
     await expect(s.locator('[data-door-panel="frontend"]')).toBeVisible();

@@ -23,7 +23,7 @@ export default defineConfig({
   // Build de produção: é o que vai para a Vercel.
   webServer: {
     command: `npm run build && npm run start -- --port ${PORT}`,
-    url: `http://localhost:${PORT}/novo`,
+    url: `http://localhost:${PORT}/`,
     reuseExistingServer: !process.env.CI,
     timeout: 300_000,
   },

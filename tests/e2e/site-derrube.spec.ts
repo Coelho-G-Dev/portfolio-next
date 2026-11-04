@@ -28,7 +28,7 @@ async function tabTo(page: Page, name: string, back = false, limit = 80) {
 }
 
 async function openDerrube(page: Page) {
-  await page.goto("/novo");
+  await page.goto("/");
   await page.locator('[data-chapter="derrube"]').evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY));
   // Começa a tabulação dentro do capítulo.
   await page.locator("#derrube h2").evaluate((el) => {
@@ -118,7 +118,7 @@ test.describe("sem JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 
   test("mostra a explicação em texto e nenhum botão", async ({ page }) => {
-    await page.goto("/novo");
+    await page.goto("/");
     const s = page.locator("#derrube");
     await expect(s.getByText(d.noJs)).toBeVisible();
     await expect(s.getByRole("button")).toHaveCount(0);

@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/_vercel/**", (r) => r.fulfill({ status: 200, contentType: "application/javascript", body: "" }));
   // Só na primeira visita: o teste de idioma recarrega e precisa manter a escolha.
   await page.addInitScript(() => localStorage.getItem("preferred-language") || localStorage.setItem("preferred-language", "pt"));
-  await page.goto("/novo");
+  await page.goto("/");
 });
 
 test("abre sem erros no console", async ({ page }) => {
@@ -68,8 +68,11 @@ test("troca PT ↔ EN e guarda a escolha", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName("Gabriel Coelho");
 });
 
-test("a prévia /novo não é indexada", async ({ page }) => {
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+test("o link antigo /novo redireciona para a raiz", async ({ page }) => {
+  const response = await page.goto("/novo");
+  expect(new URL(page.url()).pathname).toBe("/");
+  expect(response?.request().redirectedFrom()?.url()).toMatch(/\/novo$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName("Gabriel Coelho");
 });
 
 test("a raiz / abre com sucesso e é indexada", async ({ page }) => {

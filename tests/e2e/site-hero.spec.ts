@@ -19,12 +19,12 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('o h1 é "Gabriel Coelho"', async ({ page }) => {
-  await page.goto("/novo");
+  await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName("Gabriel Coelho");
 });
 
 test("as pílulas de projeto e de vaga abrem o e-mail com assuntos diferentes", async ({ page }) => {
-  await page.goto("/novo");
+  await page.goto("/");
   const hero = page.locator("#inicio");
   const project = await hero.getByRole("link", { name: pt.hero.project }).getAttribute("href");
   const role = await hero.getByRole("link", { name: pt.hero.role }).getAttribute("href");
@@ -34,7 +34,7 @@ test("as pílulas de projeto e de vaga abrem o e-mail com assuntos diferentes", 
 });
 
 test("não há rolagem horizontal", async ({ page }) => {
-  await page.goto("/novo");
+  await page.goto("/");
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
 });
@@ -43,7 +43,7 @@ test.describe("com movimento reduzido", () => {
   test.use({ reducedMotion: "reduce" });
 
   test("nenhum vídeo carrega e o poster aparece", async ({ page }) => {
-    await page.goto("/novo");
+    await page.goto("/");
     await expect(page.locator(".s-char")).toHaveAttribute("data-mode", "reduced");
     await expect(page.locator(".s-char video[src]")).toHaveCount(0);
     await expect(page.locator(".s-char__poster")).toBeVisible();
@@ -54,7 +54,7 @@ test.describe("sem JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 
   test("texto completo, pílulas, poster e links do menu visíveis", async ({ page }) => {
-    await page.goto("/novo");
+    await page.goto("/");
     const hero = page.locator("#inicio");
     await expect(hero.locator(".s-typed__shown")).toHaveText(pt.hero.intro);
     for (const name of [pt.hero.seeWork, pt.hero.project, pt.hero.role]) {
@@ -72,7 +72,7 @@ test.describe("sem JavaScript", () => {
 test("vídeo quebrado: o poster continua e o console fica limpo", async ({ page }) => {
   const errors = collectErrors(page);
   await page.route("**/hero/*.mp4", (route) => route.abort());
-  await page.goto("/novo");
+  await page.goto("/");
   await page.waitForTimeout(2500);
   await expect(page.locator(".s-char__poster")).toBeVisible();
   await expect(page.locator(".s-char video")).toHaveCount(0);
@@ -82,7 +82,7 @@ test("vídeo quebrado: o poster continua e o console fica limpo", async ({ page 
 
 test("desktop: o mouse move o Olhar e dois cliques rápidos tocam uma só reação", async ({ page }, info) => {
   test.skip(info.project.name !== "desktop-1440", "scrub só existe com mouse");
-  await page.goto("/novo");
+  await page.goto("/");
   const char = page.locator(".s-char");
   await expect(char).toHaveAttribute("data-mode", "desktop");
   const olhar = char.locator('video[data-clip="olhar"]');
@@ -115,7 +115,7 @@ test("desktop: o mouse move o Olhar e dois cliques rápidos tocam uma só reaç�
 
 test("celular: um toque no personagem mostra uma reação", async ({ page }, info) => {
   test.skip(info.project.name !== "phone-390", "modo toque");
-  await page.goto("/novo");
+  await page.goto("/");
   const char = page.locator(".s-char");
   await expect(char).toHaveAttribute("data-mode", "touch");
   await expect(char.locator('video[data-clip="loop"]')).toHaveAttribute("data-active", "true", { timeout: 10_000 });

@@ -21,14 +21,14 @@ async function settle(page: import("@playwright/test").Page) {
 }
 
 test("com JavaScript, os capítulos grudam (sticky)", async ({ page }) => {
-  await page.goto("/novo");
+  await page.goto("/");
   await expect(page.locator('[data-chapter="abertura"]')).toHaveCSS("position", "sticky");
   await expect(page.locator('[data-chapter="derrube"]')).toHaveCSS("position", "sticky");
 });
 
 test("o capítulo de trás encolhe e escurece quando é coberto", async ({ page }, info) => {
   test.skip(info.project.name === "phone-390", "no celular não há escala");
-  await page.goto("/novo");
+  await page.goto("/");
   await page.locator("#derrube h2").scrollIntoViewIfNeeded();
   await page.waitForTimeout(400);
   const scale = await page
@@ -38,7 +38,7 @@ test("o capítulo de trás encolhe e escurece quando é coberto", async ({ page 
 });
 
 test("coberta a abertura, o vídeo do personagem pausa", async ({ page }) => {
-  await page.goto("/novo");
+  await page.goto("/");
   const char = page.locator(".s-char");
   await expect(char).not.toHaveAttribute("data-mode", "pending");
   test.skip((await char.getAttribute("data-mode")) === "desktop", "no desktop o Olhar não toca, é scrub");
@@ -52,7 +52,7 @@ test("coberta a abertura, o vídeo do personagem pausa", async ({ page }) => {
 });
 
 test("capítulo mais alto que a tela: o seguinte só cobre depois da base aparecer", async ({ page }) => {
-  await page.goto("/novo");
+  await page.goto("/");
   await page.evaluate(() => document.fonts.ready);
   // Em qualquer momento em que a última linha do Derrube está na tela, o
   // capítulo seguinte ainda não a cobre. Repete até o layout assentar.
@@ -70,7 +70,7 @@ test("capítulo mais alto que a tela: o seguinte só cobre depois da base aparec
 });
 
 test("a âncora do menu deixa o título do destino visível e por cima", async ({ page }, info) => {
-  await page.goto("/novo");
+  await page.goto("/");
   if (info.project.name === "phone-390") await page.getByRole("button", { name: pt.nav.menu }).click();
   await page.locator("#s-nav-links").getByRole("link", { name: pt.nav.links[3].label, exact: true }).click();
   await settle(page);
@@ -86,7 +86,7 @@ test("a âncora do menu deixa o título do destino visível e por cima", async (
 
 test("cobrindo a abertura, o topo da tela continua sendo a abertura (sem faixa vazia)", async ({ page }, info) => {
   test.skip(info.project.name === "phone-390", "no celular não há escala");
-  await page.goto("/novo");
+  await page.goto("/");
   await page.mouse.wheel(0, 450);
   await page.waitForTimeout(500);
   const topHit = await page.evaluate(() => !!document.elementFromPoint(innerWidth / 2, 4)?.closest('[data-chapter="abertura"]'));
@@ -94,7 +94,7 @@ test("cobrindo a abertura, o topo da tela continua sendo a abertura (sem faixa v
 });
 
 test("um capítulo só encolhe quando o seguinte já o cobre", async ({ page }) => {
-  await page.goto("/novo");
+  await page.goto("/");
   await page.locator('[data-chapter="derrube"]').evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY));
   await page.waitForTimeout(400);
   const derrube = page.locator('[data-chapter="derrube"]');
@@ -110,7 +110,7 @@ test("um capítulo só encolhe quando o seguinte já o cobre", async ({ page }) 
 });
 
 test("o rodapé fica por cima da abertura grudada", async ({ page }) => {
-  await page.goto("/novo");
+  await page.goto("/");
   // A página ainda cresce depois do load (fontes, Derrube interativo); a cada
   // tentativa, rola até o fim de verdade e só então confere o rodapé.
   await page.evaluate(() => document.fonts.ready);
@@ -128,7 +128,7 @@ test("o rodapé fica por cima da abertura grudada", async ({ page }) => {
 });
 
 test("a âncora de Projetos chega sem o destino estar coberto", async ({ page }, info) => {
-  await page.goto("/novo");
+  await page.goto("/");
   if (info.project.name === "phone-390") await page.getByRole("button", { name: pt.nav.menu }).click();
   await page.locator("#s-nav-links").getByRole("link", { name: pt.nav.links[0].label, exact: true }).click();
   await settle(page);
@@ -146,7 +146,7 @@ test.describe("sem JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 
   test("nenhum capítulo gruda", async ({ page }) => {
-    await page.goto("/novo");
+    await page.goto("/");
     const positions = await page
       .locator("[data-chapter]")
       .evaluateAll((els) => els.map((el) => getComputedStyle(el).position));
@@ -159,7 +159,7 @@ test.describe("com movimento reduzido", () => {
   test.use({ reducedMotion: "reduce" });
 
   test("o capítulo de trás não escala nem escurece", async ({ page }) => {
-    await page.goto("/novo");
+    await page.goto("/");
     await page.locator("#derrube h2").scrollIntoViewIfNeeded();
     await page.waitForTimeout(400);
     const { transform, shade } = await page.locator('[data-chapter="abertura"]').evaluate((el) => ({

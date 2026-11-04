@@ -40,7 +40,7 @@ describe("paleta Tabuleiro", () => {
     expect(TEXT_PAIRS.filter((p) => p.fg === "nogueira")).toEqual([]);
   });
 
-  it("os tokens CSS de /novo usam os mesmos hex", () => {
+  it("os tokens CSS do site usam os mesmos hex", () => {
     const css = readFileSync("app/site.css", "utf8");
     for (const [tone, hex] of Object.entries(PALETTE) as [Tone, string][]) {
       const match = css.match(new RegExp(`--c-${kebab(tone)}:\\s*(#[0-9a-fA-F]{6});`));
