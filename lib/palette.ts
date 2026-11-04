@@ -1,5 +1,5 @@
 // Paleta "Tabuleiro" + acento âmbar (spec §5.1). Os mesmos hex vivem como
-// tokens em app/novo/site.css; o teste da paleta garante que não divergem.
+// tokens em app/site.css; o teste da paleta garante que não divergem.
 export const PALETTE = {
   ebano: "#0E0F13",
   nogueiraEscura: "#2A2018",

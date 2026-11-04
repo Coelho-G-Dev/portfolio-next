@@ -41,7 +41,7 @@ describe("paleta Tabuleiro", () => {
   });
 
   it("os tokens CSS de /novo usam os mesmos hex", () => {
-    const css = readFileSync("app/novo/site.css", "utf8");
+    const css = readFileSync("app/site.css", "utf8");
     for (const [tone, hex] of Object.entries(PALETTE) as [Tone, string][]) {
       const match = css.match(new RegExp(`--c-${kebab(tone)}:\\s*(#[0-9a-fA-F]{6});`));
       expect(match?.[1]?.toUpperCase(), `--c-${kebab(tone)}`).toBe(hex);

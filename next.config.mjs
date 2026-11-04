@@ -18,6 +18,10 @@ const contentSecurityPolicy = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   poweredByHeader: false,
+  // A prévia /novo virou a raiz; links antigos continuam chegando ao site.
+  async redirects() {
+    return [{ source: "/novo", destination: "/", permanent: true }];
+  },
   async headers() {
     return [
       {

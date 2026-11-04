@@ -4,7 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
-import "./novo/site.css";
+import "./site.css";
 import ScrollRestore from "@/components/ScrollRestore";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import SkipLink from "@/components/SkipLink";
