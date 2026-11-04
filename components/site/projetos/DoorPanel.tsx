@@ -187,9 +187,7 @@ export default function DoorPanel({
       {!staticMode && onBack && (
         <div className="s-door-panel__footer">
           <p className="s-door-panel__footer-text">
-            {lang === "pt"
-              ? "Pronto para conferir as outras facetas de arquitetura?"
-              : "Ready to explore other architectural facets?"}
+            {c.panel.footerText}
           </p>
           <div className="s-door-panel__footer-actions">
             <button
@@ -198,9 +196,7 @@ export default function DoorPanel({
               onClick={onBack}
             >
               <span aria-hidden="true">← </span>
-              {lang === "pt"
-                ? `Fechar ${doorCopy.name} e voltar aos portais`
-                : `Close ${doorCopy.name} and view portals`}
+              {c.panel.closeAndBack(doorCopy.name)}
             </button>
             <button
               type="button"
@@ -208,7 +204,7 @@ export default function DoorPanel({
               onClick={scrollToTop}
             >
               <span aria-hidden="true">↑ </span>
-              {lang === "pt" ? "Voltar ao topo da seção" : "Back to top"}
+              {c.panel.scrollTop}
             </button>
           </div>
         </div>
@@ -219,22 +215,22 @@ export default function DoorPanel({
         <aside
           className="s-door-floating-bar"
           role="toolbar"
-          aria-label={lang === "pt" ? "Navegação rápida do projeto" : "Quick project navigation"}
+          aria-label={c.panel.navAria}
         >
           <button
             type="button"
             className="s-door-floating-btn"
             onClick={scrollToTop}
-            title={lang === "pt" ? "Rolar para o topo" : "Scroll to top"}
+            title={c.panel.scrollTopTitle}
           >
             <span aria-hidden="true">↑</span>
-            <span>Topo</span>
+            <span>{c.panel.scrollTopShort}</span>
           </button>
           <button
             type="button"
             className="s-door-floating-btn s-door-floating-btn--primary"
             onClick={onBack}
-            title={lang === "pt" ? "Fechar portal e voltar à visão geral (Esc)" : "Close portal and return (Esc)"}
+            title={c.panel.closeTitle}
           >
             <span aria-hidden="true">←</span>
             <span>{c.back}</span>

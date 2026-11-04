@@ -15,6 +15,8 @@ type NodeId = "interface" | ServiceId;
 
 type DoorCopy = { name: string; teaser: string };
 
+type DoorMeta = { badge: string; points: string[] };
+
 // Segundos até a próxima tentativa: cada tick da simulação dura 0,75 s.
 const seconds = (delay: number, locale: string) =>
   (delay * 0.75).toLocaleString(locale, { maximumFractionDigits: 2 });
@@ -38,6 +40,7 @@ const pt = {
   hero: {
     label: "Back-end · Full-stack · São Luís, MA",
     name: "Gabriel Coelho",
+    characterAria: "Gabriel Coelho (clique para interagir)",
     intro: "Olá! Eu construo back-ends que não perdem uma mensagem: APIs, filas e IA com fontes. O que vamos construir?",
     seeWork: "Ver projetos",
     project: "Tenho um projeto",
@@ -147,6 +150,21 @@ const pt = {
     } as Record<Door, DoorCopy>,
     open: (name: string) => `Abrir a porta ${name}`,
     back: "Voltar às portas",
+    doorMeta: {
+      backend: { badge: "Sistemas & Resiliência", points: ["APIs escaláveis", "Mensageria RabbitMQ", "Tolerância a falhas"] },
+      frontend: { badge: "Interfaces & Performance", points: ["PWA com modo offline", "Design Systems táteis", "60 FPS & Acessibilidade"] },
+      ia: { badge: "IA Aplicada & RAG", points: ["Busca vetorial pgvector", "Respostas com citação", "Modelos integrados a APIs"] },
+    } as Record<Door, DoorMeta>,
+    explore: "Explorar faceta",
+    panel: {
+      footerText: "Pronto para conferir as outras facetas de arquitetura?",
+      closeAndBack: (name: string) => `Fechar ${name} e voltar aos portais`,
+      scrollTop: "Voltar ao topo da seção",
+      scrollTopShort: "Topo",
+      scrollTopTitle: "Rolar para o topo",
+      closeTitle: "Fechar portal e voltar à visão geral (Esc)",
+      navAria: "Navegação rápida do projeto",
+    },
     links: {
       github: "Código",
       frontend: "Front-end",
@@ -211,6 +229,7 @@ const pt = {
       { problem: "Meus sistemas não conversam", delivery: "Integrações, webhooks e filas", stack: "Node, RabbitMQ", proof: "Guia Maranhão" },
     ],
     roles: "Para vagas: aberto a posições júnior e pleno, remoto ou em São Luís.",
+    talk: "Vamos conversar",
   },
   about: {
     title: "Sobre mim",
@@ -330,6 +349,7 @@ const en: typeof pt = {
   hero: {
     label: "Back-end · Full-stack · São Luís, Brazil",
     name: "Gabriel Coelho",
+    characterAria: "Gabriel Coelho (click to interact)",
     intro: "Hi! I build back-ends that never drop a message: APIs, queues and AI that cites its sources. What shall we build?",
     seeWork: "See the work",
     project: "I have a project",
@@ -436,6 +456,21 @@ const en: typeof pt = {
     },
     open: (name: string) => `Open the ${name} door`,
     back: "Back to doors",
+    doorMeta: {
+      backend: { badge: "Systems & Resilience", points: ["Scalable APIs", "RabbitMQ messaging", "Fault tolerance"] },
+      frontend: { badge: "Interfaces & Performance", points: ["Offline-ready PWA", "Tactile design systems", "60 FPS & accessibility"] },
+      ia: { badge: "Applied AI & RAG", points: ["pgvector vector search", "Answers with citations", "Models wired into APIs"] },
+    } as Record<Door, DoorMeta>,
+    explore: "Explore this facet",
+    panel: {
+      footerText: "Ready to explore other architectural facets?",
+      closeAndBack: (name: string) => `Close ${name} and view portals`,
+      scrollTop: "Back to top",
+      scrollTopShort: "Top",
+      scrollTopTitle: "Scroll to top",
+      closeTitle: "Close portal and return (Esc)",
+      navAria: "Quick project navigation",
+    },
     links: {
       github: "Code",
       frontend: "Front-end",
@@ -500,6 +535,7 @@ const en: typeof pt = {
       { problem: "My systems don't talk to each other", delivery: "Integrations, webhooks and queues", stack: "Node, RabbitMQ", proof: "Guia Maranhão" },
     ],
     roles: "For roles: open to junior and mid-level positions, remote or in São Luís.",
+    talk: "Let's talk",
   },
   about: {
     title: "About me",

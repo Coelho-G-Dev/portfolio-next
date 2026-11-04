@@ -73,7 +73,7 @@ export default function Services() {
             data-surface="light"
           >
             <span className="s-pill__label">
-              {language === "pt" ? "Vamos conversar" : "Let's talk"}
+              {s.talk}
             </span>
             <span className="s-pill__dot">
               <Arrow />

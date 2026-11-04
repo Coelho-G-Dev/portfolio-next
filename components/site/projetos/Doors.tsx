@@ -4,23 +4,7 @@ import { useSiteCopy } from "../SiteCopyContext";
 
 export const DOOR_ORDER: Door[] = ["backend", "frontend", "ia"];
 
-const DOOR_META: Record<Door, { glyph: string; badge: string; points: string[] }> = {
-  backend: {
-    glyph: "♜",
-    badge: "Sistemas & Resiliência",
-    points: ["APIs escaláveis", "Mensageria RabbitMQ", "Tolerância a falhas"],
-  },
-  frontend: {
-    glyph: "♞",
-    badge: "Interfaces & Performance",
-    points: ["PWA com modo offline", "Design Systems táteis", "60 FPS & Acessibilidade"],
-  },
-  ia: {
-    glyph: "♛",
-    badge: "IA Aplicada & RAG",
-    points: ["Busca vetorial pgvector", "Respostas com citação", "Modelos integrados a APIs"],
-  },
-};
+const DOOR_GLYPH: Record<Door, string> = { backend: "♜", frontend: "♞", ia: "♛" };
 
 export default function Doors({
   openingDoor,
@@ -44,7 +28,7 @@ export default function Doors({
       <div className="s-doors__row">
         {DOOR_ORDER.map((door) => {
           const copy = c.doors[door];
-          const meta = DOOR_META[door];
+          const meta = c.doorMeta[door];
           const isOpening = openingDoor === door;
           const isClosing = closingDoor === door;
           const isPortal = isOpening || isClosing;
@@ -68,7 +52,7 @@ export default function Doors({
                 <span className="s-door__interior" />
                 <span className="s-door__halo" />
                 <span className="s-door__glyph-wrap">
-                  <span className="s-door__glyph">{meta.glyph}</span>
+                  <span className="s-door__glyph">{DOOR_GLYPH[door]}</span>
                 </span>
                 <span className="s-door__badge">{meta.badge}</span>
               </span>
@@ -93,7 +77,7 @@ export default function Doors({
                 </span>
 
                 <span className="s-door__cta">
-                  <span>Explorar faceta</span>
+                  <span>{c.explore}</span>
                   <Arrow />
                 </span>
               </span>

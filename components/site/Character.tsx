@@ -315,7 +315,7 @@ export default function Character({ paused }: { paused: boolean }) {
       className="s-char"
       role="button"
       tabIndex={0}
-      aria-label="Gabriel Coelho (clique para interagir)"
+      aria-label={copy.hero.characterAria}
       data-mode={mode}
       style={{ backgroundColor: manifest.bg }}
       onPointerEnter={onPointerEnter}
