@@ -253,15 +253,15 @@ export const nodeSpecs: Record<string, NodeSpec> = {
       en: "Asynchronous broadcast of audit events and intrusion attempt alerts.",
     },
     tradeoff: {
-      pt: "Fanout e Direct exchanges garantem desacoplamento temporal e resiliência contra picos de tráfego.",
-      en: "Fanout and Direct exchanges ensure temporal decoupling and resilience against traffic spikes.",
+      pt: "Exchanges Fanout e Direct separam quem publica de quem consome: um pico de tráfego vira fila, não erro.",
+      en: "Fanout and Direct exchanges separate publishers from consumers: a traffic spike becomes a queue, not an error.",
     },
   },
   "DLQ Queue": {
     icon: Layers,
     color: "orange",
     protocol: "Dead Letter Exchange",
-    badge: "Resilience",
+    badge: "Failed Messages",
     role: {
       pt: "Fila de contenção para mensagens que excederam o limite de retentativas de processamento.",
       en: "Containment queue for messages exceeding maximum consumer retry thresholds.",
@@ -311,8 +311,8 @@ export const nodeSpecs: Record<string, NodeSpec> = {
       en: "Asynchronous RAG pipeline orchestrator with strict Pydantic V2 validation.",
     },
     tradeoff: {
-      pt: "Asyncio com Starlette oferece alta concorrência de I/O para chamadas paralelas de embeddings.",
-      en: "Asyncio with Starlette delivers massive I/O concurrency for parallel embedding calls.",
+      pt: "Asyncio com Starlette faz as chamadas de embeddings em paralelo, sem travar no I/O.",
+      en: "Asyncio with Starlette runs embedding calls in parallel without blocking on I/O.",
     },
   },
   "Semantic Router": {
@@ -339,8 +339,8 @@ export const nodeSpecs: Record<string, NodeSpec> = {
       en: "Local CPU vectorization of queries into 384-dimensional semantic space.",
     },
     tradeoff: {
-      pt: "Latência <10ms sem dependência de APIs externas de embeddings, garantindo soberania e zero custo.",
-      en: "Sub-10ms latency with zero third-party API dependencies, ensuring sovereignty and zero recurring cost.",
+      pt: "Latência abaixo de 10 ms e nenhuma API externa de embeddings, portanto sem custo por chamada nesta etapa.",
+      en: "Under 10 ms latency and no third-party embeddings API, so no per-call cost at this step.",
     },
   },
   "PostgreSQL + pgvector": {
@@ -409,8 +409,8 @@ export const nodeSpecs: Record<string, NodeSpec> = {
       en: "Generation of grounded synthetic responses strictly bound to retrieved context chunks.",
     },
     tradeoff: {
-      pt: "System prompt com temperatura 0.1 e diretivas de 'grounding' eliminam alucinações técnicas.",
-      en: "System prompt with 0.1 temperature and strict grounding directives eliminates technical hallucinations.",
+      pt: "System prompt com temperatura 0.1 e diretivas de grounding para responder só com o contexto recuperado.",
+      en: "System prompt with 0.1 temperature and grounding directives to answer only from the retrieved context.",
     },
   },
   "Grounded Answer + Sources": {
@@ -423,8 +423,8 @@ export const nodeSpecs: Record<string, NodeSpec> = {
       en: "Delivery of the synthesized response with inline citations and direct hyperlinks to official gazettes.",
     },
     tradeoff: {
-      pt: "Permite auditoria imediata pelo cidadão, elevando a confiabilidade do serviço público digital.",
-      en: "Enables immediate auditing by citizens, increasing digital public service trustworthiness.",
+      pt: "O cidadão pode abrir cada fonte citada e conferir a resposta no edital original.",
+      en: "Citizens can open each cited source and check the answer against the original gazette.",
     },
   },
 

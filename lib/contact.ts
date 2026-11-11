@@ -1,6 +1,7 @@
 export const EMAIL = "gabrielbiellosousa@gmail.com";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/gabriel-coelho-7184a32a3/";
 export const GITHUB_URL = "https://github.com/Coelho-G-Dev";
+export const WHATSAPP_URL = "https://wa.me/5598988255626";
 
 export type ContactKind = "role" | "project";
 

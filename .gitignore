@@ -18,3 +18,6 @@ node_modules
 /assets-src/
 /.superpowers/
 /.impeccable/
+
+# Ferramenta local de preparo das fotos (R11)
+/tools/recorte-fotos.py

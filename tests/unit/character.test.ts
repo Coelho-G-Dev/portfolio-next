@@ -1,9 +1,105 @@
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
-import { approach, charReducer, initialChar, NEUTRAL, type CharEvent, type CharState } from "@/lib/character";
+import { aimFrom, approach, charReducer, EYES, eyesOnScreen, gazeStep, initialChar, NEUTRAL, pickAxis, type CharEvent, type CharState, type Gaze } from "@/lib/character";
 
 const run = (events: CharEvent[], from: CharState = initialChar) => events.reduce(charReducer, from);
 const scrub = run([{ type: "introEnded" }]);
+
+// Hero a 1440×900: caixa do personagem sangrando à direita, vídeo 1280×720
+// em cover com object-position 68% 50%. Os olhos caem em (1189,6; 228,8).
+const VIEW = { width: 1440, height: 900 };
+const BOX = { left: 620, top: 0, width: 820, height: 900 };
+const MEDIA = { width: 1280, height: 720 };
+const OBJ = { x: 0.68, y: 0.5 };
+const EYES_1440 = eyesOnScreen(BOX, MEDIA, OBJ);
+const aimAt = (px: number, py: number) => aimFrom(px, py, EYES_1440, VIEW);
+const axisAt = (px: number, py: number, current: "h" | "v" = "h") => {
+  const a = aimAt(px, py);
+  return pickAxis(current, a.dx, a.dy);
+};
+const UP = { x: 0.5, y: 0, dx: 0, dy: -0.5 };
+
+describe("olhar medido a partir dos olhos", () => {
+  it("acha os olhos na tela pelo cover e pelo object-position do vídeo", () => {
+    expect(EYES.x).toBeCloseTo(880 / 1280, 6);
+    expect(EYES.y).toBeCloseTo(183 / 720, 6);
+    expect(EYES_1440.x).toBeCloseTo(1189.6, 1);
+    expect(EYES_1440.y).toBeCloseTo(228.75, 1);
+    // Caixa mais larga que o vídeo: sobra corte em cima e embaixo.
+    const wide = eyesOnScreen({ left: 0, top: 100, width: 1280, height: 360 }, MEDIA, OBJ);
+    expect(wide.x).toBeCloseTo(880, 6);
+    expect(wide.y).toBeCloseTo(100 + (360 - 720) * 0.5 + 183, 6);
+  });
+
+  it("mouse nos olhos é a pose neutra; nas bordas da janela, os extremos", () => {
+    const at = aimAt(EYES_1440.x, EYES_1440.y);
+    expect(at).toEqual({ x: 0.5, y: 0.5, dx: 0, dy: 0 });
+    expect(aimAt(0, EYES_1440.y).x).toBe(0);
+    expect(aimAt(VIEW.width, EYES_1440.y).x).toBe(1);
+    expect(aimAt(EYES_1440.x, 0).y).toBe(0);
+    expect(aimAt(EYES_1440.x, VIEW.height).y).toBe(1);
+    expect(aimAt(EYES_1440.x / 2, EYES_1440.y).x).toBeCloseTo(0.25, 6);
+    expect(aimAt(-50, 2000)).toMatchObject({ x: 0, y: 1 });
+  });
+
+  it("mouse ao lado do rosto ou do peito olha para o lado, nunca para cima ou para baixo", () => {
+    for (const [px, py] of [[850, 290], [850, 650], [800, 520], [950, 300], [300, 120], [300, 700]]) {
+      expect(axisAt(px, py), `${px},${py}`).toBe("h");
+      expect(aimAt(px, py).x, `${px},${py}`).toBeLessThan(0.5);
+    }
+    expect(axisAt(1350, 260)).toBe("h");
+    expect(aimAt(1350, 260).x).toBeGreaterThan(0.5);
+  });
+
+  it("mouse acima ou abaixo dos olhos olha para cima ou para baixo", () => {
+    expect(axisAt(1190, 20)).toBe("v");
+    expect(aimAt(1190, 20).y).toBeLessThan(0.5);
+    expect(axisAt(1150, 880)).toBe("v");
+    expect(aimAt(1150, 880).y).toBeGreaterThan(0.5);
+  });
+});
+
+describe("olhar em dois eixos", () => {
+  it("segue a direção dominante, com zona morta e histerese na diagonal", () => {
+    expect(pickAxis("h", 0, -0.45)).toBe("v");
+    expect(pickAxis("v", 0.45, 0)).toBe("h");
+    expect(pickAxis("v", 0.03, 0.02)).toBe("v");
+    expect(pickAxis("h", 0.02, -0.03)).toBe("h");
+    expect(pickAxis("h", -0.3, 0.35)).toBe("h");
+    expect(pickAxis("v", 0.35, -0.3)).toBe("v");
+  });
+
+  it("volta ao neutro antes de trocar e depois segue o alvo vertical", () => {
+    let gaze: Gaze = { axis: "h", pos: 0.9 };
+    const first = gazeStep(gaze, UP, 16, true);
+    expect(first.axis).toBe("h");
+    expect(first.pos).toBeLessThan(0.9);
+    expect(first.pos).toBeGreaterThan(0.5);
+    let switches = 0;
+    for (let elapsed = 0; elapsed < 2000; elapsed += 16) {
+      const next = gazeStep(gaze, UP, 16, true);
+      if (next.axis !== gaze.axis) {
+        expect(next.pos).toBe(0.5);
+        switches++;
+      }
+      gaze = next;
+    }
+    expect(switches).toBe(1);
+    expect(gaze.axis).toBe("v");
+    expect(gaze.pos).toBeLessThan(0.05);
+  });
+
+  it("mantém o horizontal enquanto o vertical não está disponível", () => {
+    expect(gazeStep({ axis: "h", pos: 0.5 }, UP, 140, false)).toMatchObject({ axis: "h", pos: 0.5 });
+    expect(gazeStep({ axis: "h", pos: 0.5 }, { x: 1, y: 0.5, dx: 0.4, dy: 0 }, 240, true).pos).toBeGreaterThan(0.95);
+  });
+
+  it("limita a posição do olhar aos extremos do vídeo", () => {
+    expect(gazeStep({ axis: "h", pos: 0.5 }, { x: 5, y: 0.5, dx: 2, dy: 0 }, 5000, true).pos).toBe(1);
+    expect(gazeStep({ axis: "v", pos: 0.5 }, { x: 0.5, y: -5, dx: 0, dy: -2 }, 5000, true).pos).toBeGreaterThanOrEqual(0);
+    expect(gazeStep({ axis: "v", pos: 0.5 }, { x: 0.5, y: -5, dx: 0, dy: -2 }, 5000, true).pos).toBeLessThan(1e-10);
+  });
+});
 
 describe("máquina de estados do personagem", () => {
   it("começa na entrada, olhando ao centro", () => {
@@ -24,11 +120,22 @@ describe("máquina de estados do personagem", () => {
     expect(charReducer(scrub, { type: "hover" })).toMatchObject({ phase: "centering", pending: "hover" });
   });
 
+  it("sair durante a centralização ou o hover devolve o controle ao cursor", () => {
+    const centering = charReducer(scrub, { type: "hover" });
+    const reaction = charReducer(centering, { type: "centered" });
+    for (const s of [centering, reaction]) {
+      expect(charReducer(s, { type: "leave" })).toMatchObject({ phase: "scrub" });
+    }
+    const clicked = charReducer(scrub, { type: "click" });
+    expect(charReducer(clicked, { type: "leave" })).toBe(clicked);
+  });
+
   it("os cliques alternam entre as três variações", () => {
     const clips: string[] = [];
     let s = scrub;
     for (let i = 0; i < 4; i++) {
       s = charReducer(s, { type: "click" });
+      s = charReducer(s, { type: "centered" });
       if (s.phase === "reaction") clips.push(s.clip);
       s = charReducer(s, { type: "reactionEnded" });
     }
@@ -43,13 +150,13 @@ describe("máquina de estados do personagem", () => {
     }
   });
 
-  it("clique sempre avança imediatamente mesmo se estiver em reação ou hover", () => {
-    const r1 = charReducer(scrub, { type: "click" });
+  it("cliques durante o gesto atualizam a fala e deixam a animação terminar", () => {
+    const r1 = run([{ type: "click" }, { type: "centered" }], scrub);
     expect(r1).toMatchObject({ phase: "reaction", clip: "clique-1", clicks: 1 });
     const r2 = charReducer(r1, { type: "click" });
-    expect(r2).toMatchObject({ phase: "reaction", clip: "clique-2", clicks: 2 });
+    expect(r2).toMatchObject({ phase: "reaction", clip: "clique-1", clicks: 2 });
     const r3 = charReducer(r2, { type: "click" });
-    expect(r3).toMatchObject({ phase: "reaction", clip: "clique-3", clicks: 3 });
+    expect(r3).toMatchObject({ phase: "reaction", clip: "clique-1", clicks: 3 });
     const r4 = charReducer(r3, { type: "click" });
     expect(r4).toMatchObject({ phase: "reaction", clip: "clique-1", clicks: 4 });
   });

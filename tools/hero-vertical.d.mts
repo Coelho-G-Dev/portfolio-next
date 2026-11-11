@@ -1,0 +1,12 @@
+export type Side = { mt: number[]; b: number; F: number };
+export type GateInput = { motion: number[]; K: number; bUp: number; bDown: number; curve: number[]; neutralSsim: number[]; nativeSsim: number; nativeReference: number; canonicalSource: boolean; bytes: number; firstLoad: number };
+export function median3(m: number[]): number[];
+export function noiseOf(mt: number[], from?: number, to?: number): number;
+export function firstFrame(mt: number[], b: number, max?: number): number;
+export function lastFrame(mt: number[], b: number, F: number, end?: number, share?: number): number;
+export function balanceK(cuts: { F: number; L: number }[]): number;
+export function buildCurve(up: Side, down: Side, K: number): number[];
+export function inverseCurve(curve: readonly number[], p: number): number;
+export function realEnergy(m: number[], K: number, bUp: number, bDown: number): number[];
+export function binRatios(energy: number[], curve: number[], K: number): number[];
+export function gates(input: GateInput): Record<"G1"|"G1b"|"G2"|"G3"|"G4"|"G6", { value: unknown; pass: boolean }>;

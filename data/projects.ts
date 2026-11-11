@@ -19,7 +19,7 @@ export type ProjectArchitecture = {
 
 // Portas do capítulo de projetos do site novo (spec §5.5). Um projeto pode
 // estar em mais de uma porta e mostra, em cada uma, a faceta daquela área.
-export type Door = "backend" | "frontend" | "ia";
+import type { Door } from "./doors";
 
 export type FacetLink = "github" | "frontend" | "demo" | "docs";
 
@@ -39,8 +39,6 @@ export type Facet = {
 export type Project = {
   id: number;
   title: string;
-  // `category` serve o site atual em `/`; o site novo usa `doors`.
-  category: "backend" | "ia";
   doors?: Door[];
   facets?: Partial<Record<Door, Facet>>;
   type: LocalizedString;
@@ -62,7 +60,6 @@ export const projects: Project[] = [
   {
     id: 1,
     title: "Cidade Energia",
-    category: "backend",
     doors: ["backend", "frontend", "ia"],
     facets: {
       frontend: {
@@ -77,7 +74,7 @@ export const projects: Project[] = [
             value: { pt: "133 testes no PWA", en: "133 tests in the PWA" },
           },
           {
-            label: { pt: "Cliente resiliente", en: "Resilient client" },
+            label: { pt: "Cliente e modo simulado", en: "Client and mock mode" },
             value: {
               pt: "Next.js 16 · React 19 · modo simulado sem back-end",
               en: "Next.js 16 · React 19 · backend-free mock mode",
@@ -92,6 +89,22 @@ export const projects: Project[] = [
           },
         ],
         links: ["frontend", "demo"],
+        screens: [
+          {
+            src: "/projects/cidade-energia-1.webp",
+            alt: {
+              pt: "Tela inicial do Cidade Energia no celular: título, três benefícios e o botão Começar.",
+              en: "Cidade Energia home screen on a phone: title, three benefits and the Começar (Start) button.",
+            },
+          },
+          {
+            src: "/projects/cidade-energia-2.webp",
+            alt: {
+              pt: "Tela de entrada com os campos de nome, bairro e código da turma.",
+              en: "Sign-in screen with fields for name, neighborhood and class code.",
+            },
+          },
+        ],
       },
       backend: {
         line: {
@@ -142,8 +155,8 @@ export const projects: Project[] = [
       en: "Winner · Equatorial Hackathon 2026",
     },
     description: {
-      pt: "Projeto campeão do Hackathon Equatorial (Desafio 9): transforma a conta de luz na primeira aula de energia de estudantes de escolas públicas de São Luís. API em Next.js + Supabase com RLS, simulador solar com dados da NASA POWER, gamificação à prova de trapaça e tutor com RAG (Gemini + pgvector), consumida por um PWA.",
-      en: "Winning project of the Equatorial Hackathon (Challenge 9): turns the electricity bill into the first energy lesson for public school students in São Luís. Next.js + Supabase API with RLS, solar simulator fed by NASA POWER data, cheat-proof gamification, and a RAG tutor (Gemini + pgvector), consumed by a PWA.",
+      pt: "Projeto campeão do Hackathon Equatorial (Desafio 9): transforma a conta de luz na primeira aula de energia de estudantes de escolas públicas de São Luís. API em Next.js + Supabase com RLS, simulador solar com dados da NASA POWER, pontuação calculada só no servidor e tutor com RAG (Gemini + pgvector), consumida por um PWA.",
+      en: "Winning project of the Equatorial Hackathon (Challenge 9): turns the electricity bill into the first energy lesson for public school students in São Luís. Next.js + Supabase API with RLS, solar simulator fed by NASA POWER data, server-side scoring, and a RAG tutor (Gemini + pgvector), consumed by a PWA.",
     },
     tags: ["Next.js", "TypeScript", "Supabase", "PostgreSQL", "pgvector", "Gemini AI", "Zod", "Vitest", "PWA"],
     githubLink: "https://github.com/Coelho-G-Dev/Cidade-Energia-Back-End",
@@ -261,12 +274,12 @@ export const projects: Project[] = [
           en: "Privacy-by-design for minors: anonymous login, first name only, RLS on every table, and rankings from aggregated views with a 3-participant minimum.",
         },
         {
-          pt: "Gamificação à prova de trapaça: pontos calculados só no servidor, tabela pontos_eventos única por (perfil, origem, referência) e lições concluídas na ordem.",
-          en: "Cheat-proof gamification: server-only scoring, pontos_eventos table unique per (profile, source, reference), and lessons completed in order.",
+          pt: "Pontos só no servidor: cálculo no back-end, tabela pontos_eventos única por (perfil, origem, referência) e lições concluídas na ordem.",
+          en: "Points on the server only: computed in the back end, a pontos_eventos table unique per (profile, source, reference), and lessons completed in order.",
         },
         {
-          pt: "Tutor Energinho com RAG (Gemini + pgvector HNSW), limiar de similaridade calibrado com perguntas reais e resiliência à NASA POWER com cache e valor de reserva.",
-          en: "Energinho tutor with RAG (Gemini + pgvector HNSW), similarity threshold calibrated on real questions, and NASA POWER resilience via caching and fallback values.",
+          pt: "Tutor Energinho com RAG (Gemini + pgvector HNSW), limiar de similaridade calibrado com perguntas reais e, se a NASA POWER cair, cache e um valor de reserva.",
+          en: "Energinho tutor with RAG (Gemini + pgvector HNSW), similarity threshold calibrated on real questions, and a cache plus a default value when NASA POWER is down.",
         },
       ],
     },
@@ -274,7 +287,6 @@ export const projects: Project[] = [
   {
     id: 2,
     title: "AuthGuard",
-    category: "backend",
     doors: ["backend"],
     facets: {
       backend: {
@@ -292,8 +304,8 @@ export const projects: Project[] = [
     },
     year: "2026",
     description: {
-      pt: "Microsserviço corporativo de autenticação e RBAC com suporte a MFA/TOTP, mensageria RabbitMQ com DLQ, rate limiting em Redis e observabilidade completa.",
-      en: "Enterprise authentication and RBAC microservice with MFA/TOTP support, RabbitMQ messaging with DLQ, Redis rate limiting, and end-to-end observability.",
+      pt: "Microsserviço de autenticação e RBAC com MFA/TOTP, mensageria RabbitMQ com DLQ, limite de taxa em Redis e observabilidade.",
+      en: "Authentication and RBAC microservice with MFA/TOTP, RabbitMQ messaging with a DLQ, Redis rate limiting and observability.",
     },
     tags: ["Node.js", "TypeScript", "RabbitMQ", "Redis", "Docker", "PostgreSQL", "Jest"],
     githubLink: "https://github.com/Coelho-G-Dev/authguard",
@@ -319,7 +331,7 @@ export const projects: Project[] = [
         },
       },
       {
-        label: { pt: "Resiliência Assíncrona", en: "Async Resilience" },
+        label: { pt: "Mensageria assíncrona", en: "Async messaging" },
         value: {
           pt: "RabbitMQ Exchange + Dead-Letter Queue (DLQ)",
           en: "RabbitMQ Exchange + Dead-Letter Queue (DLQ)",
@@ -408,7 +420,6 @@ export const projects: Project[] = [
   {
     id: 3,
     title: "RAG Serviços Públicos",
-    category: "ia",
     doors: ["ia", "backend"],
     facets: {
       ia: {
@@ -463,8 +474,8 @@ export const projects: Project[] = [
       {
         label: { pt: "Grounding Estrito", en: "Strict Grounding" },
         value: {
-          pt: "Geração ancorada em contexto (Zero Alucinações)",
-          en: "Context-grounded generation (Zero Hallucinations)",
+          pt: "Resposta só com o contexto recuperado, com as fontes citadas",
+          en: "Answers from the retrieved context only, with sources cited",
         },
       },
     ],
@@ -573,8 +584,8 @@ export const projects: Project[] = [
           en: "Decoupled microservices (FastAPI for AI orchestration & embeddings, Node.js/TS for routing & metadata).",
         },
         {
-          pt: "Geração restrita com Google Gemini: injeção de contexto estrito e checagem de fontes para eliminar alucinações.",
-          en: "Constrained generation with Google Gemini: strict context injection and source citation preventing hallucinations.",
+          pt: "Geração com Google Gemini restrita ao contexto recuperado, com checagem das fontes citadas.",
+          en: "Generation with Google Gemini restricted to the retrieved context, with a check of the cited sources.",
         },
       ],
     },
@@ -582,7 +593,6 @@ export const projects: Project[] = [
   {
     id: 4,
     title: "API Financeira Inteligente",
-    category: "ia",
     doors: ["ia", "backend"],
     facets: {
       ia: {
@@ -711,7 +721,6 @@ export const projects: Project[] = [
   {
     id: 5,
     title: "Guia Maranhão",
-    category: "backend",
     doors: ["backend"],
     facets: {
       backend: {
@@ -822,15 +831,14 @@ export const projects: Project[] = [
   {
     id: 6,
     title: "BuscaSUS",
-    category: "backend",
     doors: ["backend", "frontend"],
     facets: {
       frontend: {
         line: {
-          pt: "Interface geoespacial mobile-first: busca de postos de saúde por raio de proximidade, cálculo de rotas em tempo real com Google Maps / Leaflet e estimativa de tempo até o atendimento.",
-          en: "Mobile-first geospatial interface: public health facility search by proximity radius, real-time routing with Google Maps / Leaflet, and estimated transit times.",
+          pt: "Interface geoespacial mobile-first: busca de postos de saúde por raio de proximidade, cálculo de rotas em tempo real com o Google Maps e estimativa de tempo até o atendimento.",
+          en: "Mobile-first geospatial interface: public health facility search by proximity radius, real-time routing with Google Maps, and estimated transit times.",
         },
-        stack: ["React", "TypeScript", "Tailwind CSS", "Google Maps Platform", "Leaflet"],
+        stack: ["React", "TypeScript", "Google Maps Platform"],
         metrics: [
           {
             label: { pt: "Busca por Raio", en: "Radius Search" },
@@ -848,6 +856,22 @@ export const projects: Project[] = [
           },
         ],
         links: ["frontend", "github"],
+        screens: [
+          {
+            src: "/projects/buscasus-1.webp",
+            alt: {
+              pt: "Página inicial do BuscaSUS no celular: título, texto de apresentação e os botões Consultar unidades e Jogar agora.",
+              en: "BuscaSUS home page on a phone: title, intro text and the Consultar unidades (Search units) and Jogar agora (Play now) buttons.",
+            },
+          },
+          {
+            src: "/projects/buscasus-2.webp",
+            alt: {
+              pt: "Janela de login com campos de e-mail e senha e botões para entrar com Google ou GitHub.",
+              en: "Login window with email and password fields and buttons to sign in with Google or GitHub.",
+            },
+          },
+        ],
       },
       backend: {
         line: {
@@ -869,7 +893,7 @@ export const projects: Project[] = [
     },
     tags: ["Node.js", "Express", "MongoDB", "Google Maps Platform"],
     githubLink: "https://github.com/Coelho-G-Dev/Desafio-05-Back-End",
-    frontendLink: "https://github.com/Coelho-G-Dev/Desafio-05-Front-End",
+    frontendLink: "https://github.com/Coelho-G-Dev/Busca-Sus/tree/main/frontend",
     apiDocsLink: "https://github.com/Coelho-G-Dev/Desafio-05-Back-End#documenta%C3%A7%C3%A3o-dos-endpoints",
     apiDocsLabel: {
       pt: "Docs da API",

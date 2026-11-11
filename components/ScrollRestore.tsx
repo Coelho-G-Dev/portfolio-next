@@ -18,11 +18,13 @@ export default function ScrollRestore() {
     }
 
     const previousY = Number(sessionStorage.getItem(STORAGE_KEY) ?? 0);
-    window.scrollTo(0, 0);
-
-    if (previousY > MIN_SCROLL_TO_OFFER) {
-      setSavedY(previousY);
-      dismissTimer.current = setTimeout(() => setSavedY(null), AUTO_DISMISS_MS);
+    // A URL com fragmento tem prioridade sobre a posição da visita anterior.
+    if (window.location.hash.length <= 1) {
+      window.scrollTo(0, 0);
+      if (previousY > MIN_SCROLL_TO_OFFER) {
+        setSavedY(previousY);
+        dismissTimer.current = setTimeout(() => setSavedY(null), AUTO_DISMISS_MS);
+      }
     }
 
     let ticking = false;

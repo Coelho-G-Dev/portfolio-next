@@ -138,7 +138,7 @@ export default function Derrube() {
 
   return (
     <Section id="derrube" title={d.title}>
-      <p className="s-derrube__lead">{d.sentence}</p>
+      <p className="s-derrube__lead" data-reveal>{d.sentence}</p>
       {mounted ? <Interactive /> : <StaticDerrube />}
       <Source />
     </Section>

@@ -4,13 +4,19 @@ import { describe, expect, it } from "vitest";
 import About from "@/components/site/sobre/About";
 import Contact from "@/components/site/sobre/Contact";
 import Footer from "@/components/site/Footer";
+import { SiteCopyContext } from "@/components/site/SiteCopyContext";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import { siteCopy } from "@/lib/i18n/site";
 import { EMAIL, mailtoFor } from "@/lib/contact";
 
 function wrap(ui: React.ReactNode, lang: "pt" | "en" = "pt") {
   localStorage.setItem("preferred-language", lang);
-  return render(<LanguageProvider>{ui}</LanguageProvider>);
+  // O dia de 600 t, dentro do Sobre, lê o texto do SiteCopyContext (como na SitePage).
+  return render(
+    <LanguageProvider>
+      <SiteCopyContext.Provider value={siteCopy[lang]}>{ui}</SiteCopyContext.Provider>
+    </LanguageProvider>,
+  );
 }
 
 describe("Sobre e Retratos", () => {
@@ -23,25 +29,40 @@ describe("Sobre e Retratos", () => {
     }
   });
 
-  it("mostra os azulejos quando há contribuições", () => {
-    const mockContributions = {
-      total: 350,
-      weeks: [
-        { start: "2026-01-04", count: 12, level: 2 as const },
-        { start: "2026-01-11", count: 25, level: 4 as const },
-      ],
-    };
-    wrap(<About contributions={mockContributions} />);
-    expect(screen.getByRole("img", { name: siteCopy.pt.about.tilesText(350) })).toBeInTheDocument();
+  it("não mostra mais o painel dos commits", () => {
+    wrap(<About />);
+    expect(screen.queryByText(siteCopy.pt.about.tilesFallback)).toBeNull();
+    expect(screen.queryByText(siteCopy.pt.about.tilesTitle)).toBeNull();
   });
 
-  it("mostra o texto de fallback quando não há dados do GitHub", () => {
-    wrap(<About contributions={null} />);
-    expect(screen.getByText(siteCopy.pt.about.tilesFallback)).toBeInTheDocument();
+  it("tem o parágrafo de abertura e o bloco Skills", () => {
+    wrap(<About />);
+    expect(screen.getByText(siteCopy.pt.about.intro)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 3, name: "Skills" })).toBeInTheDocument();
+  });
+
+  it("o Sobre está no presente: nenhum texto diz 'Vim da logística'", () => {
+    const { container } = wrap(<About />);
+    expect(container.textContent).not.toContain("Vim da logística");
+  });
+
+  it("em inglês, mostra a abertura e o título Skills", () => {
+    wrap(<About />, "en");
+    expect(screen.getByText(siteCopy.en.about.intro)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 3, name: "Skills" })).toBeInTheDocument();
   });
 });
 
 describe("Contato", () => {
+  it.each(["pt", "en"] as const)("abre o WhatsApp no número informado (%s)", (lang) => {
+    wrap(<Contact />, lang);
+    const link = screen.getByRole("link", { name: /WhatsApp/ });
+    expect(link).toHaveAttribute("href", "https://wa.me/5598988255626");
+    expect(link).toHaveTextContent("(98) 98825-5626");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
   it("renderiza o e-mail, redes e badges de presença", () => {
     wrap(<Contact />);
     expect(screen.getByText(EMAIL)).toBeInTheDocument();

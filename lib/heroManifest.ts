@@ -10,6 +10,12 @@ export type HeroManifest = {
   poster: string;
   entrada: string;
   olhar: string;
+  olharFrames: number;
+  olharNeutral: number;
+  olharV?: string;
+  olharVFrames?: number;
+  olharVNeutral?: number;
+  olharVCurve?: number[];
   olharLoop: string;
   reactions: Partial<Record<Reaction, string>>;
   bytes: Record<string, number>;
@@ -30,6 +36,11 @@ export function loadManifest(json: unknown): HeroManifest {
   for (const key of FILE_KEYS) {
     if (typeof m[key] !== "string" || m[key] === "") throw new Error(`manifest do hero: falta ${key}`);
   }
+  if (!Number.isInteger(m.olharFrames) || Number(m.olharFrames) < 2) throw new Error("manifest do hero: olharFrames inválido");
+  if (!Number.isInteger(m.olharNeutral) || Number(m.olharNeutral) < 0 || Number(m.olharNeutral) >= Number(m.olharFrames)) throw new Error("manifest do hero: olharNeutral inválido");
+  if ("olharV" in m && (typeof m.olharV !== "string" || m.olharV === "")) {
+    throw new Error("manifest do hero: olharV inválido");
+  }
 
   const reactions = m.reactions as Record<string, unknown> | undefined;
   if (!reactions || typeof reactions !== "object") throw new Error("manifest do hero: falta reactions");
@@ -40,4 +51,11 @@ export function loadManifest(json: unknown): HeroManifest {
   if (!m.bytes || typeof m.bytes !== "object") throw new Error("manifest do hero: falta bytes");
 
   return json as HeroManifest;
+}
+
+export function verticalOf(m: HeroManifest): { file: string; frames: number; neutral: number; curve: number[] } | null {
+  const { olharV: file, olharVFrames: frames, olharVNeutral: neutral, olharVCurve: curve } = m;
+  if (!file || !Number.isInteger(frames) || frames! < 3 || frames! % 2 !== 1 || neutral !== (frames! - 1) / 2 || !Array.isArray(curve) || curve.length !== frames) return null;
+  if (curve[0] !== 0 || curve[frames - 1] !== 1 || curve[neutral] !== 0.5 || curve.some((p, k) => !Number.isFinite(p) || (k > 0 && p <= curve[k - 1]))) return null;
+  return { file, frames, neutral, curve };
 }

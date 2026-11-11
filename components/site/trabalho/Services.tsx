@@ -12,7 +12,7 @@ export default function Services() {
     <Section id="o-que-resolvo" title={s.title}>
       <div className="s-services">
         {/* Tabela para desktop e tablet */}
-        <div className="s-services__table-wrap" tabIndex={0} role="region" aria-label={s.title}>
+        <div className="s-services__table-wrap" data-reveal tabIndex={0} role="region" aria-label={s.title}>
           <table className="s-services__table">
             <thead>
               <tr>
@@ -45,7 +45,7 @@ export default function Services() {
         </div>
 
         {/* Cards para celular */}
-        <div className="s-services__cards">
+        <div className="s-services__cards" data-reveal>
           {s.rows.map((row) => (
             <article key={row.problem} className="s-services__card">
               <p className="s-services__card-problem">

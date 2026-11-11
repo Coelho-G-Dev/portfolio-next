@@ -8,6 +8,7 @@ import "./site.css";
 import ScrollRestore from "@/components/ScrollRestore";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import SkipLink from "@/components/SkipLink";
+import { HASH_INPUT_BOOTSTRAP } from "@/lib/hashArrivalBootstrap";
 
 const main = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -21,7 +22,7 @@ const mono = JetBrains_Mono({
   variable: "--font-mono",
 });
 
-const markJs = "document.documentElement.classList.add('js')";
+const markJs = "document.documentElement.classList.add('js');" + HASH_INPUT_BOOTSTRAP;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -77,7 +78,7 @@ const personJsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${main.variable} ${mono.variable}`}>
+    <html lang="pt-BR" className={`${main.variable} ${mono.variable}`} suppressHydrationWarning>
       <body className="site">
         <script dangerouslySetInnerHTML={{ __html: markJs }} />
         <LanguageProvider>

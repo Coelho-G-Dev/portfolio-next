@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import type { Contributions } from "@/lib/github";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { siteCopy } from "@/lib/i18n/site";
 import { Chapter } from "./Chapter";
@@ -18,18 +17,16 @@ import HowIWork from "./trabalho/HowIWork";
 import Services from "./trabalho/Services";
 import { SiteCopyContext } from "./SiteCopyContext";
 import { useCortina } from "./useCortina";
+import { useHashArrival } from "./useHashArrival";
+import { useReveal } from "./useReveal";
 
-export default function SitePage({
-  heroSlot,
-  contributions,
-}: {
-  heroSlot?: ReactNode;
-  contributions?: Contributions | null;
-}) {
+export default function SitePage({ heroSlot }: { heroSlot?: ReactNode }) {
   const { language } = useLanguage();
   const c = siteCopy[language];
   const root = useRef<HTMLDivElement>(null);
   const covered = useCortina(root);
+  useHashArrival();
+  useReveal(root);
 
   return (
     <SiteCopyContext.Provider value={c}>
@@ -57,7 +54,7 @@ export default function SitePage({
               <Services />
             </Chapter>
             <Chapter id="sobre" tone="bordo">
-              <About contributions={contributions} />
+              <About />
               <Contact />
             </Chapter>
           </main>

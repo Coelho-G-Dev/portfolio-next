@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { getContrastRatio } from "@/lib/accessibility";
-import { PALETTE, TEXT_PAIRS, UI_PAIRS, type Tone } from "@/lib/palette";
+import { DOORS } from "@/data/doors";
+import { DOOR_TONES, PALETTE, TEXT_PAIRS, UI_PAIRS, type Tone } from "@/lib/palette";
 
 const kebab = (tone: string) => tone.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
 
@@ -46,5 +47,18 @@ describe("paleta Tabuleiro", () => {
       const match = css.match(new RegExp(`--c-${kebab(tone)}:\\s*(#[0-9a-fA-F]{6});`));
       expect(match?.[1]?.toUpperCase(), `--c-${kebab(tone)}`).toBe(hex);
     }
+  });
+
+  it("as cores das folhas batem com os tokens do CSS e nunca são texto", () => {
+    const css = readFileSync("app/site.css", "utf8");
+    for (const door of DOORS) {
+      expect(css).toContain(`--c-porta-${door}-claro: ${DOOR_TONES[door].claro};`);
+      expect(css).toContain(`--c-porta-${door}-escuro: ${DOOR_TONES[door].escuro};`);
+    }
+    expect(DOOR_TONES).toEqual({
+      backend: { claro: "#2F5A46", escuro: "#1B3529" },
+      frontend: { claro: "#7A2F2A", escuro: "#471A17" },
+      ia: { claro: "#2D4166", escuro: "#18243D" },
+    });
   });
 });

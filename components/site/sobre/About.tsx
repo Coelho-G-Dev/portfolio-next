@@ -1,26 +1,26 @@
 import Image from "next/image";
-import type { Contributions } from "@/lib/github";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { siteCopy } from "@/lib/i18n/site";
 import { Section } from "../Chapter";
-import Tiles from "./Tiles";
+import Dia600 from "./Dia600";
 
-type Props = {
-  contributions?: Contributions | null;
-};
-
-export default function About({ contributions }: Props) {
+export default function About() {
   const { language } = useLanguage();
   const c = siteCopy[language];
   const a = c.about;
 
   return (
     <Section id="sobre" title={a.title}>
+      <p className="s-about__intro" data-reveal>
+        {a.intro}
+      </p>
+      {/* O dia de 600 toneladas logo depois da abertura (spec §7.1). */}
+      <Dia600 />
       <div className="s-about">
         {/* Galeria de retratos compacta e narrativa */}
         <div className="s-portraits">
           {a.portraits.map((p) => (
-            <figure key={p.src} className="s-portrait">
+            <figure key={p.src} className="s-portrait" data-reveal>
               <div className="s-portrait__frame">
                 <Image
                   src={p.src}
@@ -43,7 +43,7 @@ export default function About({ contributions }: Props) {
         </div>
 
         {/* Bancada da Stack de Trabalho */}
-        <div className="s-stack-workbench">
+        <div className="s-stack-workbench" data-reveal>
           <div className="s-stack-workbench__head">
             <h3 className="s-stack-workbench__title">{a.stackTitle}</h3>
             <p className="s-stack-workbench__lead">{a.stackLead}</p>
@@ -63,26 +63,6 @@ export default function About({ contributions }: Props) {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Azulejos de marchetaria com histórico do GitHub */}
-        <div className="s-tiles">
-          <div className="s-tiles__header">
-            <h3 className="s-tiles__title">{a.tilesTitle}</h3>
-            <p className="s-tiles__text">
-              {contributions ? a.tilesText(contributions.total) : a.tilesFallback}
-            </p>
-          </div>
-          {contributions && (
-            <div className="s-tiles__canvas-wrap" tabIndex={0} role="region" aria-label={a.tilesTitle}>
-              <Tiles
-                weeks={contributions.weeks}
-                label={a.tilesText(contributions.total)}
-                tileLabel={a.tilesAria}
-                locale={language === "pt" ? "pt-BR" : "en"}
-              />
-            </div>
-          )}
         </div>
       </div>
     </Section>

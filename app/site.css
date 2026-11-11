@@ -1,4 +1,4 @@
-/* Site novo (/novo). Tokens da paleta "Tabuleiro" (spec §5.1).
+/* Site. Tokens da paleta "Tabuleiro" (spec §5.1).
    Os hex precisam bater com lib/palette.ts; o teste da paleta confere. */
 .site {
   --c-ebano: #0E0F13;
@@ -7,6 +7,14 @@
   --c-bordo: #D9C3A0;
   --c-marfim: #F4EEE3;
   --c-ambar: #F5A524;
+
+  /* Folhas das portas (nenhuma é cor de texto). Batem com DOOR_TONES em lib/palette.ts. */
+  --c-porta-backend-claro: #2F5A46;
+  --c-porta-backend-escuro: #1B3529;
+  --c-porta-frontend-claro: #7A2F2A;
+  --c-porta-frontend-escuro: #471A17;
+  --c-porta-ia-claro: #2D4166;
+  --c-porta-ia-escuro: #18243D;
 
   --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
   --radius-pill: 999px;
@@ -139,36 +147,83 @@
   }
 }
 
-/* ---------- Capítulos e Atmosfera Contínua e Fluida ---------- */
+/* ---------- Capítulos e Cortina (spec §5) ---------- */
+/* Valores do capítulo, não do conteúdo: evita recalcular o estilo de todos
+   os descendentes a cada quadro da Cortina. O véu herda só --shade abaixo. */
+@property --scale {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+@property --round {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --shade {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
 .s-chapter {
   position: relative;
   padding: clamp(56px, 7vw, 104px) clamp(16px, 4vw, 48px);
   width: 100%;
+  /* Afunda para o centro da área visível, inclusive em capítulos altos que
+     grudam pela base. A retração se distingue da folha seguinte que sobe. */
+  transform-origin: 50% calc(50vh - var(--stick-top, 0px));
 }
+/* Só gruda com JavaScript e depois da medição (useCortina põe data-stick e
+   --stick-top): sem JS, nenhum capítulo cobre texto não lido. */
+.js .s-chapter[data-stick] {
+  position: sticky;
+  top: var(--stick-top, 0px);
+}
+/* Escala só enquanto afunda: com cobertura 0 não há transform nenhum (a cena
+   3D das portas depende disso). */
+.s-chapter[data-sinking] {
+  will-change: transform;
+  transform: scale(var(--scale, 1));
+}
+/* Véu: escurece com uma camada por cima do conteúdo, nunca com filter. */
 .s-chapter::after {
+  --shade: inherit;
   content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  border-radius: inherit;
+  background: #000;
   opacity: var(--shade, 0);
   pointer-events: none;
 }
+/* A folha já transformada e seu véu podem compor sem rasterizar juntos.
+   O atributo sai quando a cobertura volta a zero. */
+.s-chapter[data-sinking]::after {
+  will-change: opacity;
+}
+/* Atrás de quem encolhe aparece ébano. clip, e não hidden: hidden faria do
+   .s-cortina um contêiner de rolagem, e o sticky dos capítulos não grudaria. */
 .s-cortina {
   background: var(--c-ebano);
   width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
-/* Transições cromáticas contínuas (zero cortes a seco, atmosfera fluida e nobre) */
 .s-chapter[data-chapter="abertura"] {
   min-height: 100svh;
   padding: 0;
   color: var(--c-ebano);
+  border-radius: var(--round, 0);
 }
 
-/* Camadas arquiteturais fluidas com elevação, sombra ascendente e profundidade 3D */
+/* Folha que sobe: cantos de cima arredondados, sombra para cima e um filete
+   de luz no topo. Os de baixo arredondam conforme a folha seguinte cobre. */
 main > .s-chapter {
-  position: relative;
-  margin-top: -36px;
-  border-radius: 36px 36px 0 0;
-  box-shadow: 0 -20px 48px rgba(0, 0, 0, 0.42);
+  border-radius: 32px 32px var(--round, 0) var(--round, 0);
+  box-shadow:
+    0 -28px 70px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 main > .s-chapter[data-chapter="derrube"] {
@@ -189,9 +244,6 @@ main > .s-chapter[data-chapter="derrube"] {
 
 main > .s-chapter[data-chapter="projetos"] {
   z-index: 3;
-  margin-top: -40px;
-  border-radius: 40px 40px 0 0;
-  box-shadow: 0 -24px 56px rgba(0, 0, 0, 0.55);
   background:
     radial-gradient(ellipse 75% 360px at 50% 160px, rgba(46, 83, 229, 0.08), transparent 70%),
     linear-gradient(
@@ -207,9 +259,6 @@ main > .s-chapter[data-chapter="projetos"] {
 
 main > .s-chapter[data-chapter="trabalho"] {
   z-index: 4;
-  margin-top: -40px;
-  border-radius: 40px 40px 0 0;
-  box-shadow: 0 -24px 56px rgba(0, 0, 0, 0.35);
   background: linear-gradient(
     180deg,
     #181519 0%,
@@ -226,9 +275,6 @@ main > .s-chapter[data-chapter="trabalho"] {
 
 main > .s-chapter[data-chapter="sobre"] {
   z-index: 5;
-  margin-top: -40px;
-  border-radius: 40px 40px 0 0;
-  box-shadow: 0 -24px 56px rgba(0, 0, 0, 0.38);
   background: linear-gradient(
     180deg,
     #e4d7c3 0%,
@@ -266,6 +312,11 @@ main > .s-chapter[data-chapter="sobre"] {
 .s-section + .s-section {
   margin-top: clamp(48px, 8vw, 96px);
 }
+/* Título que recebe o foco de uma âncora feita por JS (scrollToFlow): o foco
+   só marca o ponto de partida do Tab; o título não é um controle. */
+.s-section__title[tabindex="-1"]:focus {
+  outline: none;
+}
 .s-section__title {
   margin: 0 0 16px;
   font-size: clamp(2rem, 5vw, 3.5rem);
@@ -274,11 +325,10 @@ main > .s-chapter[data-chapter="sobre"] {
 }
 
 .s-footer {
-  /* Camada final elevada sobre o capítulo Sobre */
+  /* Camada final, por cima de todos os capítulos. */
   position: relative;
   z-index: 6;
-  margin-top: -40px;
-  border-radius: 40px 40px 0 0;
+  border-radius: 32px 32px 0 0;
   box-shadow: 0 -24px 56px rgba(0, 0, 0, 0.6);
   padding: clamp(56px, 7vw, 80px) clamp(16px, 4vw, 48px);
   background: linear-gradient(
@@ -470,16 +520,6 @@ main > .s-chapter[data-chapter="sobre"] {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform:
-    perspective(1000px)
-    rotateX(var(--char-tilt-x, 0deg))
-    rotateY(var(--char-tilt-y, 0deg))
-    translateY(var(--char-shift-y, 0px))
-    translateX(var(--char-shift-x, 0px))
-    scale(1.04);
-  transform-origin: 65% 50%;
-  will-change: transform;
-  transition: transform 90ms ease-out;
 }
 @media (prefers-reduced-motion: reduce) {
   .s-char__poster,
@@ -488,14 +528,15 @@ main > .s-chapter[data-chapter="sobre"] {
     transition: none !important;
   }
 }
-/* Um vídeo à vista por vez. O crossfade de 120 ms disfarça a pequena diferença
-   de luz entre o quadro neutro de clipes diferentes. */
+/* Troca exclusiva: uma fusão de opacidade mostra duas poses ao mesmo tempo,
+   especialmente ao interromper o hover para retomar o olhar vertical. */
 .s-char__video {
   opacity: 0;
-  transition: opacity 120ms linear;
+  visibility: hidden;
 }
 .s-char__video[data-active] {
   opacity: 1;
+  visibility: visible;
 }
 @media (prefers-reduced-motion: reduce) {
   .s-char__video {
@@ -1160,7 +1201,6 @@ main > .s-chapter[data-chapter="sobre"] {
   }
 }
 
-
 /* ---------- Arquitetura no estilo xadrez (spec §5.6) ---------- */
 .s-chapter[data-tone="ebano"] :focus-visible {
   outline-color: var(--c-ambar);
@@ -1560,7 +1600,6 @@ main > .s-chapter[data-chapter="sobre"] {
   }
 }
 
-
 /* ---------- Projetos e Portas de Madeira (spec §5.5) ---------- */
 .s-featured {
   margin-top: 24px;
@@ -1609,317 +1648,33 @@ main > .s-chapter[data-chapter="sobre"] {
   color: var(--c-bordo);
   font-size: 1.05rem;
 }
-.s-featured__metrics,
-.s-project-card__metrics {
+.s-featured__metrics {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
   margin: 0 0 24px;
 }
-.s-featured__metric,
-.s-project-card__metric {
+.s-featured__metric {
   padding: 12px 16px;
   border: 1px solid var(--c-nogueira);
   border-radius: 14px;
   background: rgb(14 15 19 / 0.65);
 }
-.s-featured__metric dt,
-.s-project-card__metric dt {
+.s-featured__metric dt {
   color: var(--c-bordo);
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.75rem;
 }
-.s-featured__metric dd,
-.s-project-card__metric dd {
+.s-featured__metric dd {
   margin: 4px 0 0;
   color: var(--c-marfim);
   font-weight: 700;
   font-size: 0.95rem;
 }
-.s-featured__links,
-.s-project-card__links {
+.s-featured__links {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-}
-
-/* Transição do portal e portas fechadas (Arco Romano da Referência) */
-[data-portal] {
-  view-transition-name: s-portal-door;
-}
-::view-transition-old(s-portal-door),
-::view-transition-new(s-portal-door) {
-  animation-duration: 400ms;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.s-doors {
-  margin-top: clamp(36px, 5vw, 56px);
-  animation: s-doors-enter 300ms var(--ease-out) both;
-}
-@keyframes s-doors-enter {
-  from {
-    opacity: 0;
-    transform: scale(0.99);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-.s-doors[data-opening="true"] .s-door:not([data-open="true"]) {
-  opacity: 0.35;
-  transform: scale(0.98);
-  pointer-events: none;
-}
-.s-doors[data-opening="true"] .s-door[data-open="true"] {
-  transform: scale(1.02);
-}
-.s-doors__lead {
-  margin: 0 0 24px;
-  color: var(--c-bordo);
-  font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-.s-doors__row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(16px, 3vw, 28px);
-}
-.s-door {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 16px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--c-marfim);
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition: transform 300ms var(--ease-out), opacity 300ms var(--ease-out);
-}
-.s-door:hover,
-.s-door:focus-visible {
-  transform: translateY(-6px);
-}
-.s-door:focus-visible {
-  outline: none;
-}
-.s-door:focus-visible .s-door__frame {
-  outline: 2px solid var(--c-ambar);
-  outline-offset: 4px;
-}
-
-/* Moldura Arquitetural do Portal */
-.s-door__frame {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  height: clamp(260px, 32vw, 320px);
-  padding: 24px 20px;
-  border-radius: min(120px, 30vw) min(120px, 30vw) 16px 16px;
-  border: 1.5px solid rgba(138, 106, 74, 0.4);
-  background: linear-gradient(180deg, #1b1612 0%, #110e0c 55%, #0a0a0d 100%);
-  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.75), inset 0 2px 4px rgba(245, 165, 36, 0.12);
-  overflow: hidden;
-  transition: border-color 250ms var(--ease-out), box-shadow 250ms var(--ease-out);
-}
-.s-door:hover .s-door__frame,
-.s-door:focus-visible .s-door__frame {
-  border-color: var(--c-ambar);
-  box-shadow: 0 20px 48px -8px rgba(0, 0, 0, 0.9), 0 0 28px rgba(245, 165, 36, 0.25);
-}
-
-.s-door__interior {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 40%, rgba(245, 165, 36, 0.12) 0%, transparent 75%);
-  pointer-events: none;
-}
-
-.s-door__halo {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(245, 165, 36, 0.2) 0%, transparent 70%);
-  pointer-events: none;
-  transition: transform 300ms var(--ease-out), background 300ms var(--ease-out);
-}
-.s-door:hover .s-door__halo,
-.s-door:focus-visible .s-door__halo {
-  transform: translate(-50%, -50%) scale(1.2);
-  background: radial-gradient(circle, rgba(245, 165, 36, 0.35) 0%, transparent 70%);
-}
-
-.s-door__glyph-wrap {
-  position: relative;
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1.5px solid rgba(245, 165, 36, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-  transition: transform 300ms var(--ease-out), border-color 300ms var(--ease-out);
-}
-.s-door:hover .s-door__glyph-wrap,
-.s-door:focus-visible .s-door__glyph-wrap {
-  transform: scale(1.08);
-  border-color: var(--c-ambar);
-}
-.s-door__glyph {
-  font-size: 2.2rem;
-  line-height: 1;
-  color: var(--c-marfim);
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
-}
-.s-door:hover .s-door__glyph {
-  color: var(--c-ambar);
-}
-
-.s-door__badge {
-  font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--c-ambar);
-  padding: 4px 10px;
-  border-radius: 12px;
-  background: rgba(245, 165, 36, 0.1);
-  border: 1px solid rgba(245, 165, 36, 0.25);
-}
-
-/* Metadados e Pontos de Destaque */
-.s-door__meta {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.s-door__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-.s-door__title {
-  color: var(--c-marfim);
-  font-size: 1.25rem;
-  font-weight: 700;
-  transition: color 200ms var(--ease-out);
-}
-.s-door:hover .s-door__title {
-  color: var(--c-ambar);
-}
-.s-door__teaser {
-  color: var(--c-bordo);
-  font-size: 0.92rem;
-  line-height: 1.5;
-}
-.s-door__points {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 4px;
-}
-.s-door__point {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.82rem;
-  color: var(--c-marfim);
-  opacity: 0.85;
-}
-.s-door__point-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--c-ambar);
-  flex-shrink: 0;
-}
-.s-door__cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 6px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--c-ambar);
-  transition: transform 200ms var(--ease-out);
-}
-.s-door:hover .s-door__cta {
-  transform: translateX(4px);
-}
-
-/* Rodapé do Painel de Projeto */
-.s-door-panel__footer {
-  margin-top: 48px;
-  padding: 32px 24px;
-  border-radius: 16px;
-  border: 1px solid rgba(138, 106, 74, 0.3);
-  background: rgba(14, 15, 19, 0.6);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 16px;
-}
-.s-door-panel__footer-text {
-  margin: 0;
-  color: var(--c-bordo);
-  font-size: 0.95rem;
-}
-.s-door-panel__footer-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-.s-door-panel__back--large {
-  padding: 12px 24px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  border-radius: 999px;
-  background: var(--c-marfim);
-  color: var(--c-ebano);
-  border: 1.5px solid var(--c-nogueira-escura);
-  cursor: pointer;
-  transition: transform 150ms ease, background 150ms ease;
-}
-.s-door-panel__back--large:hover {
-  transform: translateY(-2px);
-  background: #fff;
-}
-.s-door-panel__scroll-top {
-  padding: 12px 20px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--c-marfim);
-  border: 1px solid rgba(244, 238, 227, 0.3);
-  cursor: pointer;
-  transition: border-color 150ms ease, color 150ms ease;
-}
-.s-door-panel__scroll-top:hover {
-  border-color: var(--c-ambar);
-  color: var(--c-ambar);
 }
 
 /* Barra de Ação Flutuante para Navegação Rápida */
@@ -1985,146 +1740,6 @@ main > .s-chapter[data-chapter="sobre"] {
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.68rem;
   font-weight: 700;
-}
-
-/* Painel aberto da porta */
-.s-door-panel {
-  margin-top: clamp(36px, 5vw, 56px);
-  padding: clamp(24px, 4vw, 36px);
-  border: 1.5px solid var(--c-nogueira);
-  border-radius: 24px;
-  background: rgb(42 32 24 / 0.35);
-  box-shadow:
-    0 20px 48px -12px rgb(0 0 0 / 0.6),
-    0 0 32px -8px rgb(245 165 36 / 0.12);
-  animation: s-door-panel-enter 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-@keyframes s-door-panel-enter {
-  0% {
-    opacity: 0;
-    transform: translateY(14px) scale(0.985);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-.s-doors-static {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-.s-door-panel__head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--c-nogueira);
-}
-.s-door-panel__title {
-  margin: 0;
-  color: var(--c-marfim);
-  font-size: clamp(1.5rem, 3vw, 2rem);
-}
-.s-door-panel__teaser {
-  margin: 4px 0 0;
-  color: var(--c-bordo);
-  font-size: 0.95rem;
-}
-.s-door-panel__back {
-  min-height: 44px;
-  padding: 0 20px;
-  border: 1.5px solid rgba(245, 165, 36, 0.45);
-  border-radius: var(--radius-pill);
-  background: rgba(245, 165, 36, 0.08);
-  color: var(--c-marfim);
-  font: inherit;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  transition:
-    transform 200ms var(--ease-out),
-    background-color 200ms var(--ease-out),
-    border-color 200ms var(--ease-out),
-    color 200ms var(--ease-out),
-    box-shadow 200ms var(--ease-out);
-}
-.s-door-panel__back:hover,
-.s-door-panel__back:focus-visible {
-  background: var(--c-ambar);
-  border-color: var(--c-ambar);
-  color: #120e0c;
-  transform: translateX(-3px);
-  box-shadow: 0 0 16px rgba(245, 165, 36, 0.4);
-}
-.s-door-panel__list {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-  margin-top: 24px;
-}
-.s-project-card {
-  padding: clamp(20px, 3vw, 28px);
-  border: 1.5px solid var(--c-nogueira);
-  border-radius: 20px;
-  background: var(--c-ebano);
-}
-.s-project-card__header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-.s-project-card__title {
-  margin: 0;
-  color: var(--c-marfim);
-  font-size: 1.35rem;
-}
-.s-project-card__year {
-  color: var(--c-bordo);
-  font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.8rem;
-}
-.s-project-card__line {
-  max-width: 68ch;
-  margin: 0 0 20px;
-  color: var(--c-bordo);
-  font-size: 1rem;
-}
-.s-project-card__stack {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0 0 20px;
-  padding: 0;
-  list-style: none;
-}
-.s-project-card__stack li {
-  padding: 4px 10px;
-  border: 1px solid var(--c-nogueira);
-  border-radius: var(--radius-pill);
-  color: var(--c-bordo);
-  font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.75rem;
-}
-.s-project-card__screens {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin: 0 0 24px;
-}
-.s-project-card__screen {
-  width: min(220px, 46%);
-  height: auto;
-  border: 2px solid var(--c-nogueira);
-  border-radius: 22px;
-  background: var(--c-ebano);
-  box-shadow: var(--shadow);
 }
 
 /* ==========================================================================
@@ -2225,6 +1840,86 @@ main > .s-chapter[data-chapter="sobre"] {
   gap: 12px;
 }
 
+/* Baralho (spec §6). Só com data-deck-on (JS, sem movimento reduzido e com
+   todas as cartas cabendo na tela): o trecho fica alto, o palco gruda e cada
+   passo vira uma carta, narrativa em cima e prova embaixo. O useDeck escreve
+   --cy, --cr, --cs e --cshade em cada carta. Sem ele, a lista de sempre. */
+.s-deck[data-deck-on] {
+  height: 340vh;
+}
+.s-deck[data-deck-on] .s-deck__stage {
+  display: block;
+  position: sticky;
+  top: 0;
+  height: 100svh;
+}
+.s-deck[data-deck-on] .s-how__step {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: calc(var(--ci, 0) + 1);
+  width: min(760px, 92vw);
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(16px, 2.5vw, 24px);
+  padding: clamp(20px, 3vw, 32px);
+  border: 1.5px solid rgba(138, 106, 74, 0.35);
+  border-radius: 24px;
+  background: #FAF6F0;
+  box-shadow: 0 30px 60px -18px rgba(14, 15, 19, 0.3);
+  transform: translate3d(-50%, calc(-50% + var(--cy, 0px)), 0) rotate(var(--cr, 0deg)) scale(var(--cs, 1));
+  will-change: transform;
+}
+/* Escurece com uma camada, nunca com filter. */
+.s-deck[data-deck-on] .s-how__step::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  background: #000;
+  opacity: var(--cshade, 0);
+  pointer-events: none;
+}
+.s-deck[data-deck-on] .s-evidence-card {
+  background: var(--c-marfim);
+  box-shadow: none;
+}
+
+.s-deck[data-deck-on][data-deck-compact] .s-how__step {
+  width: min(760px, calc(100vw - 24px));
+  padding: 16px;
+  gap: 12px;
+  border-radius: 18px;
+}
+.s-deck[data-deck-on][data-deck-compact] .s-how__narrative { gap: 12px; }
+.s-deck[data-deck-on][data-deck-compact] .s-how__num { font-size: 0.95rem; }
+.s-deck[data-deck-on][data-deck-compact] .s-how__text {
+  font-size: max(15px, 0.9375rem);
+  line-height: 1.45;
+}
+.s-deck[data-deck-on][data-deck-compact] .s-evidence-card { padding: 12px; }
+.s-deck[data-deck-on][data-deck-compact] .s-evidence-code,
+.s-deck[data-deck-on][data-deck-compact] .s-evidence-caption,
+.s-deck[data-deck-on][data-deck-compact] .s-evidence-metric__label {
+  font-size: max(12px, 0.75rem);
+  line-height: 1.35;
+}
+.s-deck[data-deck-on][data-deck-compact] .s-evidence-metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.s-deck[data-deck-on][data-deck-compact] .s-evidence-card--link a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+@media (min-width: 600px) {
+  .s-deck[data-deck-on][data-deck-compact] .s-how__step {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: 20px;
+  }
+}
+
 /* O que eu resolvo */
 .s-services {
   margin-top: clamp(24px, 4vw, 40px);
@@ -2322,12 +2017,285 @@ main > .s-chapter[data-chapter="sobre"] {
   color: var(--c-nogueira-escura);
 }
 
-
 /* ==========================================================================
    Capítulo Sobre & Contato (Tone Bordo)
    ========================================================================== */
 
+/* O dia de 600 toneladas (spec §7.2). Mesmos tokens e formas do .s-flow do
+   Derrube: painel ébano, caixas nogueira escura com borda bordo, fichas âmbar.
+   Sem data-dia600-on (sem JS, movimento reduzido ou cena que não cabe), o
+   estado final em fluxo normal: os dois nomes em cada caixa, as cinco frases
+   em sequência e nenhuma ficha. */
+.s-dia600 {
+  margin: clamp(24px, 4vw, 40px) calc(-1 * clamp(16px, 4vw, 48px)) 0;
+  border-radius: 32px;
+  background: var(--c-nogueira-escura);
+  color: var(--c-marfim);
+}
+.s-dia600__stage {
+  padding: clamp(32px, 5vw, 64px) clamp(16px, 4vw, 48px);
+}
+.s-dia600__inner {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2.5vw, 24px);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.s-dia600__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 32px;
+}
+.s-dia600__label {
+  margin: 0;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-bordo);
+}
+.s-dia600__title {
+  margin: 6px 0 0;
+  font-size: clamp(1.75rem, 4.4vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.s-dia600__counters {
+  display: flex;
+  gap: clamp(18px, 3vw, 44px);
+}
+.s-dia600__counter {
+  margin: 0;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-bordo);
+}
+.s-dia600__counter b {
+  display: block;
+  margin-bottom: 6px;
+  font-size: clamp(1.75rem, 3.4vw, 2.875rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--c-marfim);
+}
+.s-dia600__counter--lost b {
+  color: var(--c-ambar);
+}
+.s-dia600__flow {
+  position: relative;
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--c-ebano);
+}
+.s-dia600__nodes {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.s-dia600__node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 112px;
+  padding: 12px;
+  border: 1.5px solid var(--c-bordo);
+  border-radius: 14px;
+  background: var(--c-nogueira-escura);
+}
+.s-dia600__name {
+  font-weight: 700;
+  line-height: 1.25;
+  /* Quebra com hífen se a palavra ainda não couber (último recurso). */
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+/* Tablet: cinco colunas estreitas. O nome acompanha a largura da coluna para
+   "Carregamento" caber inteiro. */
+@media (min-width: 720px) and (max-width: 1023px) {
+  .s-dia600__name {
+    font-size: clamp(0.8rem, 1.75vw, 1rem);
+  }
+}
+.s-dia600__state {
+  display: grid;
+  margin-top: auto;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.7rem;
+  color: var(--c-bordo);
+}
+.s-dia600__state > * {
+  grid-area: 1 / 1;
+}
+.s-dia600__state-up,
+.s-dia600__track {
+  display: none;
+}
+.s-dia600__lines {
+  display: grid;
+  gap: 8px;
+  max-width: 34em;
+  font-size: clamp(1.05rem, 1.7vw, 1.5rem);
+  line-height: 1.4;
+}
+.s-dia600__line {
+  margin: 0;
+}
+.s-dia600__line:last-child {
+  color: var(--c-ambar);
+}
+.s-dia600 .s-dia600__bridge {
+  align-self: flex-start;
+  color: var(--c-bordo);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.s-dia600 :focus-visible {
+  outline-color: var(--c-ambar);
+}
+
+/* Ligado: o trecho fica alto e o palco gruda. O useDia600 escreve os números,
+   a posição das fichas e a troca dos nomes. */
+.s-dia600[data-dia600-on] {
+  height: 380vh;
+}
+.s-dia600[data-dia600-on] .s-dia600__stage {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  height: 100svh;
+  padding-block: 16px;
+}
+.s-dia600[data-dia600-on] .s-dia600__name {
+  display: grid;
+}
+.s-dia600[data-dia600-on] .s-dia600__name > * {
+  grid-area: 1 / 1;
+}
+.s-dia600[data-dia600-on] .s-dia600__sep {
+  display: none;
+}
+.s-dia600[data-dia600-on] .s-dia600__code {
+  opacity: 0;
+}
+.s-dia600[data-dia600-on] .s-dia600__state-up {
+  display: block;
+  opacity: 0;
+}
+.s-dia600[data-up] .s-dia600__state-log {
+  opacity: 0;
+}
+.s-dia600[data-up] .s-dia600__state-up {
+  opacity: 1;
+}
+.s-dia600[data-dia600-on] .s-dia600__track {
+  display: block;
+  position: relative;
+  height: 40px;
+  margin-top: 12px;
+}
+.s-dia600__chip {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--c-ambar);
+  color: var(--c-ebano);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+/* Uma frase por vez, no mesmo lugar; a que entra vem de um leve desfoque. */
+.s-dia600[data-dia600-on] .s-dia600__lines > * {
+  grid-area: 1 / 1;
+}
+.s-dia600[data-dia600-on] .s-dia600__line {
+  opacity: 0;
+  transform: translateY(10px);
+  filter: blur(6px);
+  transition:
+    opacity 420ms var(--ease-out),
+    transform 420ms var(--ease-out),
+    filter 420ms var(--ease-out);
+}
+.s-dia600[data-dia600-on] .s-dia600__line[data-on] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+/* O link da ponte entra com a última frase (e aparece sempre que tem o foco). */
+.s-dia600[data-dia600-on] .s-dia600__bridge {
+  transition: opacity 420ms var(--ease-out);
+}
+.s-dia600[data-dia600-on]:not([data-line="4"]) .s-dia600__bridge:not(:focus-visible) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Celular: caixas compactas em linhas, como o Derrube; as fichas descem pela
+   direita e os contadores ficam abaixo do título. */
+@media (max-width: 719px) {
+  .s-dia600__flow {
+    padding: 16px;
+  }
+  .s-dia600__nodes {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .s-dia600__node {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    min-height: 0;
+    padding: 10px 12px;
+  }
+  .s-dia600__state {
+    margin: 0 0 0 auto;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .s-dia600[data-dia600-on] .s-dia600__nodes {
+    padding-right: 84px;
+  }
+  .s-dia600[data-dia600-on] .s-dia600__track {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    bottom: 16px;
+    width: 76px;
+    height: auto;
+    margin: 0;
+  }
+  .s-dia600__chip {
+    top: 0;
+  }
+}
+
 /* Sobre mim */
+.s-about__intro {
+  margin: clamp(12px, 2vw, 20px) 0 0;
+  max-width: 62ch;
+  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+  line-height: 1.5;
+  color: var(--c-ebano);
+}
 .s-about {
   margin-top: clamp(24px, 4vw, 40px);
 }
@@ -2348,10 +2316,12 @@ main > .s-chapter[data-chapter="sobre"] {
   background: rgba(250, 246, 240, 0.9);
   border: 1.5px solid rgba(42, 32, 24, 0.2);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-  transition: transform 200ms var(--ease-out), border-color 200ms var(--ease-out);
+  /* O lift usa `translate`, não `transform`: o foco ao chegar (data-reveal) anima
+     o `transform` inline desta figura e uma transition nele brigaria com o scrub. */
+  transition: translate 200ms var(--ease-out), border-color 200ms var(--ease-out);
 }
 .s-portrait:hover {
-  transform: translateY(-2px);
+  translate: 0 -2px;
   border-color: var(--c-nogueira-escura);
 }
 .s-portrait__frame {
@@ -2811,153 +2781,6 @@ main > .s-chapter[data-chapter="sobre"] {
     justify-content: center;
   }
 
-  /* Portas no celular: proporção ergonômica de portal arqueado */
-  .s-doors {
-    margin-top: 28px;
-  }
-  .s-doors__lead {
-    margin-bottom: 16px;
-    font-size: 0.8rem;
-  }
-  .s-doors__row {
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
-  .s-door {
-    gap: 12px;
-    max-width: 320px;
-    margin: 0 auto;
-    width: 100%;
-  }
-  .s-door__frame {
-    height: 300px;
-    padding: 8px 8px 0 8px;
-    border-radius: 150px 150px 4px 4px;
-  }
-  .s-door__interior,
-  .s-door__leaf {
-    border-radius: 142px 142px 0 0;
-  }
-  .s-door__inlay {
-    inset: 10px 10px 6px 10px;
-    border-radius: 132px 132px 0 0;
-  }
-  .s-door__plaque {
-    top: 36%;
-    padding: 5px 12px;
-    min-width: 90px;
-  }
-  .s-door__plaque-text {
-    font-size: 0.68rem;
-  }
-  .s-door__handle {
-    top: 54%;
-    right: 12px;
-    height: 44px;
-    width: 4px;
-  }
-  .s-door__keyhole {
-    top: calc(54% + 54px);
-    right: 12px;
-    width: 8px;
-    height: 12px;
-  }
-  .s-door__meta {
-    padding-top: 4px;
-  }
-  .s-door__title {
-    font-size: 1.1rem;
-  }
-  .s-door__teaser {
-    font-size: 0.88rem;
-    line-height: 1.4;
-  }
-
-  /* Painel aberto no celular */
-  .s-door-panel {
-    margin-top: 24px;
-    padding: 16px 12px;
-    border-radius: 16px;
-  }
-  .s-door-panel__head {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-    padding-bottom: 14px;
-  }
-  .s-door-panel__title {
-    font-size: 1.4rem;
-  }
-  .s-door-panel__teaser {
-    font-size: 0.88rem;
-  }
-  .s-door-panel__back {
-    width: 100%;
-    min-height: 42px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-  }
-  .s-door-panel__list {
-    gap: 18px;
-    margin-top: 16px;
-  }
-
-  /* Card de projeto no celular */
-  .s-project-card {
-    padding: 16px 12px;
-    border-radius: 14px;
-  }
-  .s-project-card__header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    margin-bottom: 6px;
-  }
-  .s-project-card__title {
-    font-size: 1.25rem;
-  }
-  .s-project-card__year {
-    font-size: 0.75rem;
-  }
-  .s-project-card__line {
-    font-size: 0.92rem;
-    line-height: 1.45;
-    margin-bottom: 14px;
-  }
-  .s-project-card__stack {
-    gap: 6px;
-    margin-bottom: 14px;
-  }
-  .s-project-card__stack li {
-    padding: 3px 8px;
-    font-size: 0.72rem;
-  }
-  .s-project-card__metrics {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-  .s-project-card__metric {
-    padding: 8px 12px;
-  }
-  .s-project-card__links {
-    gap: 8px;
-  }
-  .s-project-card__links .s-pill {
-    width: 100%;
-    justify-content: center;
-  }
-  .s-project-card__screens {
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-  .s-project-card__screen {
-    width: calc(50% - 5px);
-    border-radius: 14px;
-  }
-
   /* Tabuleiro no celular */
   .s-board {
     padding: 12px 8px;
@@ -3126,26 +2949,675 @@ main > .s-chapter[data-chapter="sobre"] {
   .s-board__pulse {
     display: none;
   }
-  .s-doors,
-  .s-doors[data-opening="true"],
-  .s-doors[data-opening="true"] .s-door,
-  .s-doors[data-opening="true"] .s-door[data-open="true"],
-  .s-door,
-  .s-door:hover,
-  .s-door:focus-visible,
-  .s-door__interior,
-  .s-door__leaf,
-  .s-door[data-open="true"] .s-door__leaf[data-leaf="left"],
-  .s-door[data-open="true"] .s-door__leaf[data-leaf="right"],
-  .s-door-panel,
-  .s-door-panel__back,
-  .s-door-panel__back:hover {
-    transform: none;
-    filter: none;
-    animation: none;
-    transition: opacity 150ms linear;
+}
+
+/* ---------- Portas (etapa 2.1) ---------- */
+/* Palco e sala dividem o mesmo lugar: com a sala aberta, a cena fica embaixo
+   dela (absoluta, invisível e inerte, pelo style do Projetos). */
+.s-portas {
+  position: relative;
+  margin-top: clamp(36px, 5vw, 56px);
+}
+/* Sem JavaScript: as salas abertas, uma embaixo da outra. */
+.s-rooms-static {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-top: clamp(36px, 5vw, 56px);
+}
+/* Sala atrás da porta e miniatura vista pela abertura. A miniatura usa as
+   mesmas regras: o quadro de chegada tem de ser idêntico ao topo da sala. */
+/* --room-glow vem da porta, no style da sala e da prévia: var(--c-porta-<id>-claro). */
+.s-room {
+  position: relative;
+  padding: clamp(28px, 5vh, 56px) clamp(16px, 6vw, 80px) clamp(40px, 8vh, 80px);
+  background:
+    radial-gradient(70% 40% at 50% 0, color-mix(in srgb, var(--room-glow) 55%, transparent), transparent 75%),
+    var(--c-ebano);
+  color: var(--c-marfim);
+  text-align: center;
+}
+.s-room__top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.s-room__label {
+  margin: 0;
+  color: var(--c-ambar);
+  font: 600 12px/1 var(--font-mono, ui-monospace, monospace);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.s-room__title {
+  margin: 0.15em 0 0;
+  color: var(--c-marfim);
+  font-size: clamp(40px, 6.5vw, 96px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+.s-room__title:focus {
+  outline: none;
+}
+.s-room__teaser {
+  margin: 12px 0 0;
+  color: var(--c-bordo);
+  font-size: clamp(15px, 1.4vw, 19px);
+}
+.s-room__back {
+  position: absolute;
+  top: clamp(12px, 2vh, 24px);
+  left: clamp(12px, 3vw, 40px);
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--c-nogueira);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--c-marfim);
+  font: inherit;
+  cursor: pointer;
+}
+.s-room__back:hover,
+.s-room__back:focus-visible {
+  border-color: var(--c-ambar);
+  color: var(--c-ambar);
+}
+/* Tela estreita: o botão Voltar (absoluto, no canto) cobriria o rótulo
+   centralizado. O topo desce até passar dele. Vale também para a miniatura
+   (mesma regra, sob .s-portas), para o quadro de chegada continuar igual; o
+   modo sem JavaScript (sem botão) fica de fora. */
+@media (max-width: 679px) {
+  .s-portas .s-room__top {
+    padding-top: max(0px, calc(clamp(12px, 2vh, 24px) + 52px - clamp(28px, 5vh, 56px)));
   }
-  .s-doors[data-opening="true"] {
+}
+.s-room__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 24px;
+  width: min(1100px, 100%);
+  margin: clamp(20px, 3.5vh, 36px) auto 0;
+}
+.s-room__footer {
+  margin-top: 56px;
+  padding-top: 28px;
+  border-top: 1px solid var(--c-nogueira);
+}
+.s-room__footer-text {
+  margin: 0 0 16px;
+  color: var(--c-bordo);
+}
+.s-room__footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+/* O botão do rodapé fica no fluxo; só o do topo é absoluto. */
+.s-room__back--large {
+  position: static;
+}
+.s-room__scroll-top {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--c-nogueira);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--c-bordo);
+  font: inherit;
+  cursor: pointer;
+}
+.s-room__scroll-top:hover,
+.s-room__scroll-top:focus-visible {
+  border-color: var(--c-ambar);
+  color: var(--c-ambar);
+}
+
+/* Cartão de projeto (completo e prévia). */
+.s-pcard {
+  flex: 1 1 300px;
+  max-width: 360px;
+  padding: 12px 12px 16px;
+  border: 1px solid var(--c-nogueira);
+  border-radius: 14px;
+  background: var(--c-nogueira-escura);
+  color: var(--c-marfim);
+  text-align: left;
+}
+.s-pcard__more {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 14px 4px 0;
+}
+.s-pcard__screen {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  object-fit: cover;
+  object-position: top;
+  border: 1px solid var(--c-nogueira);
+  border-radius: 8px;
+  background: var(--c-ebano);
+}
+.s-pcard__also {
+  margin: 12px 4px 0;
+  color: var(--c-ambar);
+  font: 600 11px/1 var(--font-mono, ui-monospace, monospace);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.s-pcard__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 14px 4px 4px;
+}
+.s-pcard__title {
+  margin: 0;
+  color: var(--c-marfim);
+  font-size: 19px;
+  font-weight: 600;
+}
+.s-pcard__year {
+  color: var(--c-bordo);
+  font: 400 12px/1 var(--font-mono, ui-monospace, monospace);
+}
+.s-pcard__line {
+  margin: 0 4px;
+  color: var(--c-bordo);
+  font-size: 14px;
+  line-height: 1.45;
+}
+.s-pcard__stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 4px 0;
+  padding: 0;
+  list-style: none;
+}
+.s-pcard__stack li {
+  padding: 5px 8px;
+  border: 1px solid var(--c-nogueira);
+  border-radius: var(--radius-pill);
+  color: var(--c-bordo);
+  font: 400 11px/1 var(--font-mono, ui-monospace, monospace);
+}
+.s-pcard__metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin: 16px 4px 0;
+}
+.s-pcard__metric dt {
+  color: var(--c-bordo);
+  font-size: 12px;
+}
+.s-pcard__metric dd {
+  margin: 2px 0 0;
+  color: var(--c-marfim);
+  font-weight: 600;
+}
+.s-pcard__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 4px 0;
+}
+@media (max-width: 640px) {
+  .s-pcard {
+    max-width: none;
+  }
+}
+
+/* Parede de portas (cena 3D do protótipo B, folhas coloridas). Tudo fica sob
+   .s-stage.
+   Nada com preserve-3d no caminho da porta escolhida pode ter overflow ou
+   opacity < 1: isso achata o 3D. O esmaecer vai em cada porta *outra*.
+   A perspectiva (1200px) vem de PERSPECTIVE, no style do palco. */
+.s-stage {
+  --dw: clamp(104px, min(14vw, 27svh), 230px);
+  --jamb: 14px;
+  --rw: calc(var(--dw) - 2 * var(--jamb));
+  --dh: calc(var(--dw) * 1.72);
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  perspective-origin: 50% 50%;
+  overflow: hidden;
+  background:
+    radial-gradient(80% 60% at 50% 40%, color-mix(in srgb, var(--c-nogueira) 10%, transparent), transparent 70%),
+    linear-gradient(180deg, #121217 0%, var(--c-ebano) 64%, #17140f 64.2%, #0d0d10 100%);
+  color: var(--c-marfim);
+}
+/* Sem will-change: com ele o Chrome rasteriza a miniatura na escala inicial e
+   ela chega borrada no fim da caminhada, diferente da sala real. */
+.s-world {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+.s-stage__lead {
+  position: absolute;
+  top: 4.5svh;
+  left: 0;
+  right: 0;
+  margin: 0;
+  color: var(--c-bordo);
+  font-size: clamp(14px, 1.4vw, 18px);
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+.s-wall {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(28px, 6vw, 96px);
+  transform-style: preserve-3d;
+}
+
+/* Porta: o botão, sem o estilo padrão de botão. */
+.s-stage .s-door {
+  position: relative;
+  display: block;
+  flex: none;
+  width: var(--dw);
+  max-width: none;
+  height: var(--dh);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  transform: none;
+  transform-style: preserve-3d;
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+.s-stage .s-door:focus-visible {
+  outline: none;
+}
+.s-stage .s-door:focus-visible .s-door__jamb {
+  outline: 2px solid var(--c-ambar);
+  outline-offset: 4px;
+}
+.s-stage .s-door__body {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: opacity 0.45s ease;
+}
+
+/* Batente de nogueira e abertura. */
+.s-stage .s-door__jamb {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px 999px 3px 3px;
+  transform-style: preserve-3d;
+  background: linear-gradient(90deg, #1c150f, #33271c 18%, var(--c-nogueira-escura) 50%, #33271c 82%, #1c150f);
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--c-bordo) 10%, transparent),
+    inset 0 0 0 5px rgb(0 0 0 / 0.35),
+    0 40px 80px -20px rgb(0 0 0 / 0.8);
+}
+.s-stage .s-door__reveal {
+  position: absolute;
+  top: var(--jamb);
+  left: var(--jamb);
+  right: var(--jamb);
+  bottom: 0;
+  border-radius: 999px 999px 0 0;
+  overflow: hidden;
+  background: #08080a;
+}
+/* Sala em miniatura: tamanho do palco, escala 1/k (style), centrada na abertura.
+   A sombra cheia pinta o resto da abertura com o fundo da sala. */
+.s-stage .s-door__mini {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  transform-origin: 50% 50%;
+  box-shadow: 0 0 0 300vmax var(--c-ebano);
+  pointer-events: none;
+}
+
+/* Plaqueta de latão no fecho do arco: ébano sobre âmbar. */
+.s-stage .s-door__keystone {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  z-index: 3;
+  transform: translateX(-50%);
+}
+.s-stage .s-door__plaque {
+  display: inline-block;
+  padding: 5px 10px 4px;
+  border-radius: 3px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--c-ambar) 55%, var(--c-marfim)) 0%,
+    var(--c-ambar) 45%,
+    color-mix(in srgb, var(--c-ambar) 75%, var(--c-ebano)) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    0 2px 6px rgb(0 0 0 / 0.55);
+  color: var(--c-ebano);
+  font: 600 clamp(9px, 0.72vw, 11px) / 1 var(--font-mono, ui-monospace, monospace);
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+
+/* Folhas: giram nas dobradiças (as bordas de fora). */
+.s-stage .s-leaf {
+  position: absolute;
+  top: var(--jamb);
+  bottom: 0;
+  width: calc(var(--rw) / 2);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.s-stage .s-leaf--l {
+  left: var(--jamb);
+  transform-origin: 0 50%;
+}
+.s-stage .s-leaf--r {
+  right: var(--jamb);
+  transform-origin: 100% 50%;
+}
+.s-stage .s-leaf__face,
+.s-stage .s-leaf__back {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.s-stage .s-leaf--l .s-leaf__face,
+.s-stage .s-leaf--r .s-leaf__back {
+  border-radius: calc(var(--rw) / 2) 0 0 0 / calc(var(--rw) / 2) 0 0 0;
+}
+.s-stage .s-leaf--r .s-leaf__face,
+.s-stage .s-leaf--l .s-leaf__back {
+  border-radius: 0 calc(var(--rw) / 2) 0 0 / 0 calc(var(--rw) / 2) 0 0;
+}
+/* Cor da folha: --leaf-claro/--leaf-escuro no style da porta. Porta sem token
+   (a variável fica inválida) cai na nogueira. */
+.s-stage .s-leaf__face {
+  --w1: var(--leaf-claro, var(--c-nogueira));
+  --w2: var(--leaf-escuro, var(--c-nogueira-escura));
+  background:
+    linear-gradient(90deg, rgb(0 0 0 / 0.28), transparent 9%, transparent 91%, rgb(0 0 0 / 0.32)),
+    repeating-linear-gradient(91deg, rgb(255 235 200 / 0.035) 0 2px, transparent 2px 9px),
+    repeating-linear-gradient(88.5deg, rgb(0 0 0 / 0.09) 0 1px, transparent 1px 13px),
+    radial-gradient(140% 60% at 30% 20%, rgb(255 220 170 / 0.1), transparent 60%),
+    linear-gradient(180deg, var(--w1), var(--w2));
+}
+/* Verso: madeira iluminada pela luz da sala. */
+.s-stage .s-leaf__back {
+  transform: rotateY(180deg);
+  background:
+    radial-gradient(90% 70% at 50% 70%, color-mix(in srgb, var(--c-ambar) 28%, transparent), transparent 70%),
+    repeating-linear-gradient(91deg, rgb(255 235 200 / 0.03) 0 2px, transparent 2px 9px),
+    linear-gradient(180deg, #5d4430, #38281b);
+}
+/* Marchetaria: painéis com filete. */
+.s-stage .s-leaf__panel {
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  border: 1px solid color-mix(in srgb, var(--c-bordo) 32%, transparent);
+  box-shadow:
+    inset 0 0 0 4px rgb(0 0 0 / 0.16),
+    inset 0 0 16px rgb(0 0 0 / 0.4),
+    0 1px 0 rgb(255 235 200 / 0.08);
+}
+.s-stage .s-leaf__panel--top {
+  top: 13%;
+  height: 36%;
+}
+.s-stage .s-leaf--l .s-leaf__panel--top {
+  border-radius: 999px 3px 3px 3px;
+}
+.s-stage .s-leaf--r .s-leaf__panel--top {
+  border-radius: 3px 999px 3px 3px;
+}
+.s-stage .s-leaf__panel--bot {
+  top: 58%;
+  height: 32%;
+  border-radius: 3px;
+}
+/* Puxadores de latão, junto ao encontro das folhas. */
+.s-stage .s-leaf__pull {
+  position: absolute;
+  top: 42%;
+  width: clamp(4px, 0.4vw, 6px);
+  height: 18%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #7a4a08, #f5c462 50%, #8a560c);
+  box-shadow: 0 3px 6px rgb(0 0 0 / 0.6);
+}
+.s-stage .s-leaf--l .s-leaf__pull {
+  right: 10%;
+}
+.s-stage .s-leaf--r .s-leaf__pull {
+  left: 10%;
+}
+.s-stage .s-leaf__shade {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+}
+.s-stage .s-leaf__edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  background: linear-gradient(180deg, #2a1d12, #1a120b);
+}
+.s-stage .s-leaf--l .s-leaf__edge {
+  right: 0;
+  transform-origin: 100% 50%;
+  transform: rotateY(-90deg);
+}
+.s-stage .s-leaf--r .s-leaf__edge {
+  left: 0;
+  transform-origin: 0 50%;
+  transform: rotateY(90deg);
+}
+
+/* Filete de luz por baixo das folhas e luz no chão. O .s-door__spill é o da
+   abertura (animado pela linha do tempo, sem transição de CSS); o
+   .s-door__floor é o brilho fraco do hover. */
+.s-stage .s-door__gap {
+  position: absolute;
+  left: var(--jamb);
+  right: var(--jamb);
+  bottom: -1px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--c-ambar);
+  filter: blur(2px);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.s-stage .s-door__spill,
+.s-stage .s-door__floor {
+  position: absolute;
+  top: 100%;
+  left: -40%;
+  width: 180%;
+  height: calc(var(--dh) * 0.55);
+  background: radial-gradient(
+    60% 100% at 50% 0,
+    color-mix(in srgb, var(--c-ambar) 42%, transparent),
+    color-mix(in srgb, var(--c-ambar) 8%, transparent) 55%,
+    transparent 80%
+  );
+  clip-path: polygon(36% 0, 64% 0, 100% 100%, 0 100%);
+  opacity: 0;
+  pointer-events: none;
+}
+.s-stage .s-door__floor {
+  transition: opacity 0.4s;
+}
+
+/* Rótulo: nome e teaser abaixo da porta. */
+.s-stage .s-door__label {
+  position: absolute;
+  top: calc(100% + 26px);
+  left: 50%;
+  width: max-content;
+  max-width: calc(var(--dw) * 1.4);
+  transform: translateX(-50%);
+  text-align: center;
+}
+.s-stage .s-door__name {
+  display: block;
+  color: var(--c-marfim);
+  font-size: clamp(16px, 1.5vw, 22px);
+  font-weight: 600;
+}
+.s-stage .s-door__line {
+  display: block;
+  margin-top: 4px;
+  color: var(--c-bordo);
+  font-size: clamp(12px, 0.95vw, 14px);
+  line-height: 1.4;
+}
+
+/* Hover e foco: a porta avança, acende o filete, as outras esmaecem. Só com a
+   parede livre; durante a abertura quem manda é a linha do tempo. Com a parede
+   travada e uma porta ativa, as outras ficam esmaecidas (sem salto de 0,4 a 1
+   no começo da abertura); a ativa nunca ganha opacity. */
+.s-stage:not([data-locked]) .s-door:is(:hover, :focus-visible) {
+  transform: translateZ(16px);
+}
+.s-stage:not([data-locked]) .s-door:is(:hover, :focus-visible) .s-door__gap {
+  opacity: 0.85;
+}
+.s-stage:not([data-locked]) .s-door:is(:hover, :focus-visible) .s-door__floor {
+  opacity: 0.18;
+}
+.s-stage:not([data-locked]) .s-wall:has(.s-door:is(:hover, :focus-visible)) .s-door:not(:hover, :focus-visible) .s-door__body,
+.s-stage[data-locked]:has(.s-door[aria-expanded="true"]) .s-door:not([aria-expanded="true"]) .s-door__body {
+  opacity: 0.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* O `* { transition-duration: 0.01ms }` do globals.css faria a visibilidade
+     da cena (escondida embaixo da sala) transicionar por um quadro ao fechar:
+     a porta ainda estaria invisível quando recebe o foco, e o foco se perderia. */
+  .s-portas > div,
+  .s-stage,
+  .s-world,
+  .s-wall,
+  .s-stage .s-door,
+  .s-stage .s-door__body,
+  .s-stage .s-door__gap,
+  .s-stage .s-door__floor {
+    transition: none;
+  }
+  .s-stage:not([data-locked]) .s-door:is(:hover, :focus-visible) {
+    transform: none;
+  }
+}
+
+/* Celular: uma porta por tela. Cada porta ocupa 100% da largura do palco (margens
+   em % são relativas ao palco) e a fila desliza com --wall-i. Sem overflow na
+   fila nem no mundo (achatariam o 3D): quem recorta é o próprio palco. */
+.s-carousel {
+  display: none;
+}
+@media (max-width: 599px) {
+  .s-stage {
+    --dw: clamp(150px, min(50vw, 30svh), 230px);
+    touch-action: pan-y;
+  }
+  .s-wall {
+    justify-content: flex-start;
+    gap: 0;
+    transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transform: translateX(calc(var(--wall-i, 0) * -100%));
+  }
+  .s-stage .s-door {
+    margin-inline: calc(50% - var(--dw) / 2);
+  }
+  .s-carousel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 5svh;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    color: var(--c-marfim);
+    font-size: 14px;
+    transition:
+      opacity 0.3s,
+      visibility 0.3s;
+  }
+  /* Os controles ficam fora do mundo 3D: somem durante a caminhada, senão
+     flutuariam sobre a miniatura e sumiriam de uma vez no quadro de chegada. */
+  .s-stage[data-locked] .s-carousel {
     opacity: 0;
+    visibility: hidden;
+  }
+  .s-carousel__btn {
+    width: 44px;
+    height: 44px;
+    border: 1px solid color-mix(in srgb, var(--c-marfim) 35%, transparent);
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .s-carousel__btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  .s-carousel__btn:focus-visible {
+    outline: 2px solid var(--c-ambar);
+    outline-offset: 3px;
+  }
+}
+/* Celular deitado: a porta (1,72 × largura) tem de caber na fila (64% do palco). */
+@media (max-width: 599px) and (max-height: 480px) {
+  .s-stage {
+    --dw: clamp(72px, 30svh, 230px);
+  }
+  /* Sem altura para nome, linha e controles do carrossel: fica só o nome, mais
+     perto da porta (a linha volta no topo da sala). */
+  .s-stage .s-door__label {
+    top: calc(100% + 10px);
+  }
+  .s-stage .s-door__line {
+    display: none;
+  }
+}
+@media (max-width: 599px) and (prefers-reduced-motion: reduce) {
+  .s-wall {
+    transition: none;
   }
 }

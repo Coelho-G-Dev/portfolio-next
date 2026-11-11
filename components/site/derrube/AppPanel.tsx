@@ -20,7 +20,7 @@ export default function AppPanel({
   const emailId = useId();
 
   return (
-    <div className="s-app">
+    <div className="s-app" data-reveal>
       <p className="s-app__brand">{copy.title}</p>
       <h3 className="s-app__heading">{copy.heading}</h3>
       <label className="s-app__label" htmlFor={nameId}>

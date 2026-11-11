@@ -1,8 +1,10 @@
+import { useRef, type CSSProperties } from "react";
 import { projects } from "@/data/projects";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { siteCopy } from "@/lib/i18n/site";
 import { Section } from "../Chapter";
 import { Arrow } from "../Pill";
+import { useDeck } from "./useDeck";
 
 const SWAGGER_URL = "https://cidade-energia-back-end.vercel.app/api/docs";
 
@@ -29,90 +31,103 @@ export default function HowIWork() {
   const c = siteCopy[language];
   const h = c.how;
   const authguard = projects.find((p) => p.title === "AuthGuard");
+  const deck = useRef<HTMLDivElement>(null);
+  useDeck(deck);
 
   return (
     <Section id="como-trabalho" title={h.title}>
       <div className="s-how">
-        <div className="s-how__steps">
-          {h.steps.map((step, idx) => (
-            <div key={step.lead} className="s-how__step">
-              <div className="s-how__narrative">
-                <span className="s-how__num" aria-hidden="true">
-                  0{idx + 1}
-                </span>
-                <p className="s-how__text">
-                  <strong className="s-how__lead">{step.lead}</strong> {step.body}
-                </p>
+        {/* Baralho (spec §6): com data-deck-on, o palco gruda e cada passo
+            é uma carta que entra sobre a anterior; sem ele, lista normal. */}
+        <div className="s-deck" data-deck ref={deck}>
+          <div className="s-deck__stage s-how__steps">
+            {/* Chave fora do idioma: trocar PT/EN mantém os mesmos nós, e o
+                baralho continua preso a eles. */}
+            {h.steps.map((step, idx) => (
+              <div
+                key={step.evidence}
+                className="s-how__step"
+                data-deck-card={idx}
+                style={{ "--ci": idx } as CSSProperties}
+              >
+                <div className="s-how__narrative">
+                  <span className="s-how__num" aria-hidden="true">
+                    0{idx + 1}
+                  </span>
+                  <p className="s-how__text">
+                    <strong className="s-how__lead">{step.lead}</strong> {step.body}
+                  </p>
+                </div>
+
+                <div className="s-how__evidence">
+                  {step.evidence === "contract" && (
+                    <figure className="s-evidence-card">
+                      <pre
+                        tabIndex={0}
+                        aria-label={h.contractCaption}
+                        className="s-evidence-code"
+                      >
+                        {CONTRACT}
+                      </pre>
+                      <figcaption className="s-evidence-caption">
+                        {h.contractCaption}
+                      </figcaption>
+                    </figure>
+                  )}
+
+                  {step.evidence === "diagram" && (
+                    <figure className="s-evidence-card">
+                      <pre
+                        tabIndex={0}
+                        aria-label={h.diagramCaption}
+                        className="s-evidence-code s-evidence-code--diagram"
+                      >
+                        {authguard?.architecture?.diagram[language] ??
+                          authguard?.architecture?.diagram.pt}
+                      </pre>
+                      <figcaption className="s-evidence-caption">
+                        {h.diagramCaption}
+                      </figcaption>
+                    </figure>
+                  )}
+
+                  {step.evidence === "tests" && (
+                    <div className="s-evidence-card s-evidence-card--stats">
+                      <dl className="s-evidence-metrics tnum">
+                        {h.tests.map((t) => (
+                          <div key={t.label} className="s-evidence-metric">
+                            <dt className="s-evidence-metric__label">{t.label}</dt>
+                            <dd className="s-evidence-metric__val">{t.value}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
+                  )}
+
+                  {step.evidence === "docs" && (
+                    <figure className="s-evidence-card s-evidence-card--link">
+                      <a
+                        className="s-pill"
+                        data-variant="primary"
+                        data-surface="light"
+                        href={SWAGGER_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <span className="s-pill__label">{h.docsLink}</span>
+                        <span className="s-pill__dot">
+                          <Arrow />
+                        </span>
+                      </a>
+                      <figcaption className="s-evidence-caption">
+                        {h.docsCaption}
+                      </figcaption>
+                    </figure>
+                  )}
+                </div>
               </div>
-
-              <div className="s-how__evidence">
-                {step.evidence === "contract" && (
-                  <figure className="s-evidence-card">
-                    <pre
-                      tabIndex={0}
-                      aria-label={h.contractCaption}
-                      className="s-evidence-code"
-                    >
-                      {CONTRACT}
-                    </pre>
-                    <figcaption className="s-evidence-caption">
-                      {h.contractCaption}
-                    </figcaption>
-                  </figure>
-                )}
-
-                {step.evidence === "diagram" && (
-                  <figure className="s-evidence-card">
-                    <pre
-                      tabIndex={0}
-                      aria-label={h.diagramCaption}
-                      className="s-evidence-code s-evidence-code--diagram"
-                    >
-                      {authguard?.architecture?.diagram[language] ??
-                        authguard?.architecture?.diagram.pt}
-                    </pre>
-                    <figcaption className="s-evidence-caption">
-                      {h.diagramCaption}
-                    </figcaption>
-                  </figure>
-                )}
-
-                {step.evidence === "tests" && (
-                  <div className="s-evidence-card s-evidence-card--stats">
-                    <dl className="s-evidence-metrics tnum">
-                      {h.tests.map((t) => (
-                        <div key={t.label} className="s-evidence-metric">
-                          <dt className="s-evidence-metric__label">{t.label}</dt>
-                          <dd className="s-evidence-metric__val">{t.value}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  </div>
-                )}
-
-                {step.evidence === "docs" && (
-                  <figure className="s-evidence-card s-evidence-card--link">
-                    <a
-                      className="s-pill"
-                      data-variant="primary"
-                      data-surface="light"
-                      href={SWAGGER_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <span className="s-pill__label">{h.docsLink}</span>
-                      <span className="s-pill__dot">
-                        <Arrow />
-                      </span>
-                    </a>
-                    <figcaption className="s-evidence-caption">
-                      {h.docsCaption}
-                    </figcaption>
-                  </figure>
-                )}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </Section>

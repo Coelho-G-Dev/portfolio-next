@@ -28,7 +28,7 @@ export function Section({ id, title, children }: { id: string; title: string; ch
   const titleId = `${id}-title`;
   return (
     <section id={id} className="s-section" aria-labelledby={titleId}>
-      <h2 id={titleId} className="s-section__title">
+      <h2 id={titleId} className="s-section__title" data-reveal>
         {title}
       </h2>
       {children}

@@ -19,7 +19,7 @@ export default function Featured({ lang }: { lang: "pt" | "en" }) {
   const links: FacetLink[] = ["demo", "github", "frontend", "docs"];
 
   return (
-    <article className="s-featured" data-featured-project="cidade-energia">
+    <article className="s-featured" data-featured-project="cidade-energia" data-reveal>
       <div className="s-featured__top">
         <span className="s-featured__badge">{c.featured.badge}</span>
         <span className="s-featured__fullstack">{c.featured.fullStack}</span>

@@ -13,7 +13,7 @@ export default function Footer() {
       <div className="s-footer__inner">
         <div className="s-footer__top">
           <div className="s-footer__cta-block">
-            <h2 className="s-footer__title">{f.title}</h2>
+            <h2 className="s-footer__title" data-reveal>{f.title}</h2>
             <a
               className="s-pill s-footer__cta"
               data-variant="primary"

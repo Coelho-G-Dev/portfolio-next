@@ -63,6 +63,7 @@ export default function FlowPanel({
   return (
     <div
       className="s-flow"
+      data-reveal
       data-mode={mode}
       style={{ "--n": nodes.length } as CSSProperties}
     >

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { EMAIL, GITHUB_URL, LINKEDIN_URL, mailtoFor, type ContactKind as Kind } from "@/lib/contact";
+import { EMAIL, GITHUB_URL, LINKEDIN_URL, WHATSAPP_URL, mailtoFor, type ContactKind as Kind } from "@/lib/contact";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { siteCopy } from "@/lib/i18n/site";
 import { Section } from "../Chapter";
@@ -16,7 +16,7 @@ export default function Contact() {
   return (
     <Section id="contato" title={k.title}>
       <div className="s-contact">
-        <div className="s-contact__grid">
+        <div className="s-contact__grid" data-reveal>
           {/* Coluna 1: Informações diretas, presença e links */}
           <div className="s-contact__info">
             <div className="s-contact__meta">
@@ -30,6 +30,16 @@ export default function Contact() {
               </a>
 
               <div className="s-contact__socials">
+                <a
+                  href={WHATSAPP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="s-contact__social-link"
+                >
+                  <span>{k.whatsapp}</span>
+                  <span className="s-contact__social-handle">· {k.whatsappNumber}</span>
+                  <Arrow />
+                </a>
                 <a
                   href={LINKEDIN_URL}
                   target="_blank"

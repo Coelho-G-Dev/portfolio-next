@@ -1,4 +1,6 @@
-import type { Door, FacetLink } from "@/data/projects";
+import type { Dia600Stage } from "@/data/dia600";
+import type { Door } from "@/data/doors";
+import type { FacetLink } from "@/data/projects";
 import type { Locale } from "./translations";
 import type { AppStatus } from "@/lib/derrubeApp";
 import type { DirectEvent, DirectService } from "@/lib/directFlow";
@@ -9,19 +11,20 @@ import type { FlowEvent, ServiceId } from "@/lib/messageFlow";
 
 type NavLink = { href: string; label: string };
 
-type SectionCopy = { title: string; soon: string };
 
 type NodeId = "interface" | ServiceId;
 
 type DoorCopy = { name: string; teaser: string };
-
-type DoorMeta = { badge: string; points: string[] };
 
 // Segundos até a próxima tentativa: cada tick da simulação dura 0,75 s.
 const seconds = (delay: number, locale: string) =>
   (delay * 0.75).toLocaleString(locale, { maximumFractionDigits: 2 });
 
 const pt = {
+  sharing: {
+    line: "Da tela ao banco, com back-ends que não perdem mensagem.",
+    alt: "Gabriel Coelho, desenvolvedor full-stack em São Luís, MA, ao lado do personagem 3D dele.",
+  },
   nav: {
     brand: "Gabriel Coelho",
     homeAria: "Gabriel Coelho, início",
@@ -55,6 +58,8 @@ const pt = {
     ],
   },
   contact: {
+    whatsapp: "WhatsApp",
+    whatsappNumber: "(98) 98825-5626",
     title: "Vamos conversar",
     location: "São Luís, MA · UTC−3",
     reply: "Respondo em até 2 dias úteis",
@@ -150,12 +155,15 @@ const pt = {
     } as Record<Door, DoorCopy>,
     open: (name: string) => `Abrir a porta ${name}`,
     back: "Voltar às portas",
-    doorMeta: {
-      backend: { badge: "APIs e filas", points: ["RabbitMQ com DLQ no AuthGuard", "1.400 req/s com p99 abaixo de 35 ms", "94 testes, mais de 90% de cobertura"] },
-      frontend: { badge: "Interfaces", points: ["PWA do Cidade Energia em Next.js 16", "Rota até a unidade de saúde no BuscaSUS", "133 testes no PWA"] },
-      ia: { badge: "RAG com fontes", points: ["Busca vetorial com pgvector", "Respostas que citam a fonte", "Tutor Energinho do Cidade Energia"] },
-    } as Record<Door, DoorMeta>,
-    explore: "Entrar",
+    roomLabel: (index: number, name: string) => `Porta ${String(index + 1).padStart(2, "0")} · ${name}`,
+    alsoIn: (name: string) => `Também na porta ${name}`,
+    carousel: {
+      prev: "Porta anterior",
+      next: "Próxima porta",
+      // Lido só pelo leitor de tela, antes da posição: "Porta 2 de 3".
+      positionPrefix: "Porta",
+      position: (i: number, n: number) => `${i} de ${n}`,
+    },
     panel: {
       footerText: "Quer ver as outras portas?",
       closeAndBack: (name: string) => `Fechar ${name} e voltar às portas`,
@@ -214,7 +222,7 @@ const pt = {
       { value: ">90%", label: "de cobertura no AuthGuard" },
     ],
     docsLink: "Abrir o Swagger do Cidade Energia",
-    contractCaption: "Trecho do contrato OpenAPI 3.1 do Cidade Energia, uma das 21 rotas documentadas.",
+    contractCaption: "Trecho do contrato OpenAPI 3.1 do Cidade Energia, uma das 22 rotas documentadas.",
     diagramCaption: "Arquitetura do AuthGuard: autenticação, fila e Dead-Letter Queue.",
     docsCaption: "Documentação pública da API do Cidade Energia, no ar desde a entrega.",
   },
@@ -233,13 +241,41 @@ const pt = {
   },
   about: {
     title: "Sobre mim",
+    intro: "Encarregado de logística numa rede nacional de mercados e desenvolvedor full-stack com foco em back-end.",
+    dia600: {
+      label: "O dia de maior pressão",
+      title: "600 toneladas, um fluxo só",
+      counters: { shipped: "expedidas", trucks: "caminhões carregados", lost: "perdidos" },
+      summary: "Naquele dia: 600 toneladas expedidas, 40 caminhões carregados e nenhuma carga perdida.",
+      stages: {
+        pedido: "Pedido das lojas",
+        separacao: "Separação",
+        conferencia: "Conferência",
+        carregamento: "Carregamento",
+        lojas: "Lojas da rede",
+      } as Record<Dia600Stage["id"], string>,
+      // Pedido, separação, conferência e lojas reaproveitam derrube.up ("no ar").
+      states: { carregamento: "40+ caminhões" } as Partial<
+        Record<Dia600Stage["id"], string>
+      >,
+      inCode: (log: string, code: string) => `${log}, no código: ${code}`,
+      chip: (n: string) => `cam. ${n}`,
+      lines: [
+        "Na média, 300 toneladas por dia saem para as lojas da rede.",
+        "No pico, 600 toneladas e mais de 40 caminhões para carregar no mesmo dia.",
+        "Todos no mesmo padrão de separação e conferência, caminhão por caminhão.",
+        "O fluxo não rompeu.",
+        "No código, é o mesmo desenho: a fila segura o pico e nada se perde.",
+      ],
+      bridgeLink: "É o AuthGuard que você pode derrubar lá em cima",
+    },
     portraits: [
       {
         src: "/photos/web/retrato-espelho.webp",
         alt: "Gabriel Coelho de camisa branca, diante de azulejos azuis",
         name: "Gabriel Coelho",
         role: "Full-stack · Ciência e Tecnologia, UFMA",
-        text: "Vim da logística, onde aprendi que pacote perdido é cliente perdido. Hoje construo sistemas com a mesma regra.",
+        text: "Na logística, aprendi que pacote perdido é cliente perdido. No código, sigo a mesma regra.",
       },
       {
         src: "/photos/web/palco-cidade-energia.webp",
@@ -263,7 +299,7 @@ const pt = {
         text: "Carga se aumenta aos poucos, com técnica. E pensar jogadas à frente é o mesmo exercício de desenhar um sistema que vai crescer.",
       },
     ],
-    stackTitle: "Ferramentas que uso",
+    stackTitle: "Skills",
     stackLead: "O que uso no dia a dia e onde cada coisa aparece nos meus projetos.",
     stackCategories: [
       {
@@ -278,7 +314,7 @@ const pt = {
         name: "Front-end",
         items: [
           { name: "Next.js 16 e React 19", note: "PWA do Cidade Energia: simulador solar, trilhas com quiz e 133 testes" },
-          { name: "React e mapas", note: "BuscaSUS: unidade de saúde mais próxima e a rota, com Google Maps e Leaflet" },
+          { name: "React e mapas", note: "BuscaSUS: unidade de saúde mais próxima e a rota, com o Google Maps" },
           { name: "Acessibilidade", note: "Este portfólio: conferido com axe nos testes Playwright" },
           { name: "Modo simulado", note: "O PWA do Cidade Energia roda inteiro sem back-end na demo" },
         ],
@@ -296,7 +332,7 @@ const pt = {
           { name: "PostgreSQL", note: "Ledger ACID da API Financeira e dados do AuthGuard" },
           { name: "pgvector", note: "Busca semântica com índice HNSW no RAG" },
           { name: "Supabase", note: "Login anônimo, banco e RLS do Cidade Energia" },
-          { name: "Prisma", note: "ORM tipado, com migrações" },
+          { name: "Prisma", note: "ORM tipado, com migrações, na API Financeira" },
         ],
       },
       {
@@ -315,12 +351,6 @@ const pt = {
     tilesAria: (week: string, count: number) => `Semana de ${week}: ${count} contribuições`,
     tilesFallback: "O painel aparece quando o GitHub responde.",
   },
-  sections: {
-    comoTrabalho: { title: "Como eu trabalho", soon: "Em construção." },
-    oQueResolvo: { title: "O que eu resolvo", soon: "Em construção." },
-    sobre: { title: "Sobre mim", soon: "Em construção." },
-    contato: { title: "Vamos conversar", soon: "Em construção." },
-  } as Record<string, SectionCopy>,
   footer: {
     title: "Tem um produto para construir?",
     cta: "Escrever para mim",
@@ -330,6 +360,10 @@ const pt = {
 };
 
 const en: typeof pt = {
+  sharing: {
+    line: "From the screen to the database, with back-ends that never drop a message.",
+    alt: "Gabriel Coelho, a full-stack developer in São Luís, Brazil, alongside his 3D character.",
+  },
   nav: {
     brand: "Gabriel Coelho",
     homeAria: "Gabriel Coelho, home",
@@ -363,6 +397,8 @@ const en: typeof pt = {
     ],
   },
   contact: {
+    whatsapp: "WhatsApp",
+    whatsappNumber: "(98) 98825-5626",
     title: "Let's talk",
     location: "São Luís, Brazil · UTC−3",
     reply: "I reply within 2 working days",
@@ -455,12 +491,14 @@ const en: typeof pt = {
     },
     open: (name: string) => `Open the ${name} door`,
     back: "Back to doors",
-    doorMeta: {
-      backend: { badge: "APIs and queues", points: ["RabbitMQ with a DLQ in AuthGuard", "1,400 req/s with p99 under 35 ms", "94 tests, over 90% coverage"] },
-      frontend: { badge: "Interfaces", points: ["Cidade Energia PWA in Next.js 16", "Route to the nearest clinic in BuscaSUS", "133 tests in the PWA"] },
-      ia: { badge: "RAG with sources", points: ["Vector search with pgvector", "Answers that cite their source", "Energinho tutor in Cidade Energia"] },
-    } as Record<Door, DoorMeta>,
-    explore: "Step inside",
+    roomLabel: (index: number, name: string) => `Door ${String(index + 1).padStart(2, "0")} · ${name}`,
+    alsoIn: (name: string) => `Also behind the ${name} door`,
+    carousel: {
+      prev: "Previous door",
+      next: "Next door",
+      positionPrefix: "Door",
+      position: (i: number, n: number) => `${i} of ${n}`,
+    },
     panel: {
       footerText: "Want to see the other doors?",
       closeAndBack: (name: string) => `Close ${name} and go back to the doors`,
@@ -519,7 +557,7 @@ const en: typeof pt = {
       { value: ">90%", label: "coverage in AuthGuard" },
     ],
     docsLink: "Open the Cidade Energia Swagger",
-    contractCaption: "Excerpt from the Cidade Energia OpenAPI 3.1 contract, one of 21 documented routes.",
+    contractCaption: "Excerpt from the Cidade Energia OpenAPI 3.1 contract, one of 22 documented routes.",
     diagramCaption: "AuthGuard's architecture: authentication, queue and Dead-Letter Queue.",
     docsCaption: "Public API documentation for Cidade Energia, live since delivery.",
   },
@@ -538,13 +576,38 @@ const en: typeof pt = {
   },
   about: {
     title: "About me",
+    intro: "Logistics supervisor at a national supermarket chain and full-stack developer focused on the back end.",
+    dia600: {
+      label: "The highest-pressure day",
+      title: "600 tonnes, one flow",
+      counters: { shipped: "shipped", trucks: "trucks loaded", lost: "lost" },
+      summary: "That day: 600 tonnes shipped, 40 trucks loaded and no load lost.",
+      stages: {
+        pedido: "Store orders",
+        separacao: "Picking",
+        conferencia: "Checking",
+        carregamento: "Loading",
+        lojas: "The chain's stores",
+      },
+      states: { carregamento: "40+ trucks" },
+      inCode: (log: string, code: string) => `${log}, in code: ${code}`,
+      chip: (n: string) => `truck ${n}`,
+      lines: [
+        "On average, 300 tonnes a day leave for the chain's stores.",
+        "At the peak, 600 tonnes and more than 40 trucks to load in a single day.",
+        "Everyone on the same picking and checking standard, truck after truck.",
+        "The flow never broke.",
+        "In code it's the same design: the queue absorbs the peak and nothing gets lost.",
+      ],
+      bridgeLink: "That's AuthGuard, the one you can take down above",
+    },
     portraits: [
       {
         src: "/photos/web/retrato-espelho.webp",
         alt: "Gabriel Coelho in a white shirt, in front of blue tiles",
         name: "Gabriel Coelho",
         role: "Full-stack · Science and Technology, UFMA",
-        text: "I came from logistics, where a lost parcel is a lost customer. I build systems by the same rule.",
+        text: "In logistics I learned that a lost package is a lost customer. In code, I follow the same rule.",
       },
       {
         src: "/photos/web/palco-cidade-energia.webp",
@@ -568,7 +631,7 @@ const en: typeof pt = {
         text: "Load goes up gradually, with technique. And thinking several moves ahead is the same exercise as designing a system that will grow.",
       },
     ],
-    stackTitle: "Tools I use",
+    stackTitle: "Skills",
     stackLead: "What I work with day to day, and where each one shows up in my projects.",
     stackCategories: [
       {
@@ -583,7 +646,7 @@ const en: typeof pt = {
         name: "Front-end",
         items: [
           { name: "Next.js 16 and React 19", note: "Cidade Energia PWA: solar simulator, quiz tracks and 133 tests" },
-          { name: "React and maps", note: "BuscaSUS: nearest public clinic and the route, with Google Maps and Leaflet" },
+          { name: "React and maps", note: "BuscaSUS: nearest public clinic and the route, with Google Maps" },
           { name: "Accessibility", note: "This portfolio: checked with axe in Playwright tests" },
           { name: "Mock mode", note: "The Cidade Energia PWA runs fully without a back end for the demo" },
         ],
@@ -601,7 +664,7 @@ const en: typeof pt = {
           { name: "PostgreSQL", note: "ACID ledger in API Financeira and AuthGuard's data" },
           { name: "pgvector", note: "Semantic search with an HNSW index in the RAG project" },
           { name: "Supabase", note: "Anonymous login, database and RLS in Cidade Energia" },
-          { name: "Prisma", note: "Typed ORM, with migrations" },
+          { name: "Prisma", note: "Typed ORM with migrations, in API Financeira" },
         ],
       },
       {
@@ -619,12 +682,6 @@ const en: typeof pt = {
       `Each tile is a week of commits on GitHub: the fuller it is, the more code. ${total} contributions in the last twelve months.`,
     tilesAria: (week: string, count: number) => `Week of ${week}: ${count} contributions`,
     tilesFallback: "The panel appears when GitHub responds.",
-  },
-  sections: {
-    comoTrabalho: { title: "How I work", soon: "Coming soon." },
-    oQueResolvo: { title: "What I can fix for you", soon: "Coming soon." },
-    sobre: { title: "About me", soon: "Coming soon." },
-    contato: { title: "Let's talk", soon: "Coming soon." },
   },
   footer: {
     title: "Got a product to build?",

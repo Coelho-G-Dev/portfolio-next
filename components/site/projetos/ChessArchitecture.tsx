@@ -49,6 +49,7 @@ function BoardCanvas({
   reducedMotion,
   pulseIndex,
   idPrefix,
+  preview = false,
 }: {
   board: Board;
   lang: "pt" | "en";
@@ -57,6 +58,7 @@ function BoardCanvas({
   reducedMotion: boolean;
   pulseIndex: number;
   idPrefix: string;
+  preview?: boolean;
 }) {
   const byId = new Map(board.nodes.map((n) => [n.id, n]));
   const squareWord = lang === "pt" ? "casa" : "square";
@@ -162,18 +164,19 @@ function BoardCanvas({
             const labelText = node.label[lang];
             const hasSpec = Boolean(node.spec && nodeSpecs[node.spec]);
             const isSelected = hasSpec && selectedId === node.id;
+            const Piece = preview ? "span" : "button";
 
             return (
-              <button
+              <Piece
                 key={node.id}
-                type="button"
+                type={preview ? undefined : "button"}
                 className="s-board__piece"
                 data-critical={node.critical ? "true" : undefined}
                 data-selected={isSelected ? "true" : undefined}
-                aria-label={`${labelText}, ${roleText}, ${squareWord} ${node.square}`}
-                aria-expanded={hasSpec ? isSelected : undefined}
+                aria-label={preview ? undefined : `${labelText}, ${roleText}, ${squareWord} ${node.square}`}
+                aria-expanded={hasSpec && !preview ? isSelected : undefined}
                 style={{ gridColumn: gridCol, gridRow }}
-                onClick={() => onSelect(node.id, hasSpec)}
+                onClick={preview ? undefined : () => onSelect(node.id, hasSpec)}
               >
                 <span className="s-board__glyph" aria-hidden="true">
                   {PIECE_GLYPH[node.piece]}
@@ -182,7 +185,7 @@ function BoardCanvas({
                 <span className="s-board__coord" aria-hidden="true">
                   {node.square}
                 </span>
-              </button>
+              </Piece>
             );
           })}
         </div>
@@ -195,10 +198,13 @@ export default function ChessArchitecture({
   project,
   lang,
   staticMode = false,
+  preview = false,
 }: {
   project: Project;
   lang: "pt" | "en";
   staticMode?: boolean;
+  /** Gêmeo visual da miniatura da porta: mesmas caixas, sem efeitos nem cliques. */
+  preview?: boolean;
 }) {
   const board = boards[project.id];
   const b = siteCopy[lang].projetos.board;
@@ -212,14 +218,15 @@ export default function ChessArchitecture({
   const closeBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (!board || reducedMotion || board.edges.length === 0) return;
+    if (preview || !board || reducedMotion || board.edges.length === 0) return;
     const id = setInterval(() => {
       setPulseIndex((prev) => (prev + 1) % board.edges.length);
     }, PULSE_MS);
     return () => clearInterval(id);
-  }, [board, reducedMotion]);
+  }, [board, reducedMotion, preview]);
 
   useEffect(() => {
+    if (preview) return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (fullscreen) {
@@ -238,7 +245,7 @@ export default function ChessArchitecture({
     };
     window.addEventListener("keydown", onKeyDown, true);
     return () => window.removeEventListener("keydown", onKeyDown, true);
-  }, [fullscreen, selectedId]);
+  }, [fullscreen, selectedId, preview]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -305,7 +312,7 @@ export default function ChessArchitecture({
   const moves = notation(board, lang);
 
   const sidePanel = (
-    <aside className="s-board__side" aria-label={b.notationTitle}>
+    <aside className="s-board__side" aria-label={preview ? undefined : b.notationTitle}>
       <div className="s-board__block">
         <p className="s-board__heading">{b.notationTitle}</p>
         <ol className="s-board__notation">
@@ -356,38 +363,47 @@ export default function ChessArchitecture({
     </div>
   );
 
+  // A miniatura fica dentro do botão da porta: nenhum controle pode ser
+  // interativo, mesmo que a raiz já seja inert e aria-hidden.
+  const Button = preview ? "span" : "button";
+  const btn = (onClick: () => void) => (preview ? {} : { onClick });
+
   return (
-    <div className="s-board" data-project-board={project.id}>
+    <div className="s-board" data-project-board={preview ? undefined : project.id}>
       <div className="s-board__toolbar">
         {project.architecture?.title[lang] && (
           <p className="s-board__title">{project.architecture.title[lang]}</p>
         )}
         <div className="s-board__actions">
           {project.architecture?.mermaid && (
-            <button
-              type="button"
+            <Button
+              type={preview ? undefined : "button"}
               className="s-board__btn"
-              onClick={handleCopyMermaid}
+              {...btn(handleCopyMermaid)}
             >
               {b.copyMermaid}
-            </button>
+            </Button>
           )}
-          <button
-            type="button"
+          <Button
+            type={preview ? undefined : "button"}
             className="s-board__btn"
-            onClick={handleDownloadSvg}
+            {...btn(handleDownloadSvg)}
           >
             {b.downloadSvg}
-          </button>
-          <button
-            ref={fullscreenBtnRef}
-            type="button"
+          </Button>
+          <Button
+            ref={preview ? undefined : fullscreenBtnRef}
+            type={preview ? undefined : "button"}
             className="s-board__btn"
-            onClick={() => setFullscreen(true)}
+            {...btn(() => setFullscreen(true))}
           >
             {b.fullscreen}
-          </button>
-          <span className="s-board__status" role="status" aria-live="polite">
+          </Button>
+          <span
+            className="s-board__status"
+            role={preview ? undefined : "status"}
+            aria-live={preview ? undefined : "polite"}
+          >
             {copyStatus === "copied"
               ? b.copied
               : copyStatus === "failed"
@@ -412,7 +428,8 @@ export default function ChessArchitecture({
               onSelect={handleToggleNode}
               reducedMotion={reducedMotion}
               pulseIndex={pulseIndex}
-              idPrefix={`board-${project.id}`}
+              idPrefix={`board-${preview ? "preview-" : ""}${project.id}`}
+              preview={preview}
             />
             {sidePanel}
           </div>
@@ -420,46 +437,48 @@ export default function ChessArchitecture({
         </>
       )}
 
-      <dialog
-        ref={dialogRef}
-        className="s-board__dialog"
-        aria-label={project.architecture?.title[lang] ?? project.title}
-        onClose={() => {
-          setFullscreen(false);
-          fullscreenBtnRef.current?.focus();
-        }}
-      >
-        {fullscreen && (
-          <div className="s-board__dialog-inner">
-            <div className="s-board__dialog-head">
-              <p className="s-board__title">
-                {project.architecture?.title[lang] ?? project.title}
-              </p>
-              <button
-                ref={closeBtnRef}
-                type="button"
-                className="s-board__btn"
-                onClick={closeFullscreen}
-              >
-                {b.close}
-              </button>
+      {!preview && (
+        <dialog
+          ref={dialogRef}
+          className="s-board__dialog"
+          aria-label={project.architecture?.title[lang] ?? project.title}
+          onClose={() => {
+            setFullscreen(false);
+            fullscreenBtnRef.current?.focus();
+          }}
+        >
+          {fullscreen && (
+            <div className="s-board__dialog-inner">
+              <div className="s-board__dialog-head">
+                <p className="s-board__title">
+                  {project.architecture?.title[lang] ?? project.title}
+                </p>
+                <button
+                  ref={closeBtnRef}
+                  type="button"
+                  className="s-board__btn"
+                  onClick={closeFullscreen}
+                >
+                  {b.close}
+                </button>
+              </div>
+              <div className="s-board__main">
+                <BoardCanvas
+                  board={board}
+                  lang={lang}
+                  selectedId={selectedId}
+                  onSelect={handleToggleNode}
+                  reducedMotion={reducedMotion}
+                  pulseIndex={pulseIndex}
+                  idPrefix={`board-dialog-${project.id}`}
+                />
+                {sidePanel}
+              </div>
+              {detailPanel}
             </div>
-            <div className="s-board__main">
-              <BoardCanvas
-                board={board}
-                lang={lang}
-                selectedId={selectedId}
-                onSelect={handleToggleNode}
-                reducedMotion={reducedMotion}
-                pulseIndex={pulseIndex}
-                idPrefix={`board-dialog-${project.id}`}
-              />
-              {sidePanel}
-            </div>
-            {detailPanel}
-          </div>
-        )}
-      </dialog>
+          )}
+        </dialog>
+      )}
     </div>
   );
 }

@@ -1,9 +1,17 @@
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { boards, PIECE_ROLE } from "@/data/boards";
 import { nodeSpecs } from "@/data/nodeSpecs";
-import { projects, type Door, type LocalizedString } from "@/data/projects";
+import { DOORS, isDoor, projectsForDoor, type Door } from "@/data/doors";
+import { projects, type LocalizedString } from "@/data/projects";
 
-const DOORS: Door[] = ["backend", "frontend", "ia"];
+it("descreve mecanismos sem prometer resultados absolutos nos projetos", () => {
+  const absoluteClaims = /trapaça|cheat-proof|alucina|hallucinat|soberania|sovereign|trustworth|elevando a confiabilidade/i;
+  for (const file of ["data/projects.ts", "data/nodeSpecs.ts"]) {
+    expect(absoluteClaims.test(readFileSync(file, "utf8")), file).toBe(false);
+  }
+});
 
 function inDoor(door: Door) {
   return projects.filter((p) => p.doors?.includes(door));
@@ -124,7 +132,37 @@ describe("paridade de idioma dos dados novos", () => {
     expect(Object.keys(PIECE_ROLE).sort()).toEqual(["bishop", "king", "knight", "pawn", "queen", "rook"]);
   });
 
-  it("toda porta é uma das três", () => {
+  it("toda porta de projeto está em DOORS", () => {
     for (const p of projects) for (const d of p.doors ?? []) expect(DOORS).toContain(d);
+  });
+
+  it("isDoor só aceita ids de DOORS", () => {
+    for (const d of DOORS) expect(isDoor(d)).toBe(true);
+    for (const x of ["fullstack", "", null, undefined, 1, { door: "ia" }]) expect(isDoor(x)).toBe(false);
+  });
+
+  it("na sala Front-end, quem mora ali vem antes; quem só aparece leva a porta de casa", () => {
+    const front = projectsForDoor("frontend");
+    expect(front.map((e) => [e.project.title, e.home])).toEqual([
+      ["Cidade Energia", "backend"],
+      ["BuscaSUS", "backend"],
+    ]);
+    const ia = projectsForDoor("ia");
+    expect(ia.map((e) => e.project.title)).toEqual(["RAG Serviços Públicos", "API Financeira Inteligente", "Cidade Energia"]);
+  });
+
+  it("nenhum projeto tem o campo category", () => {
+    for (const p of projects) expect("category" in p, p.title).toBe(false);
+  });
+
+  it("toda ficha front-end tem pelo menos uma tela, e o arquivo existe", () => {
+    for (const p of projects.filter((p) => p.doors?.includes("frontend"))) {
+      const screens = p.facets?.frontend?.screens ?? [];
+      expect(screens.length, p.title).toBeGreaterThan(0);
+      for (const s of screens) {
+        expect(existsSync(join("public", s.src)), s.src).toBe(true);
+        expect(s.alt.pt.length && s.alt.en.length, s.src).toBeTruthy();
+      }
+    }
   });
 });
