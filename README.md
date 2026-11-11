@@ -59,7 +59,7 @@ No desenvolvimento deste projeto, priorizei padrões modernos de engenharia web 
   - Estrutura semântica rigorosa com atributos ARIA e marcações acessíveis.
 - **SEO & Otimização de Compartilhamento:**
   - Metadados canônicos, robots e tags Open Graph completas.
-  - Geração dinâmica de imagem de compartilhamento (`opengraph-image.tsx`) para prévias no LinkedIn e WhatsApp.
+  - Imagem de compartilhamento fixa (`opengraph-image.png`, gerada por `tools/brand-assets.mjs`) para prévias no LinkedIn e WhatsApp.
   - Rich Snippets com schema `Person` do Schema.org em formato JSON-LD.
 - **Observabilidade em Tempo Real:** Monitoramento nativo com `@vercel/analytics` e `@vercel/speed-insights`.
 
@@ -102,7 +102,7 @@ portfolio-next/
 │   ├── favicon.ico / icon.svg / apple-icon.png
 │   ├── globals.css          # Configurações globais, design tokens e utilitários
 │   ├── layout.tsx           # Fontes, metadados globais, JSON-LD (Schema.org) e Analytics
-│   ├── opengraph-image.tsx  # Geração dinâmica da imagem OpenGraph
+│   ├── opengraph-image.png  # Imagem OpenGraph 1200×630
 │   └── page.tsx             # Composição das 5 seções principais
 ├── components/
 │   ├── Header.tsx           # Navegação fixa, indicador de seção ativa e menu responsivo

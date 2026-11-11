@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<title>Cartão de prévia</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; width: 1200px; height: 630px; overflow: hidden; background: #E7DDC9; font-family: 'Bricolage Grotesque', sans-serif; }
+  #poster { position: absolute; left: 184px; top: 0; width: 1120px; height: 630px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 160px); mask-image: linear-gradient(90deg, transparent, #000 160px); }
+  main { position: absolute; left: 68px; top: 108px; width: 600px; }
+  #label { font: 400 22px 'JetBrains Mono', monospace; color: #2A2018; letter-spacing: .02em; white-space: nowrap; }
+  h1 { margin: 28px 0 24px; font-size: 108px; line-height: .95; font-weight: 800; color: #0E0F13; letter-spacing: -.02em; white-space: pre-line; }
+  p { margin: 0; font-size: 30px; line-height: 1.35; color: #2A2018; }
+</style>
+<img id="poster" src="../../public/hero/poster.webp" alt="">
+<main><div id="label"></div><h1 id="name"></h1><p id="line"></p></main>
+</html>

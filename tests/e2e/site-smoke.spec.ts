@@ -4,6 +4,22 @@ import { siteCopy } from "../../lib/i18n/site";
 const pt = siteCopy.pt;
 const en = siteCopy.en;
 
+test("o cartão de prévia é absoluto e abre como PNG 1200×630", async ({ page, request, baseURL }) => {
+  const content = await page.locator('meta[property="og:image"]').first().getAttribute("content");
+  expect(content).toMatch(/^https:\/\/portfolio-next-flax-seven\.vercel\.app\/.*\.png(?:\?.*)?$/);
+  const published = new URL(content!);
+  const local = new URL(`${published.pathname}${published.search}`, baseURL!);
+  const response = await request.get(local.href);
+  expect(response.status()).toBe(200);
+  expect(response.headers()["content-type"]).toMatch(/^image\/png(?:;|$)/);
+  const png = await response.body();
+  expect(png.subarray(0, 8)).toEqual(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+  expect(png.readUInt32BE(16)).toBe(1200); expect(png.readUInt32BE(20)).toBe(630);
+  await expect(page.locator('meta[property="og:image:width"]').first()).toHaveAttribute("content", "1200");
+  await expect(page.locator('meta[property="og:image:height"]').first()).toHaveAttribute("content", "630");
+  await expect(page.locator('meta[name="twitter:image"]').first()).toHaveAttribute("content", content!);
+});
+
 test.beforeEach(async ({ page }) => {
   // Analytics e Speed Insights só existem na Vercel; localmente dariam 404.
   await page.route("**/_vercel/**", (r) => r.fulfill({ status: 200, contentType: "application/javascript", body: "" }));

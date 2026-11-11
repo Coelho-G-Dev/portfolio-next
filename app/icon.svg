@@ -1,6 +1,5 @@
-<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <rect width="512" height="512" rx="0" fill="#12222D"/>
-  <!-- diagonal "color cut": metade lima, um losango cortando o quadrado -->
-  <polygon points="512,0 512,512 0,512" fill="#EAF35B"/>
-  <circle cx="185" cy="185" r="46" fill="#F2EADC"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Desenho próprio, feito à mão para este projeto; sem fontes ou formas de terceiros. -->
+  <rect x="4" y="4" width="504" height="504" rx="112" fill="#F4EEE3" stroke="#8A6A4A" stroke-width="8"/>
+  <path fill="#0E0F13" d="M240 76H272V108H304V140H272V168H290L316 208L346 176L362 196L336 258H176L150 196L166 176L196 208L222 168H240V140H208V108H240Z M176 258H336V282H304C298 326 308 355 332 380H180C204 355 214 326 208 282H176Z M180 380H332L350 402V434H162V402Z"/>
 </svg>
